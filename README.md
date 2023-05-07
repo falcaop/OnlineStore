@@ -43,7 +43,7 @@ For administrators, the website allows for the creation, editing, and removal of
 
 For customers, the website allows for the viewing of available products, searching by name, categories, and other filters, selecting the desired quantity of the product, adding products to the shopping cart, and completing the purchase.
 
-Specific functionality: The website also allows the customer to create their own t-shirt by uploading an image as a print, enabling a preview of the customized t-shirt.
+Extra functionality: The website also allows the customer to create their own t-shirt by uploading an image as a print, enabling a preview of the customized t-shirt.
 
 ### 2.1 Diagrams
 To see how users navigate the website, two navigation diagrams were created, one for customers and one for administrators. The diagrams represents the sequences of pages accessed in the main operations of the website. The pages can also be accessed using the navigation menus.
