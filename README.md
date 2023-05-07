@@ -43,9 +43,9 @@ For administrators, the website allows for the creation, editing, and removal of
 
 For customers, the website allows for the viewing of available products, searching by name, categories, and other filters, selecting the desired quantity of the product, adding products to the shopping cart, and completing the purchase.
 
-The website also allows the customer to create their own t-shirt by uploading an image as a print, enabling a preview of the customized t-shirt.
+Specific functionality: The website also allows the customer to create their own t-shirt by uploading an image as a print, enabling a preview of the customized t-shirt.
 
-### 2.1 Navigation
+### 2.1 Diagrams
 To see how users navigate the website, two navigation diagrams were created, one for customers and one for administrators. The diagrams represents the sequences of pages accessed in the main operations of the website. The pages can also be accessed using the navigation menus.
 #### 2.1.1 Administrators
 ![Administrators navigation diagram](https://cdn.discordapp.com/attachments/1104219266162642996/1104854991711256647/administrador.png)
@@ -55,8 +55,7 @@ To see how users navigate the website, two navigation diagrams were created, one
 
 The diagram shows the pages organized to represent the sequences of pages accessed in the main operations of the website. The pages can also be accessed using the navigation menus.
 
-### 2.2 Prototypes
-  
+Furthermore, there were developed medium to high fidelity mockups for all major app screens. These can be found [here](https://www.figma.com/file/iVZQMGcoJsFiGn5aPwzvxx/Prototipos?type=design&node-id=1%3A14&t=P3IddQNjZLe303y2-1).
   
   ## 3. Comments About the Code
   
