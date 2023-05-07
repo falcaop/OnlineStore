@@ -37,6 +37,26 @@ Grupo:
 
   ## 2. Project Description
   
+The project consists of a website for a clothing store.
+
+For administrators, the website allows for the creation, editing, and removal of available products, as well as the creation, editing, and removal of other users (customers and administrators).
+
+For customers, the website allows for the viewing of available products, searching by name, categories, and other filters, selecting the desired quantity of the product, adding products to the shopping cart, and completing the purchase.
+
+The website also allows the customer to create their own t-shirt by uploading an image as a print, enabling a preview of the customized t-shirt.
+
+### 2.1 Navigation
+To see how users navigate the website, two navigation diagrams were created, one for customers and one for administrators. The diagrams represents the sequences of pages accessed in the main operations of the website. The pages can also be accessed using the navigation menus.
+#### 2.1.1 Administrators
+![Administrators navigation diagram](https://cdn.discordapp.com/attachments/1104219266162642996/1104854991711256647/administrador.png)
+
+#### 2.1.2 Customers
+![Customers navigation diagram](https://cdn.discordapp.com/attachments/1104219266162642996/1104854991493148692/cliente.png)
+
+The diagram shows the pages organized to represent the sequences of pages accessed in the main operations of the website. The pages can also be accessed using the navigation menus.
+
+### 2.2 Prototypes
+  
   
   ## 3. Comments About the Code
   
