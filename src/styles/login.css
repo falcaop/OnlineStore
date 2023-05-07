@@ -37,6 +37,10 @@ input[type="button"]{
     color: white;
 }
 
+input[type="button"]:hover{
+    background-color: #1c6970;
+  }
+
 input[type="text"],input[type="password"]{
     padding: 0.7rem;
     box-sizing: border-box;
