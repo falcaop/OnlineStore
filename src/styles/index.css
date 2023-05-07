@@ -15,24 +15,22 @@ main{
     width: 100%;
     gap: 10px;
 }
-#products button{
+#products a{
     background-color: white;
     border-radius: 10px;
     width: 20%;
     min-width: 125px;
     aspect-ratio: 3/4;
     margin: 2% 0;
-    cursor: pointer;
     transition-duration: .3s;
-    border: none;
-    padding: 0;
     color: unset;
+    text-decoration: none;
 }
-#products button:hover, #products button:focus{
+#products a:hover, #products a:focus{
     background-color: #f2f2f2;
 }
 @media screen and (max-width: 388px){
-    #products button{
+    #products a{
         min-width: 100%;
     }
 }
