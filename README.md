@@ -2,11 +2,11 @@
 
 Grupo:  
 
-  - wxyz
-    - NUSP: 
+  - Luís Eduardo de Brito Câmara
+    - NUSP: 12690282
   
-  - abcd
-    - NUSP: 
+  - Pedro Falcão Rocha
+    - NUSP: 12692408
   
   - Rogério Lopes Lube
     - NUSP: 10770113
