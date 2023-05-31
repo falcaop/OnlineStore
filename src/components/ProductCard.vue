@@ -41,6 +41,8 @@ a:focus {
 
 img {
     width: 100%;
+    aspect-ratio: 5/6;
+    object-fit: cover;
 }
 
 .name {
