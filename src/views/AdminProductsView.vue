@@ -156,7 +156,7 @@ ul{
     padding: 0;
 }
 
-h1{
+dialog h1{
     text-align: center;
 }
 input[type="text"], input[type="url"]{
