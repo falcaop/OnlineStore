@@ -16,11 +16,11 @@ const signIn = async () => {
             <form @submit.prevent.stop="signIn">
                 <label for="email">E-mail</label>
                 <br>
-                <input v-model="email" id="email" type="email"/>
+                <input v-model="email" required id="email" type="email"/>
                 <br>
                 <label for="password">Senha</label>
                 <br>
-                <input v-model="passwd" id="password" type="password"/>
+                <input v-model="passwd" required id="password" type="password"/>
                 <br>
                 <RouterLink to="/resetpassword" class="clickable">Esqueceu sua senha?</RouterLink>
                 <br>

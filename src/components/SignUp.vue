@@ -21,32 +21,32 @@ const signUp = async () => {
             <form @submit.prevent.stop="signUp">
                 <label for="name">Nome</label>
                 <br>
-                <input v-model="name" type="text" id="name">
+                <input v-model="name" required type="text" id="name">
                 <br>
 
                 <label for="email">E-mail</label>
                 <br>
-                <input v-model="email" id="email" type="email" />
+                <input v-model="email" required id="email" type="email" />
                 <br>
 
                 <label for="address">Endereço</label>
                 <br>
-                <input v-model="address" type="text" id="address">
+                <input v-model="address" required type="text" id="address">
                 <br>
 
                 <label for="phone">Telefone</label>
                 <br>
-                <input v-model="phone" type="tel" id="phone">
+                <input v-model="phone" required type="tel" id="phone">
                 <br>
 
                 <label for="password">Senha</label>
                 <br>
-                <input v-model="passwd" type="password" id="password">
+                <input v-model="passwd" required type="password" id="password">
                 <br>
 
                 <label for="password_confirm">Confirmar Senha</label>
                 <br>
-                <input v-model="passwdConfirm" type="password" id="password_confirm">
+                <input v-model="passwdConfirm" required type="password" id="password_confirm">
                 <br>
 
                 <input type="submit" value="Registrar" class="clickable">
