@@ -88,6 +88,7 @@ nav .navbar{
         width: 100%;
         height: 80px;
         padding-top: 0;
+        position: static;
     }
     section{
         width: 90%;

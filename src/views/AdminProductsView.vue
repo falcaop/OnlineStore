@@ -83,20 +83,14 @@ const deleteItem = async id => {
                 <input v-model.number="newProduct.price" min="0" step="0.01" type="number" id="price">
                 <br>
                 <div class="inline">
-                    <div>
-                        <label for="category">Categoria</label>
-                        <br>
-                        <br>
-                        <select v-model.number="newProduct.category" id="category">
-                            <option v-for="(categoryName, i) in categories" :value="i">{{ categoryName }}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="stock">Quantidade em estoque</label>
-                        <br>
-                        <br>
-                        <input v-model.number="newProduct.stock" min="0" type="number" id="stock">
-                    </div>
+                    <label for="category">Categoria</label>
+                    <label for="stock">Quantidade em estoque</label>
+                </div>
+                <div class="inline">
+                    <select v-model.number="newProduct.category" id="category">
+                        <option v-for="(categoryName, i) in categories" :value="i">{{ categoryName }}</option>
+                    </select>
+                    <input v-model.number="newProduct.stock" min="0" type="number" id="stock">
                 </div>
                 <br>
                 <label for="image">Imagem</label>
