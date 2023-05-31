@@ -27,7 +27,6 @@ let newProduct = reactive({
     stock: null,
     image: null,
 });
-const setImage = event => newProduct.image = event.target.files[0];
 const showUpdateModal = id => {
     currentProduct = products.value.find(product => (product.id === id));
     for(const key in newProduct) newProduct[key] = currentProduct[key];
@@ -61,6 +60,7 @@ const deleteItem = async id => {
     localStorage.setItem('products', JSON.stringify(products.value));
     alert(`${currentProduct.name} deletado`);
 };
+const loadImage = event => (newProduct.image = event.target.value);
 </script>
 
 <template>
@@ -95,10 +95,10 @@ const deleteItem = async id => {
                 <br>
                 <label for="image">Imagem</label>
                 <br>
-                <!-- The URL text input will be replaced by a file input once we have somewhere to upload the images -->
-                <!-- to -->
+                <!-- The URL text input will be replaced by a file input once we have somewhere to upload the images
+                to -->
                 <!-- <input @change="setImage" type="file" accept="image/png, image/jpeg" id="image"> -->
-                <input @focusout="event => (newProduct.image = event.target.value)" type="url" id="image"/>
+                <input @focusout="loadImage" :value="newProduct.image" type="url" id="image"/>
                 <img v-if="newProduct.image" :src="newProduct.image" @error="newProduct.image = null"/>
                 <br>
                 <div class="inline">
@@ -111,15 +111,20 @@ const deleteItem = async id => {
         <AdminSearch/>
 
         <div class="add">
-            <i tabindex="0" @keydown.enter.space="showAddModal" @click="showAddModal" class="fa fa-plus fa-2x clickable"></i>
+            <i
+                tabindex="0"
+                @keydown.enter.space="showAddModal"
+                @click="showAddModal"
+                class="fa fa-plus fa-2x clickable"
+            ></i>
             <br>
         </div>
         <ul>
             <hr>
             <template v-for="product in products" :key="product.id">
                 <AdminListItem
-                    @updateItem="id => showUpdateModal(id)"
-                    @deleteItem="id => deleteItem(id)"
+                    @updateItem="showUpdateModal"
+                    @deleteItem="deleteItem"
                     v-bind="product"
                 />
                 <hr>
@@ -134,14 +139,15 @@ dialog{
     width: 50%;
     min-width: 250px;
     max-width: 500px;
-    padding: 4%;
+    padding: 4vh 4vw;
     border-radius: 20px;
     border-style: none;
+    max-height: 77vh;
 }
 dialog::backdrop{
     background-color: rgba(0, 0, 0, 0.5);
 }
-form > *{
+dialog form > *{
     margin: 20px auto;
 }
 ul{
@@ -156,11 +162,11 @@ h1{
 input[type="text"], input[type="url"]{
     width: 100%;
 }
-form > input[type="number"]{
+dialog form > input[type="number"]{
     width: 50%;
     transition: .3s;
 }
-form img{
+dialog form img{
     width: 40%;
     border-radius: 10px;
     aspect-ratio: 5/6;
@@ -191,7 +197,7 @@ input[type="submit"]:hover, input[type="button"]:hover{
     background-color: #1c6970;
 }
 
-input[type="text"], input[type="number"], select, input[type="url"]{
+dialog input[type="text"], dialog input[type="number"], dialog select, dialog input[type="url"]{
     padding: 0.7rem;
     box-sizing: border-box;
 }
@@ -209,8 +215,15 @@ i:hover{
     color: #2EAFBB;
 }
 @media screen and (max-width: 767px) {
-    form img, form > input[type="number"]{
+    dialog form img, dialog form > input[type="number"]{
         width: 100%;
+    }
+    dialog{
+        max-width: none;
+        width: calc(100% - 8vw);
+        margin-bottom: 0px;
+        border-radius: 0;
+        padding-bottom: 0;
     }
 }
 </style>
