@@ -68,6 +68,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   
   ## 6. Build Procedures
   `npm i`
+  
   `npm run dev`
   
   ## 7. Problems
