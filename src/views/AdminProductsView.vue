@@ -70,7 +70,7 @@ const deleteItem = async id => {
             <form @submit="currentProduct ? updateItem() : addItem()" method="dialog">
                 <label for="name">Nome</label>
                 <br>
-                <input v-model="newProduct.name" minlength="1" type="text" id="name">
+                <input v-model="newProduct.name" required type="text" id="name">
                 <br>
 
                 <label for="desc">Descrição</label>
@@ -80,22 +80,26 @@ const deleteItem = async id => {
 
                 <label for="price">Preço</label>
                 <br>
-                <input v-model.number="newProduct.price" min="0" step="0.01" type="number" id="price">
+                <input v-model.number="newProduct.price" min="0" required step="0.01" type="number" id="price">
                 <br>
                 <div class="inline">
                     <label for="category">Categoria</label>
                     <label for="stock">Quantidade em estoque</label>
                 </div>
                 <div class="inline">
-                    <select v-model.number="newProduct.category" id="category">
+                    <select v-model.number="newProduct.category" required id="category">
                         <option v-for="(categoryName, i) in categories" :value="i">{{ categoryName }}</option>
                     </select>
-                    <input v-model.number="newProduct.stock" min="0" type="number" id="stock">
+                    <input v-model.number="newProduct.stock" required min="0" type="number" id="stock">
                 </div>
                 <br>
                 <label for="image">Imagem</label>
                 <br>
-                <input @change="setImage" type="file" accept="image/png, image/jpeg" id="image">
+                <!-- The URL text input will be replaced by a file input once we have somewhere to upload the images -->
+                <!-- to -->
+                <!-- <input @change="setImage" type="file" accept="image/png, image/jpeg" id="image"> -->
+                <input @focusout="event => (newProduct.image = event.target.value)" type="url" id="image"/>
+                <img v-if="newProduct.image" :src="newProduct.image" @error="newProduct.image = null"/>
                 <br>
                 <div class="inline">
                     <input type="submit" value="Confirmar">
@@ -149,11 +153,19 @@ ul{
 h1{
     text-align: center;
 }
-input[type="text"]{
+input[type="text"], input[type="url"]{
     width: 100%;
 }
 form > input[type="number"]{
     width: 50%;
+    transition: .3s;
+}
+form img{
+    width: 40%;
+    border-radius: 10px;
+    aspect-ratio: 5/6;
+    object-fit: cover;
+    transition: .3s;
 }
 .inline{
     display: flex;
@@ -179,7 +191,7 @@ input[type="submit"]:hover, input[type="button"]:hover{
     background-color: #1c6970;
 }
 
-input[type="text"], input[type="number"], select{
+input[type="text"], input[type="number"], select, input[type="url"]{
     padding: 0.7rem;
     box-sizing: border-box;
 }
@@ -195,5 +207,10 @@ i{
 }
 i:hover{
     color: #2EAFBB;
+}
+@media screen and (max-width: 767px) {
+    form img, form > input[type="number"]{
+        width: 100%;
+    }
 }
 </style>
