@@ -8,12 +8,10 @@ const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id:
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchProducts = async () => {
     await delay();
-    const tmpProducts = JSON.parse(localStorage.getItem('products'));
-    return (
-        route.query.q
-        ? tmpProducts.filter(e => e.name.toUpperCase().includes(route.query.q.toUpperCase()))
-        : tmpProducts
-    );
+    let tmpProducts = JSON.parse(localStorage.getItem('products'));
+    if(route.query.q) tmpProducts = tmpProducts.filter(e => e.name.toUpperCase().includes(route.query.q.toUpperCase()));
+    if(route.query.category) tmpProducts = tmpProducts.filter(e => (e.category === parseInt(route.query.category, 10)));
+    return tmpProducts;
 }
 watch(() => route.query, () => fetchProducts().then(res => (products.value = res)), {immediate: true});
 const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
@@ -88,7 +86,7 @@ const loadImage = event => (newProduct.image = event.target.value);
                 </div>
                 <div class="inline">
                     <select v-model.number="newProduct.category" required id="category">
-                        <option v-for="(categoryName, i) in categories" :value="i">{{ categoryName }}</option>
+                        <option v-for="(categoryName, i) in categories" :key="i" :value="i">{{ categoryName }}</option>
                     </select>
                     <input v-model.number="newProduct.stock" required min="0" type="number" id="stock">
                 </div>
