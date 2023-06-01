@@ -32,6 +32,7 @@ a {
     transition-duration: .3s;
     text-decoration: none;
     padding-bottom: 1%;
+    overflow: hidden;
 }
 
 a:hover,
