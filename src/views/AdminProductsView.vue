@@ -183,7 +183,7 @@ dialog form img{
 }
 
 input[type="submit"], input[type="button"]{
-    background-color: #2EAFBB;
+    background-color: var(--green);
     font-size: 1.2rem;
     padding: 0.7rem;
     border: none;
@@ -192,7 +192,7 @@ input[type="submit"], input[type="button"]{
 }
 
 input[type="submit"]:hover, input[type="button"]:hover{
-    background-color: #1c6970;
+    background-color: var(--green-active);
 }
 
 dialog input[type="text"], dialog input[type="number"], dialog select, dialog input[type="url"]{
@@ -210,7 +210,7 @@ i{
     transition: .3s;
 }
 i:hover{
-    color: #2EAFBB;
+    color: var(--green);
 }
 @media screen and (max-width: 767px) {
     dialog form img, dialog form > input[type="number"]{

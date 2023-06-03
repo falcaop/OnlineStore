@@ -1,13 +1,26 @@
-body{
-  color: white;
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #E4E4E4;
-  overflow-x: hidden;
+:root{
+    --black: #27292C;
+    --green: #2EAFBB;
+    --green-active: #298992;
+    --black-active: #3A3D41;
 }
-#app{
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
+body {
+    color: white;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #E4E4E4;
+    overflow-x: hidden;
+}
+
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+a {
+    text-decoration: none;
+    color: unset;
 }

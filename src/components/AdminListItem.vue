@@ -35,7 +35,7 @@ i{
     transition: .3s;
 }
 i:hover{
-    color: #2EAFBB;
+    color: var(--green);
 }
 li > div{
     margin: 15px;

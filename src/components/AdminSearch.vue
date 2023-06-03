@@ -25,7 +25,7 @@ i{
     transition: .3s;
 }
 i:hover{
-    color: #2EAFBB;
+    color: var(--green);
 }
 .searchbar input{
     width: 90%;
