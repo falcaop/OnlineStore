@@ -29,11 +29,13 @@ const showUpdateModal = id => {
     currentProduct = products.value.find(product => (product.id === id));
     for(const key in newProduct) newProduct[key] = currentProduct[key];
     modal.showModal();
+    document.body.style.overflowY = 'hidden';
 };
 const showAddModal = () => {
     currentProduct = null;
     for(const key in newProduct) newProduct[key] = null;
     modal.showModal();
+    document.body.style.overflowY = 'hidden';
 }
 const closeModal = () => modal.close();
 const addItem = async () => {
@@ -59,11 +61,12 @@ const deleteItem = async id => {
     alert(`${currentProduct.name} deletado`);
 };
 const loadImage = event => (newProduct.image = event.target.value);
+const unhideScroll = () => document.body.style.overflowY = 'unset';
 </script>
 
 <template>
     <section>
-        <dialog id="modal">
+        <dialog @close="unhideScroll" id="modal">
             <h1>{{ currentProduct ? `Editar ${currentProduct.name}` : 'Adicionar produto' }}</h1>
             <form @submit="currentProduct ? updateItem() : addItem()" method="dialog">
                 <label for="name">Nome</label>
