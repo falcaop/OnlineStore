@@ -29,7 +29,7 @@ const sortMethods = {
 let sortMethod = ref('nameAsc');
 const fetchProducts = async () => {
     await delay();
-    let tmpProducts = JSON.parse(localStorage.getItem('products')).toSorted(sortMethods[sortMethod.value].fn);
+    let tmpProducts = JSON.parse(localStorage.getItem('products')).sort(sortMethods[sortMethod.value].fn);
     if(route.query.q) tmpProducts = tmpProducts.filter(e => e.name.toUpperCase().includes(route.query.q.toUpperCase()));
     if(route.query.category) tmpProducts = tmpProducts.filter(e => (e.category === parseInt(route.query.category, 10)));
     if(route.query.minPrice) tmpProducts = tmpProducts.filter(e => (e.price >= parseFloat(route.query.minPrice, 10)));

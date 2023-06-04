@@ -9,12 +9,7 @@ const props = defineProps({
     image: String,
     price: Number,
     stock: Number,
-
-});
-const showProduct = () => router.push({
-    name: 'product',
-    params: { id: props.id },
-    query: { name: props.name },
+    amount: Number,
 });
 </script>
 
@@ -24,11 +19,14 @@ const showProduct = () => router.push({
         <div class="info">
             <div class="left">
                 <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
-                <p>Quantidade (nao funciona): {{ stock }}</p>
+                <p>Quantidade: {{ amount }}</p>
             </div>
             <div class="right">
                 <h3> R$ {{ price ?? 0.00 }}</h3>
-                <IconCart/>
+                <a @click="$emit('removeItem', id)">
+                    <IconCart/>
+                </a>
+                
             </div>
         </div>
     </main>

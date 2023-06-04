@@ -2,15 +2,25 @@
 import { ref } from 'vue';
 import ItemCart from '../components/ItemCart.vue';
 
-const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
+const products = ref([]);
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchProducts = async () => {
     await delay();
-    return JSON.parse(localStorage.getItem('products'));
+    return JSON.parse(localStorage.getItem('cart'));
 }
 fetchProducts().then(res => (products.value = res));
+
+const empty = () =>{
+    products.value = []
+    localStorage.removeItem('cart');
+}
+const remove = (id) => {
+    let i = products.value.findIndex((p) => p.id === id);
+    products.value.splice(i, 1);
+    localStorage.setItem("cart", JSON.stringify(products.value));
+}
+
 const total = 100.01;
-//localStorage.setItem("key", value);
 </script>
 
 <template>
@@ -18,10 +28,10 @@ const total = 100.01;
         <h2>Meu carrinho</h2>
         <div class="container">
             <div class="empty">
-                <a class="clickable">Esvaziar carrinho</a>
+                <a class="clickable" @click.prevent.stop="empty()" >Esvaziar carrinho</a>
             </div>
             <hr>
-            <ItemCart v-for="product in products" :key="product.id" v-bind="product" class="cartItem" />
+            <ItemCart v-for="product in products" :key="product.id" v-bind="product" class="cartItem" @removeItem="remove" />
             <div class="total">
                 <p>Total: <strong> R$ {{ total }}</strong></p>
                 <input type="button" class="clickable" value="Finalizar compra">

@@ -5,6 +5,7 @@ import utils from '../assets/utils.js';
 
 const route = useRoute();
 const product = ref({});
+let amount = 1;
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchProduct = async () => {
     await delay();
@@ -13,7 +14,12 @@ const fetchProduct = async () => {
 fetchProduct().then(res => (product.value = res));
 const addToCart = async () => {
     await delay();
-    alert(`adicionar ${product.value.name} ao carrinho`);
+    alert(`${product.value.name} adicionado ao carrinho.`);
+    
+    let cartProducts = JSON.parse(localStorage.getItem("cart")) ?? []
+    product.value.amount = amount;
+    cartProducts.push(product.value);
+    localStorage.setItem("cart", JSON.stringify(cartProducts));
 }
 </script>
 
@@ -29,7 +35,7 @@ const addToCart = async () => {
                 </div>
                 <div>
                     <p class="stock"><span>{{ product.stock ?? 0 }}</span> itens restantes</p>
-                    Quantidade<input class="amount" type="number" value="1" min="1"/>
+                    Quantidade<input class="amount" type="number" :max="product.stock" min="1" v-model="amount"/>
                     <button @click.prevent.stop="addToCart" class="buy">Adicionar ao carrinho</button>
                 </div>
             </div>
