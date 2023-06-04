@@ -1,5 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import utils from '../assets/utils.js';
 
 const router = useRouter();
 const props = defineProps({
@@ -19,7 +20,7 @@ const showProduct = () => router.push({
     <a :href="`/product/${id}?name=${name}`" @click.prevent.stop="showProduct">
         <img :src="image ?? 'https://placehold.co/500x600'" />
         <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
-        <h3> R$ {{ price ?? 0.00 }}</h3>
+        <h3>{{ utils.toPriceString(price ?? 0) }}</h3>
     </a>
 </template>
 

@@ -12,4 +12,4 @@ const priceDescription = ({minPrice, maxPrice}) => {
     );
 }
 
-export default {priceDescription};
+export default {priceDescription, toPriceString};

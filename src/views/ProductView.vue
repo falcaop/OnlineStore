@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import utils from '../assets/utils.js';
 
 const route = useRoute();
 const product = ref({});
@@ -23,7 +24,7 @@ const addToCart = async () => {
             <img class="preview" :src="product.image ?? 'https://placehold.co/500x600'"/>
             <div class="info">
                 <div>
-                    <h1 class="price">R$ {{ product.price ?? '0.00' }}</h1>
+                    <h1 class="price">{{ utils.toPriceString(product.price ?? 0) }}</h1>
                     <p class="description">{{ product.description ?? 'Lorem Ipsum' }}</p>
                 </div>
                 <div>
