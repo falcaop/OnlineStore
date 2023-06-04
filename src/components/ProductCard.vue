@@ -49,4 +49,10 @@ img {
 
 .name {
     font-weight: normal;
-}</style>
+}
+@media (max-width: 480px){
+    a{
+        min-width: 100% !important;
+    }
+}
+</style>

@@ -54,11 +54,4 @@ main {
     min-width: 125px;
     margin: 2% 0;
 }
-
-
-
-@media screen and (max-width: 388px) {
-    .products .card {
-        min-width: 100%;
-    }
-}</style>
+</style>
