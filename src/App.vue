@@ -1,10 +1,13 @@
 <script setup>
-import { RouterLink, RouterView, useRouter } from 'vue-router';
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import IconSearch from './components/icons/IconSearch.vue';
 import IconCart from './components/icons/IconCart.vue';
 import IconProfile from './components/icons/IconProfile.vue';
+import { ref, watch } from 'vue';
 const router = useRouter();
-let q = '';
+const route = useRoute();
+const q = ref('');
+watch(() => route.query.q, () => ((route.path === '/search') && (q.value = route.query.q)), {immediate: true});
 const search = query => router.push({path: '/search', query});
 const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
 </script>

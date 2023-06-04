@@ -8,16 +8,35 @@ const route = useRoute();
 const router = useRouter();
 const products = ref([{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }]);
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
-const fetchProducts = async (sort = (a, b) => a.name.localeCompare(b.name)) => {
+const sortMethods = {
+    nameAsc: {
+        description: 'A-Z',
+        fn: (a, b) => a.name.localeCompare(b.name),
+    },
+    priceAsc: {
+        description: 'Menor preço',
+        fn: (a, b) => (a.price - b.price),
+    },
+    priceDesc: {
+        description: 'Maior preço',
+        fn: (a, b) => (b.price - a.price),
+    },
+    soldDesc: {
+        description: 'Mais vendidos (temporariamente maior estoque)',
+        fn: (a, b) => (a.stock - b.stock),
+    },
+};
+let sortMethod = ref('nameAsc');
+const fetchProducts = async () => {
     await delay();
-    let tmpProducts = JSON.parse(localStorage.getItem('products')).toSorted(sort);
+    let tmpProducts = JSON.parse(localStorage.getItem('products')).toSorted(sortMethods[sortMethod.value].fn);
     if(route.query.q) tmpProducts = tmpProducts.filter(e => e.name.toUpperCase().includes(route.query.q.toUpperCase()));
     if(route.query.category) tmpProducts = tmpProducts.filter(e => (e.category === parseInt(route.query.category, 10)));
     if(route.query.minPrice) tmpProducts = tmpProducts.filter(e => (e.price >= parseFloat(route.query.minPrice, 10)));
     if(route.query.maxPrice) tmpProducts = tmpProducts.filter(e => (e.price <= parseFloat(route.query.maxPrice, 10)));
     return tmpProducts;
 }
-watch(() => route.query, async () => (products.value = await fetchProducts()), { immediate: true });
+watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });
 const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
 const prices = [
     {
@@ -37,22 +56,6 @@ const prices = [
         maxPrice: null,
     },
 ];
-const sortProducts = async event => {
-    switch (event.target.value) {
-        case "0":
-            products.value = await fetchProducts();
-            break;
-        case "1":
-            products.value = await fetchProducts((a, b) => a.price - b.price);
-            break;
-        case "2":
-            products.value = await fetchProducts((a, b) => b.price - a.price);
-            break;
-        case "3":
-            products.value = await fetchProducts((a, b) => a.stock - b.stock);
-            break;
-    }
-}
 const filterProducts = ({
     category = (route.query.category ?? null),
     minPrice = (route.query.minPrice ?? null),
@@ -84,6 +87,14 @@ const isCurrentPrice = ({minPrice, maxPrice}) => {
         (maxPrice === (route.query.maxPrice ? parseFloat(route.query.maxPrice, 10) : null))
     );
 }
+const priceDescription = ({minPrice, maxPrice}) => {
+    if(!minPrice) return `Até ${utils.toPriceString(maxPrice)}`;
+    return (
+        maxPrice
+        ? `Entre ${utils.toPriceString(minPrice)} e ${utils.toPriceString(maxPrice)}`
+        : `Maior que ${utils.toPriceString(minPrice)}`
+    );
+}
 </script>
 
 <template>
@@ -94,11 +105,8 @@ const isCurrentPrice = ({minPrice, maxPrice}) => {
         <div class="results">
             <section class="filters">
                 <strong>Ordenar por</strong>
-                <select @change="sortProducts">
-                    <option selected value="0">A-Z</option>
-                    <option value="1">Menor preco</option>
-                    <option value="2">Maior preco</option>
-                    <option value="3">Mais vendidos (nao funciona)</option>
+                <select v-model="sortMethod">
+                    <option v-for="({description}, name) in sortMethods" :value="name">{{ description }}</option>
                 </select>
                 <hr>
 
@@ -109,7 +117,7 @@ const isCurrentPrice = ({minPrice, maxPrice}) => {
                     :href="searchURL(price)"
                     @click.prevent.stop="filterProducts(price)"
                     :class="isCurrentPrice(price) ? 'active' : ''"
-                >{{ utils.priceDescription(price) }}</a>
+                >{{ priceDescription(price) }}</a>
 
                 <p>Categoria</p>
                 <a
@@ -171,10 +179,13 @@ select {
     display: flex;
     align-items: start;
     gap: 30px;
+    flex-wrap: wrap;
 }
 
 .filters {
-    flex: 20%;
+    min-width: 220px;
+    width: 220px;
+    transition: .3s;
 }
 .filters a{
     transition: .3s;
@@ -188,7 +199,8 @@ select {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    width: 100%;
+    max-width: calc(100% - 250px);
+    min-width: 220px;
     gap: 10px;
 }
 
@@ -210,20 +222,22 @@ hr {
     height: 1px;
     border: none;
 }
-
-@media screen and (max-width: 767px) {
-    .results {
-        display: block;
-    }
-
-    .products {
-        margin-top: 5em;
+@media (max-width: 866px){
+    .products .card{
+        width: 220px;
     }
 }
-
-@media screen and (max-width: 450px) {
-    .products .card {
-        min-width: 100%;
+@media (max-width: 800px){
+    .products{
+        max-width: none;
+    }
+}
+@media screen and (max-width: 480px) {
+    .filters{
+        width: 100%;
+    }
+    .products .card{
+        width: 100%;
     }
 }
 </style>
