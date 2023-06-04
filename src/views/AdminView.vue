@@ -1,3 +1,8 @@
+<script setup>
+import { RouterLink, RouterView } from 'vue-router';
+import { Transition } from 'vue';
+</script>
+
 <template>
     <main>
         <nav>

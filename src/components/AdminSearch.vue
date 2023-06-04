@@ -20,7 +20,7 @@ const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'cat
 </template>
 
 <style scoped>
-@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-arwesome.min.css';
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
 i{
     transition: .3s;
 }
