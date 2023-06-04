@@ -17,8 +17,7 @@ const addToCart = async () => {
     alert(`${product.value.name} adicionado ao carrinho.`);
     
     let cartProducts = JSON.parse(localStorage.getItem("cart")) ?? []
-    product.value.amount = amount;
-    cartProducts.push(product.value);
+    cartProducts.push({id: product.value.id, amount: amount});
     localStorage.setItem("cart", JSON.stringify(cartProducts));
 }
 </script>

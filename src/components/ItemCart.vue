@@ -1,28 +1,31 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 import IconCart from './icons/IconCart.vue';
 
-const router = useRouter();
 const props = defineProps({
     id: Number,
-    name: String,
-    image: String,
-    price: Number,
-    stock: Number,
     amount: Number,
 });
+
+const product = ref({});
+const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
+const fetchProduct = async () => {
+    await delay();
+    return JSON.parse(localStorage.getItem('products')).find(e => (e.id === parseInt(props.id, 10)));
+}
+fetchProduct().then(res => (product.value = res));
 </script>
 
 <template>
     <main class="item">
-        <img :src="image ?? 'https://placehold.co/500x600'" />
+        <img :src="product.image ?? 'https://placehold.co/500x600'" />
         <div class="info">
             <div class="left">
-                <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
+                <h3 class="name"> {{ product.name ?? 'Lorem Ipsum' }} </h3>
                 <p>Quantidade: {{ amount }}</p>
             </div>
             <div class="right">
-                <h3> R$ {{ price ?? 0.00 }}</h3>
+                <h3> R$ {{ product.price ?? 0.00 }}</h3>
                 <a @click="$emit('removeItem', id)">
                     <IconCart/>
                 </a>
