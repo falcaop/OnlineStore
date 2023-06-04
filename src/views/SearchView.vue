@@ -106,7 +106,11 @@ const priceDescription = ({minPrice, maxPrice}) => {
             <section class="filters">
                 <strong>Ordenar por</strong>
                 <select v-model="sortMethod">
-                    <option v-for="({description}, name) in sortMethods" :value="name">{{ description }}</option>
+                    <option
+                        v-for="({description}, name) in sortMethods"
+                        :key="name"
+                        :value="name"
+                    >{{ description }}</option>
                 </select>
                 <hr>
 
@@ -116,12 +120,12 @@ const priceDescription = ({minPrice, maxPrice}) => {
                     v-for="price in prices"
                     :href="searchURL(price)"
                     @click.prevent.stop="filterProducts(price)"
-                    :class="isCurrentPrice(price) ? 'active' : ''"
+                    :class="{active: isCurrentPrice(price)}"
                 >{{ priceDescription(price) }}</a>
 
                 <p>Categoria</p>
                 <a
-                    :class="!$route.query.category ? 'active' : ''"
+                    :class="{active: !$route.query.category}"
                     :href="searchURL({category: null})"
                     @click.prevent.stop="filterProducts({category: null})"
                 >Todas</a>
@@ -130,7 +134,7 @@ const priceDescription = ({minPrice, maxPrice}) => {
                     :key="i"
                     :href="searchURL({category: i})"
                     @click.prevent.stop="filterProducts({category: i})"
-                    :class="($route.query.category === i.toString()) ? 'active' : ''"
+                    :class="{active: ($route.query.category === i.toString())}"
                 >{{ category }}</a>
 
             </section>
