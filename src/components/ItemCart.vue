@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from 'vue';
-import IconCart from './icons/IconCart.vue';
+import IconDelete from './icons/IconDelete.vue';
 
 const props = defineProps({
     id: Number,
     amount: Number,
 });
 
+const amount = props.amount;
 const product = ref({});
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchProduct = async () => {
@@ -22,12 +23,13 @@ fetchProduct().then(res => (product.value = res));
         <div class="info">
             <div class="left">
                 <h3 class="name"> {{ product.name ?? 'Lorem Ipsum' }} </h3>
-                <p>Quantidade: {{ amount }}</p>
+                Quantidade:
+                <input class="amount" type="number" :max="product.stock" min="1" v-model="amount" @change="$emit('amountChanged', id, amount)"/>
             </div>
             <div class="right">
                 <h3> R$ {{ product.price ?? 0.00 }}</h3>
                 <a @click="$emit('removeItem', id)">
-                    <IconCart/>
+                    <IconDelete/>
                 </a>
                 
             </div>
