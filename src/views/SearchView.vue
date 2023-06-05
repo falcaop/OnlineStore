@@ -100,7 +100,7 @@ const priceDescription = ({minPrice, maxPrice}) => {
 <template>
     <main>
         <h2 v-if="$route.query.q">Resultados da pesquisa: "{{ route.query.q }}"</h2>
-        <h2 v-if="$route.query.category">{{ categories[route.query.category] }}</h2>
+        <h2 v-else-if="$route.query.category">{{ categories[route.query.category] }}</h2>
 
         <div class="results">
             <section class="filters">
@@ -115,27 +115,30 @@ const priceDescription = ({minPrice, maxPrice}) => {
                 <hr>
 
                 <strong>Filtrar por</strong>
-                <p>Preço</p>
-                <a
-                    v-for="price in prices"
-                    :href="searchURL(price)"
-                    @click.prevent.stop="filterProducts(price)"
-                    :class="{active: isCurrentPrice(price)}"
-                >{{ priceDescription(price) }}</a>
-
-                <p>Categoria</p>
-                <a
-                    :class="{active: !$route.query.category}"
-                    :href="searchURL({category: null})"
-                    @click.prevent.stop="filterProducts({category: null})"
-                >Todas</a>
-                <a
-                    v-for="(category, i) in categories"
-                    :key="i"
-                    :href="searchURL({category: i})"
-                    @click.prevent.stop="filterProducts({category: i})"
-                    :class="{active: ($route.query.category === i.toString())}"
-                >{{ category }}</a>
+                <div>
+                    <p>Preço</p>
+                    <a
+                        v-for="price in prices"
+                        :href="searchURL(price)"
+                        @click.prevent.stop="filterProducts(price)"
+                        :class="{active: isCurrentPrice(price)}"
+                    >{{ priceDescription(price) }}</a>
+                </div>
+                <div v-if="$route.query.q">
+                    <p>Categoria</p>
+                    <a
+                        :class="{active: !$route.query.category}"
+                        :href="searchURL({category: null})"
+                        @click.prevent.stop="filterProducts({category: null})"
+                    >Todas</a>
+                    <a
+                        v-for="(category, i) in categories"
+                        :key="i"
+                        :href="searchURL({category: i})"
+                        @click.prevent.stop="filterProducts({category: i})"
+                        :class="{active: ($route.query.category === i.toString())}"
+                    >{{ category }}</a>
+                </div>
 
             </section>
 
