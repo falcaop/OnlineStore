@@ -4,6 +4,7 @@ import IconSearch from './components/icons/IconSearch.vue';
 import IconCart from './components/icons/IconCart.vue';
 import IconProfile from './components/icons/IconProfile.vue';
 import { ref, watch } from 'vue';
+if(!localStorage.getItem('products')) localStorage.setItem('products', JSON.stringify([]));
 const router = useRouter();
 const route = useRoute();
 const q = ref('');

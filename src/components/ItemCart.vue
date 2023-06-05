@@ -1,34 +1,38 @@
 <script setup>
-import { ref } from 'vue';
 import IconDelete from './icons/IconDelete.vue';
+import utils from '../assets/utils.js';
 
 const props = defineProps({
     id: Number,
+    name: String,
+    stock: Number,
+    price: Number,
+    image: String,
     amount: Number,
 });
-
-const amount = props.amount;
-const product = ref({});
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
-const fetchProduct = async () => {
-    await delay();
-    return JSON.parse(localStorage.getItem('products')).find(e => (e.id === parseInt(props.id, 10)));
+const emit = defineEmits(['amountChanged', 'removeItem']);
+const changeAmount = event => {
+    let valueInt = parseInt(event.target.value, 10);
+    if(isNaN(valueInt) || (valueInt < 1)) event.target.value = (valueInt = 1);
+    if(valueInt <= props.stock) return emit('amountChanged', props.id, valueInt);
+    event.target.value = props.stock;
+    alert(`Esse produto tem apenas ${props.stock} unidades em estoque no momento`);
 }
-fetchProduct().then(res => (product.value = res));
+const remove = () => (confirm("Tem certeza que deseja remover o produto do carrinho?") && emit('removeItem', props.id));
 </script>
 
 <template>
     <main class="item">
-        <img :src="product.image ?? 'https://placehold.co/500x600'" />
+        <img :src="image ?? 'https://placehold.co/500x600'" />
         <div class="info">
             <div class="left">
-                <h3 class="name"> {{ product.name ?? 'Lorem Ipsum' }} </h3>
+                <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
                 Quantidade:
-                <input class="amount" type="number" :max="product.stock" min="1" v-model="amount" @change="$emit('amountChanged', id, amount)"/>
+                <input class="amount" type="number" :value="amount" :max="stock" min="1" @change="changeAmount"/>
             </div>
             <div class="right">
-                <h3> R$ {{ product.price ?? 0.00 }}</h3>
-                <a @click="$emit('removeItem', id)">
+                <h3>{{ utils.toPriceString(price ?? 0) }}</h3>
+                <a tabindex="0" @click.prevent.stop="remove" @keyup.enter.space="remove">
                     <IconDelete/>
                 </a>
                 
@@ -70,6 +74,11 @@ img {
 svg{
     width: 30px;
     height: 30px;
+    transition: .3s;
+    cursor: pointer;
+}
+svg:hover{
+    fill: var(--green);
 }
 
 .name {

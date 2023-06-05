@@ -5,19 +5,23 @@ import utils from '../assets/utils.js';
 
 const route = useRoute();
 const product = ref({});
+const cartProducts = JSON.parse(localStorage.getItem("cart")) ?? [];
+let cartProduct = ref();
 let amount = 1;
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchProduct = async () => {
     await delay();
     return JSON.parse(localStorage.getItem('products')).find(e => (e.id === parseInt(route.params.id, 10)));
 }
-fetchProduct().then(res => (product.value = res));
-const addToCart = async () => {
-    await delay();
+fetchProduct().then(res => {
+    product.value = res;
+    cartProduct.value = cartProducts.find(({id}) => (id === product.value.id));
+    if(cartProduct.value) amount = cartProduct.value.amount;
+});
+const addToCart = () => {
     alert(`${product.value.name} adicionado ao carrinho.`);
-    
-    let cartProducts = JSON.parse(localStorage.getItem("cart")) ?? []
-    cartProducts.push({id: product.value.id, amount: amount});
+    cartProduct.value = {id: product.value.id, amount};
+    cartProducts.push(cartProduct.value);
     localStorage.setItem("cart", JSON.stringify(cartProducts));
 }
 </script>
@@ -34,8 +38,20 @@ const addToCart = async () => {
                 </div>
                 <div>
                     <p class="stock"><span>{{ product.stock ?? 0 }}</span> itens restantes</p>
-                    Quantidade<input class="amount" type="number" :max="product.stock" min="1" v-model="amount"/>
-                    <button @click.prevent.stop="addToCart" class="buy">Adicionar ao carrinho</button>
+                    <form v-if="product.stock" @submit.prevent.stop="addToCart">
+                        Quantidade
+                        <input
+                            required
+                            :disabled="cartProduct"
+                            class="amount"
+                            type="number"
+                            :max="product.stock"
+                            min="1"
+                            v-model="amount"
+                        />
+                        <button v-if="cartProduct">No carrinho</button>
+                        <button v-else class="buy">Adicionar ao carrinho</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -66,14 +82,17 @@ main{
     border: none;
     max-width: 100px;
 }
-.buy{
+button{
     display: block;
     margin-top: 20px;
     border: none;
-    background-color: var(--green);
     color: white;
     padding: 15px 0;
     width: 100%;
+    background-color: darkgray;
+}
+.buy{
+    background-color: var(--green);
     cursor: pointer;
 }
 .buy:hover, .buy:focus{
