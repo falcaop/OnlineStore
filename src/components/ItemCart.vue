@@ -69,6 +69,7 @@ img {
     aspect-ratio: 5/6;
     object-fit: cover;
     margin-right: 20px;
+    border-radius: 5px;
 }
 
 svg{
@@ -86,16 +87,18 @@ svg:hover{
 
 
 }
-@media screen and (max-width: 767px) {
+@media (max-width: 1024px){
     .info{
-        display: block;
+        flex-direction: column;
     }
     .right{
         flex-direction: row;
         align-items: center;
     }
+}
+@media screen and (max-width: 768px) {
     .item{
-        display: block;
+        flex-direction: column;
         margin: auto;
     }
     img{

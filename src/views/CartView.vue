@@ -100,6 +100,7 @@ main{
     margin: auto;
     width: 100%;
     padding: 4%;
+    box-sizing: border-box;
     border-radius: 20px;
 }
 
@@ -111,6 +112,12 @@ main{
     display: flex;
     align-items: flex-end;
     flex-direction: column;
+}
+.empty a{
+    transition: .3s;
+}
+.empty a:hover{
+    color: var(--green);
 }
 
 .total > p{
@@ -130,23 +137,26 @@ input[type="button"]{
 input[type="button"]:hover{
     background-color: var(--green-active);
 }
-.clickable{
-    transition: .3s;
-}
 .clickable:hover{
     cursor: pointer;
-    color: var(--green);
 }
-
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 1024px) {
     .container{
-        padding: 8%;
+        padding: 4% 8%;
+    }
+    main{
+        width: 70%;
     }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
     .container{
-        padding: 10%;
+        padding: 4% 10%;
+    }
+}
+@media (max-width: 480px){
+    main{
+        width: 80%;
     }
 }
 </style>
