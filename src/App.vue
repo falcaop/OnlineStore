@@ -20,7 +20,7 @@ const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'cat
                 <h1>nome</h1>
             </RouterLink>
             <form class="search" @submit.prevent.stop="search({q})">
-                <input type="search" v-model="q"/>
+                <input required type="search" v-model="q"/>
                 <button>
                     <IconSearch/>
                 </button>
