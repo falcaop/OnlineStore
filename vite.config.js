@@ -16,9 +16,9 @@ export default defineConfig({
             output: {
                 manualChunks: {
                     'group-admin': [
-                        './src/views/AdminProductsView',
-                        './src/views/AdminUsersView',
-                        './src/views/AdminView',
+                        './src/views/AdminProductsView.vue',
+                        './src/views/AdminUsersView.vue',
+                        './src/views/AdminView.vue',
                     ],
                 },
             },

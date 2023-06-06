@@ -2,15 +2,19 @@
   "name": "vue-project",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node -r dotenv/config server dotenv_config_path=.env"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0"
   },
