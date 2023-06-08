@@ -9,6 +9,7 @@ const props = defineProps({
     price: Number,
     image: String,
     amount: Number,
+    purchase: Boolean,
 });
 const emit = defineEmits(['amountChanged', 'removeItem']);
 const changeAmount = event => {
@@ -28,11 +29,12 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
             <div class="left">
                 <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
                 Quantidade:
-                <input class="amount" type="number" :value="amount" :max="stock" min="1" @change="changeAmount"/>
+                <div class="purchaseAmount" v-if="purchase"> {{ amount }} </div>
+                <input v-else class="amount" type="number" :value="amount" :max="stock" min="1" @change="changeAmount"/>
             </div>
             <div class="right">
                 <h3>{{ utils.toPriceString(price ?? 0) }}</h3>
-                <a tabindex="0" @click.prevent.stop="remove" @keyup.enter.space="remove">
+                <a v-if="!purchase" tabindex="0" @click.prevent.stop="remove" @keyup.enter.space="remove">
                     <IconDelete/>
                 </a>
                 
@@ -84,8 +86,10 @@ svg:hover{
 
 .name {
     font-weight: normal;
+}
 
-
+.purchaseAmount{
+    display: inline;
 }
 @media (max-width: 1024px){
     .info{

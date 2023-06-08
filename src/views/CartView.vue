@@ -49,8 +49,8 @@ const changeAmount = (id, amount) => {
     updateTotalPriceString();
 }
 
-const finalizar = () => {
-    router.push({path: '/'});
+const payment = () => {
+    router.push({path: '/payment'});
 }
 
 </script>
@@ -80,7 +80,7 @@ const finalizar = () => {
                 />
                 <div class="total">
                     <p>Total: <strong>{{ totalPriceString }}</strong></p>
-                    <input type="button" class="clickable" value="Finalizar compra" @click.prevent.stop="finalizar()">
+                    <input type="button" class="clickable" value="Realizar pagamento" @click.prevent.stop="payment()">
                 </div>
             </div>
             <div v-else>Nenhum produto no carrinho</div>

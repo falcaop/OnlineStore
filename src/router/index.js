@@ -35,6 +35,15 @@ const router = createRouter({
             component: () => import('../views/CartView.vue'),
         },
         {
+            path: '/payment',
+            component: () => import('../views/PaymentView.vue'),
+        },
+        {
+            path: '/purchase/:id',
+            name: 'purchase',
+            component: () => import('../views/PurchaseView.vue'),
+        },
+        {
             path: '/signup',
             component: () => import('../views/SignUpView.vue'),
         },
