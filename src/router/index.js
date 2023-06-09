@@ -20,11 +20,15 @@ const router = createRouter({
         {
             path: '/search',
             name: 'search',
-            component: () => import('../views/SearchView.vue')
+            component: () => import('../views/SearchView.vue'),
         },
         {
             path: '/user',
             redirect: '/signin',
+        },
+        {
+            path: '/customize',
+            component: () => import('../views/CustomizeView.vue'),
         },
         {
             path: '/signin',
@@ -37,6 +41,10 @@ const router = createRouter({
         {
             path: '/payment',
             component: () => import('../views/PaymentView.vue'),
+        },
+        {
+            path: '/account',
+            component: () => import('../views/UserView.vue'),
         },
         {
             path: '/purchase/:id',
