@@ -1,7 +1,7 @@
 <script setup>
 let q = '';
 let category = '';
-const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
+const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 </script>
 
 <template>

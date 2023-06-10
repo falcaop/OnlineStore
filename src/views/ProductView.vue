@@ -51,7 +51,7 @@ const addToCart = () => {
                             min="1"
                             v-model="amount"
                         />
-                        <button class="button inCart" v-if="cartProduct">No carrinho</button>
+                        <button class="button inCart" v-if="cartProduct" type="button">No carrinho</button>
                         <button class="button" v-else>Adicionar ao carrinho</button>
                     </form>
                 </div>

@@ -20,7 +20,7 @@ watch(() => route.query, async () => {
     tmpProducts.forEach(product => (product.image = `${apiHost}/products/${product.id}/image`));
     products.value = tmpProducts;
 }, {immediate: true});
-const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
+const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 let currentProduct = null;
 let newProduct = reactive({
     id: null,

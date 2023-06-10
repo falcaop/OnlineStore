@@ -18,7 +18,7 @@ if(loggedIn.value) fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env
 }).then(res => (loggedIn.value = (res.status === 204)));
 watch(() => route.query.q, () => ((route.path === '/search') && (q.value = route.query.q)), {immediate: true});
 const search = query => router.push({path: '/search', query});
-const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
+const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 const logout = () => {
     localStorage.removeItem('credentials');
     loggedIn.value = false;

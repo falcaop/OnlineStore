@@ -60,6 +60,7 @@ const updateUser = async target => {
                     name="phone"
                     :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
                 />
+                
                 <div class="columns">
                     <input type="submit" value="Confirmar">
                     <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>

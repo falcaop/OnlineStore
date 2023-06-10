@@ -52,7 +52,7 @@ const fetchProducts = async () => {
     return await res.json();
 }
 watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });
-const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
+const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 const prices = [
     {
         minPrice: null,
