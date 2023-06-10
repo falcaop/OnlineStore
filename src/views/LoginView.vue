@@ -1,9 +1,8 @@
 <script setup>
-import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 let email = '';
 let passwd = '';
-const router = useRouter();
-const route = useRoute();
+const emit = defineEmits(['signedIn']);
 const signIn = async () => {
     const credentials = btoa(`${email}:${passwd}`);
     const res = await fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/authenticate`, {
@@ -11,8 +10,7 @@ const signIn = async () => {
         headers: {Authorization: `Basic ${credentials}`},
     });
     if(res.status !== 204) return alert('E-mail ou senha incorretos.');
-    localStorage.setItem('credentials', credentials);
-    router.push(route.redirectedFrom ?? '/account');
+    emit('signedIn', credentials);
 }
 </script>
 

@@ -1,9 +1,8 @@
 <script setup>
-import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 let passwd = '';
 let passwdConfirm = '';
-const router = useRouter();
-const route = useRoute();
+const emit = defineEmits(['signedIn']);
 const signUp = async event => {
     if(passwdConfirm !== passwd) return alert('Senhas inconsistentes');
     const formData = new FormData(event.target);
@@ -14,9 +13,8 @@ const signUp = async event => {
     switch(res.status){
         case 201: {
             const body = await res.json();
-            localStorage.setItem('credentials', body.credentials);
             alert('Cadastro realizado');
-            router.push(route.redirectedFrom ?? '/account');
+            emit('signedIn', body.credentials);
         }
         break;
         case 400: alert('Dados inválidos');

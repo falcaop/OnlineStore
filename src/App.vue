@@ -3,13 +3,30 @@ import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import IconSearch from './components/icons/IconSearch.vue';
 import IconCart from './components/icons/IconCart.vue';
 import IconProfile from './components/icons/IconProfile.vue';
+import IconLogin from './components/icons/IconLogin.vue';
+import IconLogout from './components/icons/IconLogout.vue';
 import { ref, watch } from 'vue';
 const router = useRouter();
 const route = useRoute();
 const q = ref('');
+const loggedIn = ref(localStorage.getItem('credentials'));
+if(loggedIn.value) fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/authenticate`, {
+    method: 'HEAD',
+    headers: {Authorization: `Basic ${loggedIn.value}`},
+}).then(res => (loggedIn.value = (res.status === 204)));
 watch(() => route.query.q, () => ((route.path === '/search') && (q.value = route.query.q)), {immediate: true});
 const search = query => router.push({path: '/search', query});
 const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
+const logout = () => {
+    localStorage.removeItem('credentials');
+    loggedIn.value = false;
+    router.go(0);
+}
+const login = credentials => {
+    localStorage.setItem('credentials', credentials);
+    loggedIn.value = true;
+    router.push(route.redirectedFrom ?? '/account');
+} 
 </script>
 
 <template>
@@ -25,11 +42,17 @@ const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'cat
                 </button>
             </form>
             <div class="user-buttons">
-                <RouterLink to="/cart">
-                    <IconCart/>
-                </RouterLink>
-                <RouterLink to="/account">
-                    <IconProfile/>
+                <template v-if="loggedIn">
+                    <RouterLink to="/cart">
+                        <IconCart/>
+                    </RouterLink>
+                    <RouterLink to="/account">
+                        <IconProfile/>
+                    </RouterLink>
+                    <IconLogout tabindex="0" @click="logout" @keyup.space.enter="logout"/>
+                </template>
+                <RouterLink v-else to="/signin">
+                    <IconLogin/>
                 </RouterLink>
             </div>
         </header>
@@ -45,7 +68,7 @@ const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'cat
         </nav>
         <RouterView v-slot="{ Component }" >
             <Transition name="slide-fade" mode="out-in">
-                <component :is="Component"/>
+                <component @signedIn="login" :is="Component"/>
             </Transition>
         </RouterView>
     </div>
@@ -110,6 +133,7 @@ svg{
 }
 svg:hover{
     fill: var(--green);
+    cursor: pointer;
 }
 footer{
     background-color: var(--black);
