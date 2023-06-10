@@ -7,10 +7,10 @@ const props = defineProps({
     name: String,
     stock: Number,
     price: Number,
-    image: String,
     amount: Number,
     purchase: Boolean,
 });
+const image = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${props.id}/image`;
 const emit = defineEmits(['amountChanged', 'removeItem']);
 const changeAmount = event => {
     let valueInt = parseInt(event.target.value, 10);
@@ -24,7 +24,7 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
 
 <template>
     <main class="item">
-        <img :src="image ?? 'https://placehold.co/500x600'" />
+        <img :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
         <div class="columns">
             <div class="left">
                 <h3> {{ name ?? 'Lorem Ipsum' }} </h3>

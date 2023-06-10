@@ -21,12 +21,38 @@ const fetchDocument = (model, dry) => (req, res, next) => {
     next();
 }
 const router = Router();
+router.head(
+    '/authenticate',
+    (req, res, next) => authenticate(req.query.admin === '1')(req, res, next),
+    (_, res) => res.sendStatus(204),
+);
+router.head('/products/:id', fetchDocument('products', true), (_, res) => res.sendStatus(204));
 router.get('/products', (req, res) => {
     let products = fetchData().products;
-    if(req.query.q) products = products.filter(({name}) => name.toUpperCase().includes(req.query.q.toUpperCase()));
-    if(req.query.category) products = products.filter(({category}) => (category === parseInt(req.query.category, 10)));
+    if(req.query.q || req.query.category || req.query.minPrice || req.query.maxPrice){
+        products = products.filter(({name, category, price}) => {
+            return (
+                (!req.query.q || name.toUpperCase().includes(req.query.q.toUpperCase()))
+                &&
+                (!req.query.category || (category === parseInt(req.query.category, 10)))
+                &&
+                (!req.query.minPrice || (price >= req.query.minPrice))
+                &&
+                (!req.query.maxPrice || (price <= req.query.maxPrice))
+            );
+        });
+    }
+    if(req.query.id) products = products.filter(({id}) => req.query.id.includes(id.toString()));
+    const sortOrder = parseInt(req.query.sortOrder, 10) || 1;
+    if(req.query.sortField === 'name'){
+        products.sort((a, b) => (a.name.localeCompare(b.name) * sortOrder));
+    }
+    else if(['price', 'stock'].includes(req.query.sortField)){
+        products.sort((a, b) => ((b[req.query.sortField] - a[req.query.sortField]) * sortOrder));
+    }
     res.status(200).json(products);
 });
+router.get('/products/:id', fetchDocument('products'), (req, res) => res.status(200).json(req.document));
 router.get(
     '/products/:id/image',
     fetchDocument('products', true),
@@ -43,11 +69,8 @@ router.post(
         max: 6,
     }),
     body('stock').isInt({min: 0}),
-    (req, res, next) => {
-        if(validationResult(req).isEmpty()) return next();
-        res.sendStatus(400);
-    },
     async (req, res) => {
+        if(!validationResult(req).isEmpty()) return res.sendStatus(400);
         const data = fetchData();
         const product = {
             id: data.products.at(-1).id + 1,
@@ -63,6 +86,31 @@ router.post(
         res.status(201).json(product);
     },
 );
+router.post(
+    '/users',
+    upload.none(),
+    body('name').trim().notEmpty(),
+    body('email').isEmail({
+        allow_utf8_local_part: false,
+        domain_specific_validation: true,
+    }).not().contains(':'),
+    body('address').trim().notEmpty(),
+    body('phone').isMobilePhone('pt-BR'),
+    body('password').isStrongPassword().not().contains(':'),
+    (req, res) => {
+        if(!validationResult(req).isEmpty()) return res.sendStatus(400);
+        const data = fetchData();
+        if(data.users[req.body.email]) return res.sendStatus(409);
+        data.users[req.body.email] = {
+            name: req.body.name.trim(),
+            address: req.body.address.trim(),
+            phone: req.body.phone,
+            password: sha256(req.body.password),
+        };
+        writeData(data);
+        res.status(201).json({credentials: Buffer.from(`${req.body.email}:${req.body.password}`).toString('base64')});
+    },
+);
 router.put(
     '/products/:id',
     upload.single('image'),
@@ -75,8 +123,8 @@ router.put(
         max: 6,
     }),
     body('stock').isInt({min: 0}),
-    (req, res, next) => validationResult(req).isEmpty() ? next() : res.sendStatus(400),
     async (req, res) => {
+        if(!validationResult(req).isEmpty()) return res.sendStatus(400);
         const data = fetchData();
         const id = parseInt(req.params.id, 10);
         const product = data.products.find(product => (product.id === id));
@@ -97,11 +145,6 @@ router.delete('/products/:id', authenticate(true), fetchDocument('products', tru
     writeData(data);
     res.sendStatus(204);
 });
-router.head(
-    '/authenticate',
-    (req, res, next) => authenticate(req.query.admin === '1')(req, res, next),
-    (_, res) => res.sendStatus(204),
-);
 router.get('/coffee', (_, res) => res.sendStatus(418));
 router.get('/*', (_, res) => res.sendStatus(404));
 

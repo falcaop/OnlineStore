@@ -4,10 +4,9 @@ import { RouterLink } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
 
 const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchProducts = async () => {
-    await delay();
-    return JSON.parse(localStorage.getItem('products'));
+    const res = await fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products`);
+    return await res.json();
 }
 fetchProducts().then(res => (products.value = res));
 </script>

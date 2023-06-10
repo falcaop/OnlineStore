@@ -28,7 +28,7 @@ const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'cat
                 <RouterLink to="/cart">
                     <IconCart/>
                 </RouterLink>
-                <RouterLink to="/user">
+                <RouterLink to="/account">
                     <IconProfile/>
                 </RouterLink>
             </div>

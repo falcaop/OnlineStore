@@ -7,10 +7,8 @@ import apiRouter from './api.js';
 
 const api = express();
 api.use(cors());
-api.use(bodyParser.json());
-api.use(bodyParser.urlencoded({extended: false}));
 api.use('/', apiRouter);
-api.listen(process.env.VITE_API_PORT, () => console.log("Server is listening..."));
+api.listen(process.env.API_PORT, () => console.log("Server is listening..."));
 if(process.env.NODE_ENV === 'production'){
     const www = express();
     const __dirname = dirname(fileURLToPath(import.meta.url));

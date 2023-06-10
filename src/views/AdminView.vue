@@ -1,13 +1,6 @@
 <script setup>
-import { RouterLink, RouterView, useRouter } from 'vue-router';
+import { RouterLink, RouterView } from 'vue-router';
 import { Transition } from 'vue';
-
-const router = useRouter();
-const apiHost = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}`;
-fetch(`${apiHost}/authenticate?admin=1`, {
-    method: 'HEAD',
-    headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
-}).then(res => ((res.status !== 204) && router.push({path: '/signin'})));
 </script>
 
 <template>
