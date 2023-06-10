@@ -22,8 +22,7 @@ const signIn = async () => {
                 <label for="email">E-mail</label>
                 <input v-model="email" required id="email" type="text"/>
                 <label for="password">Senha</label>
-                <input v-model="passwd" required id="password" type="password"/>
-                <RouterLink class="link" to="/resetpassword">Esqueceu sua senha?</RouterLink>
+                <input v-model="passwd" required id="password" type="password" current-password/>
                 <input type="submit" value="Entrar">
                 <RouterLink class="link" to="/signup">Não tem conta? Registre-se</RouterLink>
             </form>

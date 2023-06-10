@@ -47,12 +47,30 @@ const trim = event => (event.target.value = event.target.value.trim());
                     type="tel"
                     id="phone"
                     name="phone"
-                    :pattern="/^(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}$/.source"
+                    :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
                 />
                 <label for="password">Senha</label>
-                <input v-model="passwd" required type="password" id="password" name="password"/>
+                <input
+                    v-model="passwd"
+                    required
+                    type="password"
+                    id="password"
+                    name="password"
+                    new-password
+                    minlength="8"
+                    :pattern="(
+                        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\-#!$@£%^&*\(\)_+\|~=`\{\}\[\]:\x22;'<>?,.\/\s]).{8,}/
+                    ).source"
+                    title="A senha deve conter letras maiúsculas e minúsculas, números, e caracteres especiais"
+                />
                 <label for="password_confirm">Confirmar Senha</label>
-                <input v-model="passwdConfirm" required type="password" id="password_confirm">
+                <input
+                    v-model="passwdConfirm"
+                    required
+                    type="password"
+                    id="password_confirm"
+                    new-password
+                />
                 <input type="submit" value="Registrar">
                 <RouterLink to="/signin" class="link">Já tem conta? Entre</RouterLink>
             </form>

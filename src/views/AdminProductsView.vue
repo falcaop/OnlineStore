@@ -186,10 +186,7 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
                 <br>
                 <label for="image">Imagem</label>
                 <br>
-                <!-- The URL text input will be replaced by a file input once we have somewhere to upload the images
-                to -->
                 <input @change="loadImage" type="file" accept="image/png, image/jpeg" id="image" name="image"/>
-                <!-- <input @focusout="loadImage" :value="newProduct.image" type="url" id="image"/> -->
                 <img v-if="newProduct.image" :src="newProduct.image" @error="newProduct.image = null"/>
                 <br>
                 <div class="inline">
