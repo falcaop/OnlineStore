@@ -5,17 +5,33 @@ import { sha256 } from 'js-sha256';
 import multer from 'multer';
 
 const upload = multer();
-const authenticate = admin => (req, res, next) => {
+const authenticate = admin => async (req, res, next) => {
     const authorization = req.header('Authorization');
     if(!authorization || !authorization.startsWith('Basic ')) return res.sendStatus(401);
     const [email, password] = Buffer.from(authorization.split(' ')[1], 'base64').toString().split(':');
-    const user = fetchData().users[email];
+    let data;
+    try{
+        data = await fetchData();
+    }
+    catch(err){
+        console.error(err);
+        return res.sendStatus(500);
+    }
+    const user = data.users[email];
     if(!user || (user.password !== sha256(password))) return res.sendStatus(401);
     if(admin && !user.isAdmin) return res.sendStatus(403);
     next();
 }
-const fetchProduct = dry => (req, res, next) => {
-    const document = fetchData().products.find(({id}) => (id.toString() === req.params.id));
+const fetchProduct = dry => async (req, res, next) => {
+    let data;
+    try{
+        data = await fetchData();
+    }
+    catch(err){
+        console.error(err);
+        return res.sendStatus(500);
+    }
+    const document = data.products.find(({id}) => (id.toString() === req.params.id));
     if(!document) return res.sendStatus(404);
     if(!dry) req.document = document;
     next();
@@ -27,8 +43,16 @@ router.head(
     (_, res) => res.sendStatus(204),
 );
 router.head('/products/:id', fetchProduct(true), (_, res) => res.sendStatus(204));
-router.get('/products', (req, res) => {
-    let products = fetchData().products;
+router.get('/products', async (req, res) => {
+    let data;
+    try{
+        data = await fetchData();
+    }
+    catch(err){
+        console.error(err);
+        return res.sendStatus(500);
+    }
+    let products = data.products;
     if(req.query.q || req.query.category || req.query.minPrice || req.query.maxPrice){
         products = products.filter(({name, category, price}) => {
             return (
@@ -64,8 +88,16 @@ router.get('/users/:email', (req, res, next) => {
     authenticate(
         req.params.email !== Buffer.from(authorization.split(' ')[1], 'base64').toString().split(':')[0],
     )(req, res, next);
-}, (req, res) => {
-    const document = fetchData().users[req.params.email];
+}, async (req, res) => {
+    let data;
+    try{
+        data = await fetchData();
+    }
+    catch(err){
+        console.error(err);
+        return res.sendStatus(500);
+    }
+    const document = data.users[req.params.email];
     if(!document) return res.sendStatus(404);
     const user = {};
     for(const field of ['name', 'phone', 'address']) user[field] = document[field];
@@ -84,7 +116,14 @@ router.post(
     body('stock').isInt({min: 0}),
     async (req, res) => {
         if(!validationResult(req).isEmpty()) return res.sendStatus(400);
-        const data = fetchData();
+        let data;
+        try{
+            data = await fetchData();
+        }
+        catch(err){
+            console.error(err);
+            return res.sendStatus(500);
+        }
         const product = {
             id: (data.products.at(-1)?.id ?? 0) + 1,
             name: req.body.name.trim(),
@@ -95,8 +134,11 @@ router.post(
         };
         if(req.file) writeImage(product.id, req.file.buffer);
         data.products.push(product);
-        writeData(data);
-        res.status(201).json(product);
+        writeData(data, err => {
+            if(!err) return res.status(201).json(product);
+            console.error(err);
+            res.sendStatus(500);
+        });
     },
 );
 router.post(
@@ -110,9 +152,16 @@ router.post(
     body('address').trim().notEmpty(),
     body('phone').isMobilePhone('pt-BR'),
     body('password').isStrongPassword().not().contains(':'),
-    (req, res) => {
+    async (req, res) => {
         if(!validationResult(req).isEmpty()) return res.sendStatus(400);
-        const data = fetchData();
+        let data;
+        try{
+            data = await fetchData();
+        }
+        catch(err){
+            console.error(err);
+            return res.sendStatus(500);
+        }
         if(data.users[req.body.email]) return res.sendStatus(409);
         data.users[req.body.email] = {
             name: req.body.name.trim(),
@@ -120,8 +169,15 @@ router.post(
             phone: req.body.phone,
             password: sha256(req.body.password),
         };
-        writeData(data);
-        res.status(201).json({credentials: Buffer.from(`${req.body.email}:${req.body.password}`).toString('base64')});
+        writeData(data, err => {
+            if(err){
+                console.error(err);
+                return res.sendStatus(500);
+            };
+            res
+                .status(201)
+                .json({credentials: Buffer.from(`${req.body.email}:${req.body.password}`).toString('base64')});
+        });
     },
 );
 router.put(
@@ -138,7 +194,14 @@ router.put(
     body('stock').isInt({min: 0}),
     async (req, res) => {
         if(!validationResult(req).isEmpty()) return res.sendStatus(400);
-        const data = fetchData();
+        let data;
+        try{
+            data = await fetchData();
+        }
+        catch(err){
+            console.error(err);
+            return res.sendStatus(500);
+        }
         const id = parseInt(req.params.id, 10);
         const product = data.products.find(product => (product.id === id));
         product.name = req.body.name.trim();
@@ -147,16 +210,29 @@ router.put(
         product.category = parseInt(req.body.category, 10);
         product.stock = parseInt(req.body.stock, 10);
         if(req.file) writeImage(id, req.file.buffer);
-        writeData(data);
-        res.status(200).json(product);
+        writeData(data, err => {
+            if(!err) return res.status(200).json(product);
+            console.error(err);
+            res.sendStatus(500);
+        });
     },
 );
-router.delete('/products/:id', authenticate(true), fetchProduct(true), (req, res) => {
-    const data = fetchData();
+router.delete('/products/:id', authenticate(true), fetchProduct(true), async (req, res) => {
+    let data;
+    try{
+        data = await fetchData();
+    }
+    catch(err){
+        console.error(err);
+        return res.sendStatus(500);
+    }
     data.products = data.products.filter(({id}) => (id.toString() !== req.params.id));
     removeImage(req.params.id);
-    writeData(data);
-    res.sendStatus(204);
+    writeData(data, err => {
+        if(!err) return res.sendStatus(204);
+        console.error(err);
+        res.sendStatus(500);
+    });
 });
 router.get('/coffee', (_, res) => res.sendStatus(418));
 router.get('/*', (_, res) => res.sendStatus(404));

@@ -20,8 +20,12 @@ if(!fs.existsSync(dbpath)){
         products: [],
     }));
 }
-const fetchData = () => JSON.parse(fs.readFileSync(dbpath));
-const writeData = data => fs.writeFileSync(dbpath, JSON.stringify(data));
+const fetchData = () => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(dbpath, (err, data) => (err ? reject(err) : resolve(JSON.parse(data))));
+    });
+}
+const writeData = (data, callback) => fs.writeFile(dbpath, JSON.stringify(data), callback);
 const fetchImage = (id, callback) => fs.readFile(join(imagespath, id.toString()), callback);
 const writeImage = (id, data) => fs.writeFile(join(imagespath, id.toString()), data, console.error);
 const removeImage = id => fs.rm(join(imagespath, id.toString()), console.error);
