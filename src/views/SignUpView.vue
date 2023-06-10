@@ -16,7 +16,7 @@ const signUp = async event => {
             const body = await res.json();
             localStorage.setItem('credentials', body.credentials);
             alert('Cadastro realizado');
-            router.push(route.redirectedFrom ?? '/user');
+            router.push(route.redirectedFrom ?? '/account');
         }
         break;
         case 400: alert('Dados inválidos');

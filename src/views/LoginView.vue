@@ -12,7 +12,7 @@ const signIn = async () => {
     });
     if(res.status !== 204) return alert('E-mail ou senha incorretos.');
     localStorage.setItem('credentials', credentials);
-    router.push(route.redirectedFrom ?? '/user');
+    router.push(route.redirectedFrom ?? '/account');
 }
 </script>
 

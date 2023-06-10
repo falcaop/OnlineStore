@@ -18,7 +18,7 @@ const isUnauthenticated = async () => {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });
-    if(res.status === 204) return '/user';
+    if(res.status === 204) return '/account';
 }
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,12 +43,11 @@ const router = createRouter({
         {
             path: '/search',
             name: 'search',
-            component: () => import('../views/SearchView.vue')
+            component: () => import('../views/SearchView.vue'),
         },
         {
-            path: '/user',
-            component: () => import('../views/UserView.vue'),
-            beforeEnter: isAuthenticated(),
+            path: '/customize',
+            component: () => import('../views/CustomizeView.vue'),
         },
         {
             path: '/signin',
@@ -63,6 +62,11 @@ const router = createRouter({
         {
             path: '/payment',
             component: () => import('../views/PaymentView.vue'),
+            beforeEnter: isAuthenticated(),
+        },
+        {
+            path: '/account',
+            component: () => import('../views/UserView.vue'),
             beforeEnter: isAuthenticated(),
         },
         {
