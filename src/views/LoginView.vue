@@ -1,11 +1,18 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 let email = '';
 let passwd = '';
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
+const router = useRouter();
+const route = useRoute();
 const signIn = async () => {
-    await delay();
-    alert('E-mail ou senha incorretos.');
+    const credentials = btoa(`${email}:${passwd}`);
+    const res = await fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/authenticate`, {
+        method: 'HEAD',
+        headers: {Authorization: `Basic ${credentials}`},
+    });
+    if(res.status !== 204) return alert('E-mail ou senha incorretos.');
+    localStorage.setItem('credentials', credentials);
+    router.push(route.redirectedFrom ?? '/user');
 }
 </script>
 
@@ -16,7 +23,7 @@ const signIn = async () => {
             <form @submit.prevent.stop="signIn">
                 <label for="email">E-mail</label>
                 <br>
-                <input v-model="email" required id="email" type="email"/>
+                <input v-model="email" required id="email" type="text"/>
                 <br>
                 <label for="password">Senha</label>
                 <br>

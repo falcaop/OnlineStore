@@ -1,10 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import ItemCart from '../components/ItemCart.vue';
 import utils from '../assets/utils.js';
 
-const router = useRouter();
 const cartProducts = ref(JSON.parse(localStorage.getItem('cart')) ?? []);
 let products = [];
 const totalPriceString = ref('');
@@ -17,16 +16,13 @@ const updateTotalPriceString = () => {
         ),
     );
 }
-watch(
-    cartProducts,
-    updateTotalPriceString,
-);
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
+watch(cartProducts, updateTotalPriceString);
 const fetchProducts = async () => {
-    await delay();
-    return JSON
-        .parse(localStorage.getItem('products'))
-        .filter(product => cartProducts.value.some(({id}) => (product.id === id)));
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products?` +
+        cartProducts.value.map(({id}) => `id=${id}`).join('&')
+    );
+    return await res.json();
 }
 fetchProducts().then(res => {
     products = res;
@@ -48,11 +44,6 @@ const changeAmount = (id, amount) => {
     localStorage.setItem("cart", JSON.stringify(cartProducts.value));
     updateTotalPriceString();
 }
-
-const payment = () => {
-    router.push({path: '/payment'});
-}
-
 </script>
 
 <template>
@@ -80,7 +71,7 @@ const payment = () => {
                 />
                 <div class="total">
                     <p>Total: <strong>{{ totalPriceString }}</strong></p>
-                    <input type="button" class="clickable" value="Realizar pagamento" @click.prevent.stop="payment()">
+                    <RouterLink to="/payment">Realizar pagamento</RouterLink>
                 </div>
             </div>
             <div v-else>Nenhum produto no carrinho</div>
@@ -124,7 +115,7 @@ main{
     font-size: 1.3rem;
 }
 
-input[type="button"]{
+.total a{
     width: 50%;
     background-color: var(--green);
     font-size: 1.2rem;
@@ -132,9 +123,10 @@ input[type="button"]{
     border: none;
     color: white;
     min-width: 200px;
+    text-align: center;
 }
 
-input[type="button"]:hover{
+.total a:hover{
     background-color: var(--green-active);
 }
 .clickable:hover{

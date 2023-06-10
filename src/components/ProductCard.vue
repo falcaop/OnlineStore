@@ -6,9 +6,9 @@ const router = useRouter();
 const props = defineProps({
     id: Number,
     name: String,
-    image: String,
     price: Number,
 });
+const image = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${props.id}/image`;
 const showProduct = () => router.push({
     name: 'product',
     params: { id: props.id },
@@ -18,7 +18,7 @@ const showProduct = () => router.push({
 
 <template>
     <a :href="`/product/${id}?name=${name}`" @click.prevent.stop="showProduct">
-        <img :src="image ?? 'https://placehold.co/500x600'" />
+        <img :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
         <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
         <h3>{{ utils.toPriceString(price ?? 0) }}</h3>
     </a>

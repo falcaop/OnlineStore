@@ -6,12 +6,14 @@ import utils from '../assets/utils.js';
 const route = useRoute();
 const product = ref({});
 const cartProducts = JSON.parse(localStorage.getItem("cart")) ?? [];
+const image = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${route.params.id}/image`;
 let cartProduct = ref();
 let amount = 1;
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchProduct = async () => {
-    await delay();
-    return JSON.parse(localStorage.getItem('products')).find(e => (e.id === parseInt(route.params.id, 10)));
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${route.params.id}`,
+    );
+    return await res.json();
 }
 fetchProduct().then(res => {
     product.value = res;
@@ -30,7 +32,7 @@ const addToCart = () => {
     <main>
         <h2>{{ product.name ?? 'Lorem Ipsum' }}</h2>
         <div class="container">
-            <img class="preview" :src="product.image ?? 'https://placehold.co/500x600'"/>
+            <img class="preview" :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
             <div class="info">
                 <div>
                     <h1 class="price">{{ utils.toPriceString(product.price ?? 0) }}</h1>

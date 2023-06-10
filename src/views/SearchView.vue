@@ -3,38 +3,52 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
 import utils from '../assets/utils.js';
+import { query } from 'express';
 
 const route = useRoute();
 const router = useRouter();
 const products = ref([{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }]);
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 const sortMethods = {
     nameAsc: {
         description: 'A-Z',
-        fn: (a, b) => a.name.localeCompare(b.name),
+        info: {
+            field: 'name',
+            order: 1,
+        },
     },
     priceAsc: {
         description: 'Menor preço',
-        fn: (a, b) => (a.price - b.price),
+        info: {
+            field: 'price',
+            order: 1,
+        },
     },
     priceDesc: {
         description: 'Maior preço',
-        fn: (a, b) => (b.price - a.price),
+        info: {
+            field: 'price',
+            order: -1,
+        },
     },
     soldDesc: {
         description: 'Mais vendidos (temporariamente maior estoque)',
-        fn: (a, b) => (a.stock - b.stock),
+        info: {
+            field: 'stock',
+            order: -1,
+        },
     },
 };
 let sortMethod = ref('nameAsc');
 const fetchProducts = async () => {
-    await delay();
-    let tmpProducts = JSON.parse(localStorage.getItem('products')).sort(sortMethods[sortMethod.value].fn);
-    if(route.query.q) tmpProducts = tmpProducts.filter(e => e.name.toUpperCase().includes(route.query.q.toUpperCase()));
-    if(route.query.category) tmpProducts = tmpProducts.filter(e => (e.category === parseInt(route.query.category, 10)));
-    if(route.query.minPrice) tmpProducts = tmpProducts.filter(e => (e.price >= parseFloat(route.query.minPrice, 10)));
-    if(route.query.maxPrice) tmpProducts = tmpProducts.filter(e => (e.price <= parseFloat(route.query.maxPrice, 10)));
-    return tmpProducts;
+    const queries = {
+        sortField: sortMethods[sortMethod.value].info.field,
+        sortOrder: sortMethods[sortMethod.value].info.order,
+    };
+    for(query of ['q', 'category', 'minPrice', 'maxPrice']) if(route.query[query]) queries[query] = route.query[query];
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products?${new URLSearchParams(queries)}`
+    );
+    return await res.json();
 }
 watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });
 const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];

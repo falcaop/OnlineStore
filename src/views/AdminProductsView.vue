@@ -72,7 +72,7 @@ const addItem = async target => {
             router.push({path: '/'});
         }
         break;
-        case 500: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
+        default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
 const updateItem = async target => {
@@ -108,7 +108,7 @@ const updateItem = async target => {
             products.value = products.value.filter(({id}) => (id !== currentProduct.id));
         }
         break;
-        case 500: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
+        default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
 const deleteItem = async id => {
@@ -139,7 +139,7 @@ const deleteItem = async id => {
             products.value = products.value.filter(product => (product.id !== id));
         }
         break;
-        case 500: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
+        default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
 const loadImage = event => (newProduct.image = URL.createObjectURL(event.target.files[0]));
