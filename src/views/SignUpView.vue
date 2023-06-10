@@ -35,20 +35,13 @@ const trim = event => (event.target.value = event.target.value.trim());
             <h2>Cadastro</h2>
             <form @submit.prevent.stop="signUp">
                 <label for="name">Nome</label>
-                <br>
                 <input required type="text" id="name" name="name" @focusout="trim"/>
-                <br>
 
                 <label for="email">E-mail</label>
-                <br>
                 <input required id="email" type="email" name="email"/>
-                <br>
 
                 <label for="address">Endereço</label>
-                <br>
                 <input required type="text" id="address" name="address" @focusout="trim"/>
-                <br>
-
                 <label for="phone">Telefone</label>
                 <br>
                 <input
@@ -58,13 +51,8 @@ const trim = event => (event.target.value = event.target.value.trim());
                     name="phone"
                     :pattern="/^(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}$/.source"
                 />
-                <br>
-
                 <label for="password">Senha</label>
-                <br>
                 <input v-model="passwd" required type="password" id="password" name="password"/>
-                <br>
-
                 <label for="password_confirm">Confirmar Senha</label>
                 <input v-model="passwdConfirm" required type="password" id="password_confirm">
                 <input type="submit" value="Registrar">

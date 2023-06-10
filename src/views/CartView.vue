@@ -71,7 +71,7 @@ const changeAmount = (id, amount) => {
                 />
                 <div class="total">
                     <p>Total: <strong>{{ totalPriceString }}</strong></p>
-                    <RouterLink to="/payment">Realizar pagamento</RouterLink>
+                    <RouterLink class="link" to="/payment">Realizar pagamento</RouterLink>
                 </div>
             </div>
             <div v-else>Nenhum produto no carrinho</div>
