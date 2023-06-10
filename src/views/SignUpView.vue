@@ -1,7 +1,11 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import IconShow from '../components/icons/IconShow.vue';
+import IconHide from '../components/icons/IconHide.vue';
+import { ref } from 'vue';
 let passwd = '';
 let passwdConfirm = '';
+const isPasswordShown = ref(false);
 const emit = defineEmits(['signedIn']);
 const signUp = async event => {
     if(passwdConfirm !== passwd) return alert('Senhas inconsistentes');
@@ -49,11 +53,25 @@ const trim = event => (event.target.value = event.target.value.trim());
                     name="phone"
                     :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
                 />
-                <label for="password">Senha</label>
+                <div>
+                    <label for="password">Senha</label>
+                    <IconShow
+                        v-if="!isPasswordShown"
+                        tabindex="0"
+                        @click="isPasswordShown = true"
+                        @keyup.space.enter="isPasswordShown = true"
+                    />
+                    <IconHide
+                        v-else
+                        tabindex="0"
+                        @click="isPasswordShown = false"
+                        @keyup.space.enter="isPasswordShown = false"
+                    />
+                </div>
                 <input
                     v-model="passwd"
                     required
-                    type="password"
+                    :type="isPasswordShown ? 'text' : 'password'"
                     id="password"
                     name="password"
                     new-password
@@ -67,7 +85,7 @@ const trim = event => (event.target.value = event.target.value.trim());
                 <input
                     v-model="passwdConfirm"
                     required
-                    type="password"
+                    :type="isPasswordShown ? 'text' : 'password'"
                     id="password_confirm"
                     new-password
                 />
@@ -87,5 +105,31 @@ const trim = event => (event.target.value = event.target.value.trim());
 h2 {
     margin: 0;
     text-align: center;
+}
+form div{
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: end;
+    margin-bottom: 1rem;
+}
+form div label{
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+svg{
+    height: 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+svg:hover{
+    fill: var(--green);
+}
+div svg:focus-visible{
+    outline: auto;
+}
+svg:focus{
+    outline: none;
 }
 </style>
