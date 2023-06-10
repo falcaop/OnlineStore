@@ -73,7 +73,7 @@ router.post(
         if(!validationResult(req).isEmpty()) return res.sendStatus(400);
         const data = fetchData();
         const product = {
-            id: data.products.at(-1).id + 1,
+            id: (data.products.at(-1)?.id ?? 0) + 1,
             name: req.body.name.trim(),
             description: req.body.description?.trim(),
             price: Math.round(parseFloat(req.body.price) * 100) / 100,
