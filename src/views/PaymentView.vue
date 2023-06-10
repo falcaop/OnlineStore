@@ -26,93 +26,34 @@ const submitPayment = async () => {
             <form @submit.prevent.stop="submitPayment()">
                 <label for="number">Numero do cartao</label>
                 <input v-model="number" required id="number" type="text"/>
-                <div class="info">
-                    <div class="dateDiv">
+                <div class="columns">
+                    <div class="left">
                         <label for="date">Data de validade</label>
                         <input v-model="date" required id="date" type="month"/>
                     </div>
-                    <div class="codeDiv">
+                    <div class="right">
                         <label for="code">Codigo de seguranca</label>
                         <input v-model="code" required id="code" type="text"/>
                     </div> 
                 </div>
-                <input type="submit" value="Finalizar compra" class="clickable">
+                <div class="alignRight">
+                    <input type="submit" value="Finalizar compra">
+                </div>  
             </form>
         </div>
     </main>
 </template>
 
 <style scoped>
-main{
-    width: 50%;
-    margin: 65px auto;
-    color: var(--black);
-}
-    
-.container{
-    background-color: white;
-    margin: auto;
-    width: 100%;
-    padding: 6%;
-    box-sizing: border-box;
-    border-radius: 20px;
-}
-
 input[type="submit"]{
     width: 50%;
-    background-color: var(--green);
-    font-size: 1.2rem;
-    padding: 0.7rem;
-    border: none;
-    color: white;
-    min-width: 200px;
 }
-
-input[type="submit"]:hover{
-    background-color: var(--green-active);
-}
-
-input[type="text"], input[type="month"]{
-    width: 100%;
-    padding: 0.7rem;
-    height: 2.5rem;
-    box-sizing: border-box;
-    margin: 10px 0;
-}
-
-.clickable:hover{
-    cursor: pointer;
-}
-
-.info{
-    display: flex;
-    justify-content: flex-start;
-    gap: 20px;
-}
-
-.codeDiv, .dateDiv{
-    margin: 30px 0;
-}
-
-
-@media screen and (max-width: 1023px) {
-    main{
-        width: 60%;
-    }
-    .container{
-        padding: 8%;
-    }
-    .info{
-        display: block;
-    }
-}
-
 @media screen and (max-width: 767px) {
-    main{
-        width: 70%;
+    hr{
+        display: none;
     }
-    .container{
-        padding: 10%;
+    input[type="submit"]{
+        width: 100%;
     }
 }
 </style>

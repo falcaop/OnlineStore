@@ -60,10 +60,10 @@ const payment = () => {
         <h2>Meu carrinho</h2>
         <div class="container">
             <div v-if="cartProducts.length && totalPriceString">
-                <div class="empty">
-                    <a
+                <div class="alignRight">
+                    <a  
+                        class="empty"
                         tabindex="0"
-                        class="clickable"
                         @click.prevent.stop="empty()"
                         @keyup.enter.space="empty()"
                     >Esvaziar carrinho</a>
@@ -78,9 +78,9 @@ const payment = () => {
                     @removeItem="remove"
                     @amountChanged="changeAmount"
                 />
-                <div class="total">
-                    <p>Total: <strong>{{ totalPriceString }}</strong></p>
-                    <input type="button" class="clickable" value="Realizar pagamento" @click.prevent.stop="payment()">
+                <div class="alignRight">
+                    <p class="total">Total: <strong>{{ totalPriceString }}</strong></p>
+                    <input type="button" value="Realizar pagamento" @click.prevent.stop="payment()">
                 </div>
             </div>
             <div v-else>Nenhum produto no carrinho</div>
@@ -89,74 +89,27 @@ const payment = () => {
 </template>
 
 <style scoped>
-main{
-    width: 60%;
-    margin: 65px auto;
-    color: var(--black);
-}
-    
-.container{
-    background-color: white;
-    margin: auto;
-    width: 100%;
-    padding: 4%;
-    box-sizing: border-box;
-    border-radius: 20px;
-}
-
-.cartItem{
-    width: 100%;
-    margin: 20px 0 0 0;
-}
-.empty, .total{
-    display: flex;
-    align-items: flex-end;
-    flex-direction: column;
-}
-.empty a{
-    transition: .3s;
-}
-.empty a:hover{
-    color: var(--green);
-}
-
-.total > p{
-    font-size: 1.3rem;
-}
-
 input[type="button"]{
     width: 50%;
-    background-color: var(--green);
-    font-size: 1.2rem;
-    padding: 0.7rem;
-    border: none;
-    color: white;
-    min-width: 200px;
+    margin-top: 0;
 }
-
-input[type="button"]:hover{
-    background-color: var(--green-active);
+.cartItem{
+    width: 100%;
+    margin: 1.5rem 0 0 0;
 }
-.clickable:hover{
+.empty{
+    transition: .3s;
     cursor: pointer;
 }
-@media screen and (max-width: 1024px) {
-    .container{
-        padding: 4% 8%;
-    }
-    main{
-        width: 70%;
-    }
+.empty:hover{
+    color: var(--green);
 }
-
-@media screen and (max-width: 768px) {
-    .container{
-        padding: 4% 10%;
-    }
+.total{
+    font-size: 1.3rem;
 }
-@media (max-width: 480px){
-    main{
-        width: 80%;
+@media screen and (max-width: 767px) {
+    input[type="button"]{
+        width: 100%;
     }
 }
 </style>

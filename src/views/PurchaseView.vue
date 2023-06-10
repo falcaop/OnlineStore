@@ -59,8 +59,8 @@ fetchProducts().then(res => {
                     class="cartItem"
                     :purchase="true"
                 />
-                <div class="total">
-                    <p>Total: <strong>{{ totalPriceString }}</strong></p>
+                <div class="alignRight">
+                    <p class="total">Total: <strong>{{ totalPriceString }}</strong></p>
                 </div>
             </div>
             <div v-else>Compra nao encontrada</div>
@@ -69,52 +69,12 @@ fetchProducts().then(res => {
 </template>
 
 <style scoped>
-main{
-    width: 60%;
-    margin: 65px auto;
-    color: var(--black);
-}
-    
-.container{
-    background-color: white;
-    margin: auto;
-    width: 100%;
-    padding: 4%;
-    box-sizing: border-box;
-    border-radius: 20px;
-}
-
 .cartItem{
     width: 100%;
-    margin: 20px 0 0 0;
-}
-
-.total > p{
-    font-size: 1.3rem;
+    margin: 1.5rem 0 0 0;
 }
 
 .total{
-    display: flex;
-    justify-content: flex-end;
-}
-
-@media screen and (max-width: 1024px) {
-    .container{
-        padding: 4% 8%;
-    }
-    main{
-        width: 70%;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .container{
-        padding: 4% 10%;
-    }
-}
-@media (max-width: 480px){
-    main{
-        width: 80%;
-    }
+    font-size: 1.3rem;
 }
 </style>

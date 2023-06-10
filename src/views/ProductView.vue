@@ -29,17 +29,17 @@ const addToCart = () => {
 <template>
     <main>
         <h2>{{ product.name ?? 'Lorem Ipsum' }}</h2>
-        <div class="container">
+        <div class="product">
             <img class="preview" :src="product.image ?? 'https://placehold.co/500x600'"/>
-            <div class="info">
+            <div class="rows">
                 <div>
-                    <h1 class="price">{{ utils.toPriceString(product.price ?? 0) }}</h1>
+                    <p class="price">{{ utils.toPriceString(product.price ?? 0) }}</p>
                     <p class="description">{{ product.description ?? 'Lorem Ipsum' }}</p>
                 </div>
                 <div>
                     <p class="stock"><span>{{ product.stock ?? 0 }}</span> itens restantes</p>
                     <form v-if="product.stock" @submit.prevent.stop="addToCart">
-                        Quantidade
+                        <label for="amount">Quantidade:</label>
                         <input
                             required
                             :disabled="cartProduct"
@@ -49,8 +49,8 @@ const addToCart = () => {
                             min="1"
                             v-model="amount"
                         />
-                        <button v-if="cartProduct">No carrinho</button>
-                        <button v-else class="buy">Adicionar ao carrinho</button>
+                        <button class="button inCart" v-if="cartProduct">No carrinho</button>
+                        <button class="button" v-else>Adicionar ao carrinho</button>
                     </form>
                 </div>
             </div>
@@ -59,15 +59,27 @@ const addToCart = () => {
 </template>
 
 <style scoped>
-main{
-    width: 60%;
-    margin: 65px auto;
-    color: var(--black);
+.amount{
+    margin-left: 1rem;
+    max-width: 100px;
 }
-.container{
-    display: flex;
-    gap: 5%;
+.inCart{
+    cursor: default;
+    background-color: darkgray;
 }
+.description{
+    font-size: 20px;
+    overflow-wrap: break-word;
+}
+.stock span{
+    font-weight: bold;
+}
+.price{
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 0;
+}
+
 .preview{
     border-radius: 10px;
     width: 40%;
@@ -76,54 +88,12 @@ main{
     object-fit: cover;
     background-color: #ccc;
 }
-.amount{
-    margin-left: 10px;
-    height: 30px;
-    border: none;
-    max-width: 100px;
-}
-button{
-    display: block;
-    margin-top: 20px;
-    border: none;
-    color: white;
-    padding: 15px 0;
-    width: 100%;
-    background-color: darkgray;
-}
-.buy{
-    background-color: var(--green);
-    cursor: pointer;
-}
-.buy:hover, .buy:focus{
-    background-color: var(--green-active);
-}
-.info{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 55%;
-    min-width: 273px;
-}
-.stock span{
-    font-weight: bold;
-}
-.description{
-    font-size: 20px;
-    overflow-wrap: break-word;
-}
-.price{
-    margin-top: 0;
-}
-@media screen and (max-width: 816px){
-    .container{
-        gap: 30px;
-        flex-direction: column;
+@media screen and (max-width: 767px){
+    .price{
+        margin-top: 2rem;
     }
-    .preview, .info{
-        width: 100%;
-        min-width: 0;
-        max-width: 273px;
-    }
+    .preview{
+        min-width: 273px;
+    } 
 }
 </style>

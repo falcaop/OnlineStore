@@ -277,19 +277,6 @@ dialog form img{
     width: 100%;
 }
 
-input[type="submit"], input[type="button"]{
-    background-color: var(--green);
-    font-size: 1.2rem;
-    padding: 0.7rem;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover, input[type="button"]:hover{
-    background-color: var(--green-active);
-}
-
 dialog input[type="text"], dialog input[type="number"], dialog select, dialog input[type="url"]{
     padding: 0.7rem;
     box-sizing: border-box;

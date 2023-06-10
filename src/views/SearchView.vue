@@ -156,7 +156,6 @@ const priceDescription = ({minPrice, maxPrice}) => {
 main {
     width: 60%;
     margin: 65px auto;
-    color: var(--black);
 }
 
 p {
