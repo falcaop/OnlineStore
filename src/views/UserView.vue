@@ -2,11 +2,18 @@
 import { reactive } from 'vue';
 
 const user = reactive({
-    name: 'joao',
-    email: 'joao@123.com',
-    phone: '(00)90000-0000',
-    address: 'Avenida Trabalhador São Carlense, 400',
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
 });
+let newUser = reactive({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+});
+
 const fetchUser = async () => {
     const credentials = localStorage.getItem('credentials');
     user.email = atob(credentials).split(':')[0];
@@ -18,10 +25,48 @@ const fetchUser = async () => {
 }
 fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key] = value)));
 const purchases = JSON.parse(localStorage.getItem('purchases'));
+
+
+const showUpdateModal = () => {
+    for (const key in newUser) newUser[key] = user[key];
+    modal.showModal();
+    document.body.style.overflowY = 'hidden';
+};
+const closeModal = () => modal.close();
+const updateUser = async target => {
+    alert('terminar');
+}
 </script>
 
 <template>
     <main>
+        <dialog @close="unhideScroll" id="modal">
+            <h1>Editar usuario</h1>
+            <form @submit="event => updateUser(event.target)" method="dialog">
+                <label for="name">Nome</label>
+                <input v-model="newUser.name" required type="text" id="name" name="name" @focusout="trim"/>
+
+                <label for="email">E-mail</label>
+                <input v-model="newUser.email" required id="email" type="text" name="email"/>
+
+                <label for="address">Endereço</label>
+                <input v-model="newUser.address" required type="text" id="address" name="address" @focusout="trim"/>
+                <label for="phone">Telefone</label>
+                <input
+                    v-model="newUser.phone"
+                    required
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
+                />
+                <div class="columns">
+                    <input type="submit" value="Confirmar">
+                    <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
+                </div>
+            </form>
+        </dialog>
+
         <h2>Minha conta</h2>
         <div class="container">
             <h3>Informações pessoais</h3>
@@ -40,7 +85,7 @@ const purchases = JSON.parse(localStorage.getItem('purchases'));
                     <p> {{ user.address }}</p>
                 </div> 
             </div>
-            <input type="button" value="Editar dados">
+            <input type="button" value="Editar dados" @keydown.enter.space="showUpdateModal" @click="showUpdateModal">
             <div class="purchases">
                 <h3>Histórico de Compras</h3>
                 <ul>
@@ -56,7 +101,7 @@ const purchases = JSON.parse(localStorage.getItem('purchases'));
 </template>
 
 <style scoped>
-input[type="button"]{
+.container input[type="button"]{
     width: 50%;
     margin-bottom: 2rem;
 }
@@ -64,7 +109,7 @@ input[type="button"]{
     hr{
         display: none;
     }
-    input[type="button"]{
+    .container input[type="button"]{
         width: 100%;
     }
 }

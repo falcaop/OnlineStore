@@ -5,6 +5,8 @@ import IconCart from './components/icons/IconCart.vue';
 import IconProfile from './components/icons/IconProfile.vue';
 import IconLogin from './components/icons/IconLogin.vue';
 import IconLogout from './components/icons/IconLogout.vue';
+import IconBars from './components/icons/IconBars.vue';
+
 import { ref, watch } from 'vue';
 const router = useRouter();
 const route = useRoute();
@@ -27,21 +29,28 @@ const login = credentials => {
     loggedIn.value = true;
     router.push(route.redirectedFrom ?? '/account');
 } 
+
+let mobileMenu = ref(true);
+const openMenu = () => { mobileMenu.value = !mobileMenu.value; };
+
 </script>
 
 <template>
     <div>
         <header>
-            <RouterLink to="/">
-                <h1>nome</h1>
-            </RouterLink>
-            <form class="search" @submit.prevent.stop="search({q})">
+            <div class="mobileMenu">
+                <RouterLink to="/">
+                    <h1>nome</h1>
+                </RouterLink>
+                <IconBars @click="openMenu()" class="bars"/>
+            </div>
+            <form class="search" @submit.prevent.stop="search({q})"  :class="mobileMenu ? 'open-menu' : 'closed-menu'">
                 <input required type="search" v-model="q"/>
                 <button>
                     <IconSearch/>
                 </button>
             </form>
-            <div class="user-buttons">
+            <div class="user-buttons" :class="mobileMenu ? 'open-menu' : 'closed-menu'">
                 <template v-if="loggedIn">
                     <RouterLink to="/cart">
                         <IconCart/>
@@ -56,7 +65,7 @@ const login = credentials => {
                 </RouterLink>
             </div>
         </header>
-        <nav>
+        <nav :class="mobileMenu ? 'open-menu' : 'closed-menu'">
             <a
                 v-for="(name, id) in categories"
                 :href="`/search?category=${id}`"
@@ -66,6 +75,7 @@ const login = credentials => {
                 <p>{{ name }}</p>
             </a>
         </nav>
+        
         <RouterView v-slot="{ Component }" >
             <Transition name="slide-fade" mode="out-in">
                 <component @signedIn="login" :is="Component"/>
@@ -87,11 +97,12 @@ header{
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
+    align-items: center;
 }
 .user-buttons{
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
 }
 .search{
     width: 50%;
@@ -99,10 +110,7 @@ header{
     align-items: center;
     gap: 10px;
 }
-.search input[type="search"]{
-    width: 100%;
-    height: 40px;
-}
+
 nav{
     background-color: var(--green);
     display: flex;
@@ -121,9 +129,6 @@ nav a:hover, nav a:focus{
 header button{
     background: none;
     border: none;
-    color: unset;
-    cursor: pointer;
-    padding: 0;
 }
 svg{
     width: 30px;
@@ -141,4 +146,41 @@ footer{
     margin-top: 30px;
     z-index: 1;
 }
+.bars{
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    .open-menu {
+        left: 0%;
+    }
+    .closed-menu {
+        left: 100%;
+    }
+    .mobileMenu{
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    header{
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1rem 2rem 2rem;
+    }
+    .search, .user-buttons{
+        width: 100%;
+        justify-content: center;
+    }
+    .bars{
+        display: block;
+    }
+    nav {
+        position: absolute;
+        width: 100%;
+        flex-direction: column;
+        transition: .3s;
+    }
+}
+
 </style>

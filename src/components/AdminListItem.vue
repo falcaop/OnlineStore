@@ -31,11 +31,6 @@ defineProps({
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
 i{
     margin-left: 20px;
-    cursor: pointer;
-    transition: .3s;
-}
-i:hover{
-    color: var(--green);
 }
 li > div{
     margin: 15px;

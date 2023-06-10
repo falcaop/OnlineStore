@@ -45,12 +45,18 @@ main {
     justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
-    gap: 10px;
+    gap: 1rem;
 }
 
 .products .card {
     width: 20%;
     min-width: 125px;
-    margin: 2% 0;
+    margin: 2rem 0 0;
+}
+
+@media screen and (max-width: 800px) {
+    .products .card{
+        width: 45%;
+    }
 }
 </style>

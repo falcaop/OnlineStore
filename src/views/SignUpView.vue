@@ -45,7 +45,6 @@ const trim = event => (event.target.value = event.target.value.trim());
                 <label for="address">Endereço</label>
                 <input required type="text" id="address" name="address" @focusout="trim"/>
                 <label for="phone">Telefone</label>
-                <br>
                 <input
                     required
                     type="tel"

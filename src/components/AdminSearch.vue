@@ -21,11 +21,8 @@ const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'cat
 
 <style scoped>
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
-i{
-    transition: .3s;
-}
-i:hover{
-    color: var(--green);
+main{
+    width: 100%;
 }
 .searchbar input{
     width: 90%;

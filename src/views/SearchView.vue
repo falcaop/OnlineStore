@@ -117,10 +117,13 @@ const priceDescription = ({minPrice, maxPrice}) => {
         <h2 v-if="$route.query.q">Resultados da pesquisa: "{{ route.query.q }}"</h2>
         <h2 v-else-if="$route.query.category">{{ categories[route.query.category] }}</h2>
 
-        <div class="results">
+        <div class="product">
             <section class="filters">
-                <strong>Ordenar por</strong>
-                <select v-model="sortMethod">
+                <h3>
+                    <label for="order">Ordenar por</label>
+                </h3>
+                
+                <select v-model="sortMethod" name="order">
                     <option
                         v-for="({description}, name) in sortMethods"
                         :key="name"
@@ -129,9 +132,9 @@ const priceDescription = ({minPrice, maxPrice}) => {
                 </select>
                 <hr>
 
-                <strong>Filtrar por</strong>
+                <h3>Filtrar por</h3>
                 <div>
-                    <p>Preço</p>
+                    <h4>Preço</h4>
                     <a
                         v-for="price in prices"
                         :href="searchURL(price)"
@@ -140,7 +143,7 @@ const priceDescription = ({minPrice, maxPrice}) => {
                     >{{ priceDescription(price) }}</a>
                 </div>
                 <div v-if="$route.query.q">
-                    <p>Categoria</p>
+                    <h4>Categoria</h4>
                     <a
                         :class="{active: !$route.query.category}"
                         :href="searchURL({category: null})"
@@ -154,9 +157,8 @@ const priceDescription = ({minPrice, maxPrice}) => {
                         :class="{active: ($route.query.category === i.toString())}"
                     >{{ category }}</a>
                 </div>
-
             </section>
-
+            <hr class="divider">
             <section class="products">
                 <p> {{ products.length }} produto(s) encontrado(s).</p>
 
@@ -168,97 +170,83 @@ const priceDescription = ({minPrice, maxPrice}) => {
 </template>
 
 <style scoped>
-main {
-    width: 60%;
-    margin: 65px auto;
-}
-
-p {
-    margin-top: 2em;
-    font-weight: bold;
-}
-
-strong {
-    font-size: large;
-}
-
-a {
-    display: block;
-    margin: 0.75em 0;
-}
-
-a:hover {
-    cursor: pointer;
-}
-
-select {
-    margin: 5% 0;
-    width: 100%;
-}
-
 .results {
     display: flex;
     align-items: start;
-    gap: 30px;
+    gap: 2.5rem;
     flex-wrap: wrap;
+}
+a {
+    display: block;
+    margin: 0.75rem 0;
+}
+h3{
+    margin: 0;
+}
+label{
+    margin-top: 0;
+}
+
+hr {
+    color: var(--black-active);
+    background-color: var(--black-active);
+    margin: 1.5rem 0;
+    height: 1px;
+    border: none;
 }
 
 .filters {
-    min-width: 220px;
     width: 220px;
-    transition: .3s;
-}
-.filters a{
-    transition: .3s;
 }
 .filters a:hover, .filters a.active{
     color: var(--green);
 }
 
 .products {
-    flex: 80%;
+    width: 80%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
     max-width: calc(100% - 250px);
     min-width: 220px;
-    gap: 10px;
+    gap: 1rem;
 }
 
 .products .card {
     width: 30%;
     min-width: 125px;
-    margin: 2% 0;
 }
 
-.products>p {
+.products > p {
     width: 100%;
-    margin: 0;
+}
+.divider{
+    display: none;
 }
 
-hr {
-    color: var(--black-active);
-    background-color: var(--black-active);
-    margin: 1em 0;
-    height: 1px;
-    border: none;
-}
-@media (max-width: 866px){
+@media screen and (max-width: 1100px) {
     .products .card{
-        width: 220px;
+        width: 40%;
     }
 }
-@media (max-width: 800px){
-    .products{
+
+@media screen and (max-width: 767px) {
+    .results, .divider{
+        display: block;
+    }
+    .filters, .products{
+        width: 100%;
         max-width: none;
     }
 }
+
 @media screen and (max-width: 480px) {
-    .filters{
-        width: 100%;
+    .products{
+        width: 70%;
+        display: block;
     }
     .products .card{
-        width: 100%;
+        margin: 2rem 0;
     }
 }
 </style>

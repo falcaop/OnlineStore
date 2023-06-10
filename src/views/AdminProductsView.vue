@@ -152,17 +152,10 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
             <h1>{{ currentProduct ? `Editar ${currentProduct.name}` : 'Adicionar produto' }}</h1>
             <form @submit="event => currentProduct ? updateItem(event.target) : addItem(event.target)" method="dialog">
                 <label for="name">Nome</label>
-                <br>
                 <input v-model="newProduct.name" required type="text" id="name" name="name"/>
-                <br>
-
                 <label for="desc">Descrição</label>
-                <br>
                 <input v-model="newProduct.description" id="desc" type="text" name="description"/>
-                <br>
-
                 <label for="price">Preço</label>
-                <br>
                 <input
                     v-model.number="newProduct.price"
                     min="0"
@@ -172,24 +165,22 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
                     id="price"
                     name="price"
                 />
-                <br>
-                <div class="inline">
-                    <label for="category">Categoria</label>
-                    <label for="stock">Quantidade em estoque</label>
+                <div class="columns">
+                    <div class="left">
+                        <label for="category">Categoria</label>
+                        <select v-model.number="newProduct.category" required id="category" name="category">
+                            <option v-for="(categoryName, i) in categories" :key="i" :value="i">{{ categoryName }}</option>
+                        </select>
+                    </div>
+                    <div class="right">
+                        <label for="stock">Quantidade em estoque</label>
+                        <input v-model.number="newProduct.stock" required min="0" type="number" id="stock" name="stock"/>
+                    </div>
                 </div>
-                <div class="inline">
-                    <select v-model.number="newProduct.category" required id="category" name="category">
-                        <option v-for="(categoryName, i) in categories" :key="i" :value="i">{{ categoryName }}</option>
-                    </select>
-                    <input v-model.number="newProduct.stock" required min="0" type="number" id="stock" name="stock"/>
-                </div>
-                <br>
                 <label for="image">Imagem</label>
-                <br>
                 <input @change="loadImage" type="file" accept="image/png, image/jpeg" id="image" name="image"/>
                 <img v-if="newProduct.image" :src="newProduct.image" @error="newProduct.image = null"/>
-                <br>
-                <div class="inline">
+                <div class="columns">
                     <input type="submit" value="Confirmar">
                     <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
                 </div>
@@ -198,14 +189,13 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
         <h1>Produtos</h1>
         <AdminSearch/>
 
-        <div class="add">
+        <div class="alignRight">
             <i
                 tabindex="0"
                 @keydown.enter.space="showAddModal"
                 @click="showAddModal"
                 class="fa fa-plus fa-2x clickable"
             ></i>
-            <br>
         </div>
         <ul>
             <hr>
@@ -223,84 +213,10 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
 
 <style scoped>
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
-dialog{
-    width: 50%;
-    min-width: 250px;
-    max-width: 500px;
-    padding: 4vh 4vw;
-    border-radius: 20px;
-    border-style: none;
-    max-height: 77vh;
-}
-dialog::backdrop{
-    background-color: rgba(0, 0, 0, 0.5);
-}
-dialog form > *{
-    margin: 20px auto;
-}
-ul{
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-dialog h1{
-    text-align: center;
-}
-input[type="text"], input[type="url"]{
-    width: 100%;
-}
-dialog form > input[type="number"]{
-    width: 50%;
-    transition: .3s;
-}
 dialog form img{
     width: 40%;
     border-radius: 10px;
     aspect-ratio: 5/6;
     object-fit: cover;
-    transition: .3s;
-    display: block;
-    margin: 0;
-}
-.inline{
-    display: flex;
-    justify-content: space-between;
-}
-.inline > *{
-    width: 48%;
-}
-.inline > * > input, .inline > * > select{
-    width: 100%;
-}
-
-dialog input[type="text"], dialog input[type="number"], dialog select, dialog input[type="url"]{
-    padding: 0.7rem;
-    box-sizing: border-box;
-}
-.add{
-    width: 100%;
-    height: 2em;
-    display: flex;
-    justify-content: flex-end;
-}
-i{
-    cursor: pointer;
-    transition: .3s;
-}
-i:hover{
-    color: var(--green);
-}
-@media screen and (max-width: 767px) {
-    dialog form img, dialog form > input[type="number"]{
-        width: 100%;
-    }
-    dialog{
-        max-width: none;
-        width: calc(100% - 8vw);
-        margin-bottom: 0px;
-        border-radius: 0;
-        padding-bottom: 0;
-    }
 }
 </style>
