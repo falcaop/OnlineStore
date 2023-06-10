@@ -27,7 +27,6 @@ const signUp = async event => {
     }
 }
 const trim = event => (event.target.value = event.target.value.trim());
-const phonePattern = /^(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}\-?\d{4}$/;
 </script>
 
 <template>
@@ -53,7 +52,13 @@ const phonePattern = /^(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}\-?\d{4}$/;
 
                 <label for="phone">Telefone</label>
                 <br>
-                <input required type="tel" id="phone" name="phone" :pattern="phonePattern"/>
+                <input
+                    required
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    :pattern="/^(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}$/.source"
+                />
                 <br>
 
                 <label for="password">Senha</label>

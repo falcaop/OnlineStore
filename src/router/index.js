@@ -9,7 +9,7 @@ const isAuthenticated = (admin = false) => async () => {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });
-    if(res.status !== 204) return '/signin';
+    if(res.status !== 204) return (admin ? '/404' : '/signin');
 }
 const isUnauthenticated = async () => {
     const credentials = localStorage.getItem('credentials');
@@ -78,7 +78,7 @@ const router = createRouter({
         {
             path: '/signup',
             component: () => import('../views/SignUpView.vue'),
-            beforeEnter: [isUnauthenticated, (to, from) => (to.redirectedFrom = from.redirectedFrom)],
+            beforeEnter: [isUnauthenticated, (to, from) => {to.redirectedFrom = from.redirectedFrom}],
         },
         {
             path: '/admin',

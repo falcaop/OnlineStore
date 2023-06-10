@@ -88,6 +88,7 @@ router.post(
 );
 router.post(
     '/users',
+    upload.none(),
     body('name').trim().notEmpty(),
     body('email').isEmail({
         allow_utf8_local_part: false,
@@ -100,14 +101,14 @@ router.post(
         if(!validationResult(req).isEmpty()) return res.sendStatus(400);
         const data = fetchData();
         if(data.users[req.body.email]) return res.sendStatus(409);
-        data.user[req.body.email] = {
+        data.users[req.body.email] = {
             name: req.body.name.trim(),
             address: req.body.address.trim(),
             phone: req.body.phone,
-            password: req.body.password,
+            password: sha256(req.body.password),
         };
         writeData(data);
-        res.status(201).json({credentials: Buffer.from(`${req.body.email}:${req.body.password}`).toString()});
+        res.status(201).json({credentials: Buffer.from(`${req.body.email}:${req.body.password}`).toString('base64')});
     },
 );
 router.put(
