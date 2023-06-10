@@ -3,7 +3,6 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
 import utils from '../assets/utils.js';
-import { query } from 'express';
 
 const route = useRoute();
 const router = useRouter();
@@ -44,7 +43,9 @@ const fetchProducts = async () => {
         sortField: sortMethods[sortMethod.value].info.field,
         sortOrder: sortMethods[sortMethod.value].info.order,
     };
-    for(query of ['q', 'category', 'minPrice', 'maxPrice']) if(route.query[query]) queries[query] = route.query[query];
+    for(const query of ['q', 'category', 'minPrice', 'maxPrice']){
+        if(route.query[query]) queries[query] = route.query[query];
+    }
     const res = await fetch(
         `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products?${new URLSearchParams(queries)}`
     );

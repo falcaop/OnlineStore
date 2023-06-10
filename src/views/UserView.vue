@@ -1,5 +1,22 @@
 <script setup>
-const user = {name: 'joao', email: 'joao@123.com', phone: '(00)90000-0000', address:'Avenida Trabalhador São Carlense, 400'};
+import { reactive } from 'vue';
+
+const user = reactive({
+    name: 'joao',
+    email: 'joao@123.com',
+    phone: '(00)90000-0000',
+    address: 'Avenida Trabalhador São Carlense, 400',
+});
+const fetchUser = async () => {
+    const credentials = localStorage.getItem('credentials');
+    user.email = atob(credentials).split(':')[0];
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/users/${user.email}`,
+        {headers: {Authorization: `Basic ${credentials}`}},
+    );
+    return await res.json();
+}
+fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key] = value)));
 const purchases = JSON.parse(localStorage.getItem('purchases'));
 </script>
 

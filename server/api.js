@@ -14,8 +14,8 @@ const authenticate = admin => (req, res, next) => {
     if(admin && !user.isAdmin) return res.sendStatus(403);
     next();
 }
-const fetchDocument = (model, dry) => (req, res, next) => {
-    const document = fetchData()[model].find(({id}) => (id.toString() === req.params.id));
+const fetchProduct = dry => (req, res, next) => {
+    const document = fetchData().products.find(({id}) => (id.toString() === req.params.id));
     if(!document) return res.sendStatus(404);
     if(!dry) req.document = document;
     next();
@@ -26,7 +26,7 @@ router.head(
     (req, res, next) => authenticate(req.query.admin === '1')(req, res, next),
     (_, res) => res.sendStatus(204),
 );
-router.head('/products/:id', fetchDocument('products', true), (_, res) => res.sendStatus(204));
+router.head('/products/:id', fetchProduct(true), (_, res) => res.sendStatus(204));
 router.get('/products', (req, res) => {
     let products = fetchData().products;
     if(req.query.q || req.query.category || req.query.minPrice || req.query.maxPrice){
@@ -48,16 +48,29 @@ router.get('/products', (req, res) => {
         products.sort((a, b) => (a.name.localeCompare(b.name) * sortOrder));
     }
     else if(['price', 'stock'].includes(req.query.sortField)){
-        products.sort((a, b) => ((b[req.query.sortField] - a[req.query.sortField]) * sortOrder));
+        products.sort((a, b) => ((a[req.query.sortField] - b[req.query.sortField]) * sortOrder));
     }
     res.status(200).json(products);
 });
-router.get('/products/:id', fetchDocument('products'), (req, res) => res.status(200).json(req.document));
+router.get('/products/:id', fetchProduct(), (req, res) => res.status(200).json(req.document));
 router.get(
     '/products/:id/image',
-    fetchDocument('products', true),
+    fetchProduct(true),
     (req, res) => fetchImage(req.params.id, (err, data) => err ? res.sendStatus(404) : res.status(200).send(data)),
 );
+router.get('/users/:email', (req, res, next) => {
+    const authorization = req.header('Authorization');
+    if(!authorization || !authorization.startsWith('Basic ')) return res.sendStatus(401);
+    authenticate(
+        req.params.email !== Buffer.from(authorization.split(' ')[1], 'base64').toString().split(':')[0],
+    )(req, res, next);
+}, (req, res) => {
+    const document = fetchData().users[req.params.email];
+    if(!document) return res.sendStatus(404);
+    const user = {};
+    for(const field of ['name', 'phone', 'address']) user[field] = document[field];
+    res.status(200).json(user);
+});
 router.post(
     '/products',
     upload.single('image'),
@@ -115,7 +128,7 @@ router.put(
     '/products/:id',
     upload.single('image'),
     authenticate(true),
-    fetchDocument('products', true),
+    fetchProduct(true),
     body('name').trim().notEmpty(),
     body('price').isFloat({min: 0}),
     body('category').isInt({
@@ -138,7 +151,7 @@ router.put(
         res.status(200).json(product);
     },
 );
-router.delete('/products/:id', authenticate(true), fetchDocument('products', true), (req, res) => {
+router.delete('/products/:id', authenticate(true), fetchProduct(true), (req, res) => {
     const data = fetchData();
     data.products = data.products.filter(({id}) => (id.toString() !== req.params.id));
     removeImage(req.params.id);
