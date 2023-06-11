@@ -44,7 +44,6 @@ ul{
 }
 
 main{
-    /* adicionar max width ? */
     width: 60%;
     margin: 4rem auto;
 }
@@ -156,7 +155,6 @@ dialog h1{
 @media screen and (max-width: 767px) {
     main{
         width: 80%;
-        /* adicionar min width ? */
     }
     .columns, .rows, .product{
         display: block;

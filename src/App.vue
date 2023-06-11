@@ -50,7 +50,7 @@ const openMenu = () => { mobileMenu.value = !mobileMenu.value; };
         <header>
             <div class="mobileMenu">
                 <RouterLink to="/">
-                    <h1>nome</h1>
+                    <h1>NovaStore</h1>
                 </RouterLink>
                 <IconBars @click="openMenu()" class="bars"/>
             </div>
@@ -89,8 +89,7 @@ const openMenu = () => { mobileMenu.value = !mobileMenu.value; };
     </div>
     <footer>
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
+            Copyright © 2023
         </p>
     </footer>
 </template>

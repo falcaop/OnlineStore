@@ -5,12 +5,17 @@ import ProductCard from '../components/ProductCard.vue';
 
 const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
 
-// solicitar informacoes dos produtos mais vendidos
+// solicitar informacoes dos 4 produtos mais vendidos
 const fetchProducts = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products`);
+    const queries = {
+        sortField: 'sold',
+        sortOrder: -1,
+    };
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
     return res.ok ? await res.json() : [];
 }
-fetchProducts().then(res => (products.value = res));
+fetchProducts().then(res => (products.value = res.slice(0, Math.min(4, res.length))));
+
 </script>
 
 <template>
