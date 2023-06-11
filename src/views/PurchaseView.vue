@@ -9,6 +9,7 @@ const purchase = ref({
     id: 0,
     date: 0,
     products: [],
+    customs: [],
 });
 let products = [];
 const totalPriceString = ref('');
@@ -31,10 +32,9 @@ const fetchProducts = async () => {
 const findProduct = id => products.find(product => (product.id === id));
 const updateTotalPriceString = () => {
     totalPriceString.value = utils.toPriceString(
-        purchase.value.products.reduce(
-            (acc, {id, amount}) => (acc + (findProduct(id).price * amount)),
-            0,
-        ),
+        purchase.value.products.reduce((acc, {id, amount}) => (acc + (findProduct(id).price * amount)), 0)
+        +
+        purchase.value.customs.reduce((acc, {amount}) => (acc + (50 * amount)), 0),
     );
 }
 
@@ -60,6 +60,18 @@ fetchPurchase().then(async res => {
                     :key="id"
                     v-bind="products.find(product => (product.id === id))"
                     :amount="amount"
+                    class="cartItem"
+                    :purchase="true"
+                />
+                <ItemCart
+                    v-for="{id, amount, image} in purchase.customs"
+                    :key="id"
+                    :id="id"
+                    name="Camisa customizada"
+                    :stock="Infinity"
+                    :price="50"
+                    :amount="amount"
+                    :preview="image"
                     class="cartItem"
                     :purchase="true"
                 />

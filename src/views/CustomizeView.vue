@@ -1,26 +1,41 @@
 <script setup>
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref } from 'vue';
 import utils from '../assets/utils.js';
 
-const product = {price: 0, amount: 1, size: 'P', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/2048px-Instagram_icon.png'};
-const cartProducts = JSON.parse(localStorage.getItem("cart")) ?? [];
-let cartProduct = ref();
+const cartProduct = ref(JSON.parse(localStorage.getItem("customs")) ?? []);
 let amount = 1;
-let selectedColor = ref('#FFFFFF');
-let imageLink = ref('');
-let size = '';
+const selectedColor = ref('#FFFFFF');
+const imageLink = ref('');
+let size = 'P';
 
 // lista de cores possiveis para camiseta personalizada
 const colors = [
-  "#FFFFFF", "#808080", "#000000", "#000080", "#4169E1", "#FF0000", "#800000", "#228B22", "#800080", "#FFC0CB", "#FFD700"];
+    "#FFFFFF",
+    "#808080",
+    "#000000",
+    "#000080",
+    "#4169E1",
+    "#FF0000",
+    "#800000",
+    "#228B22",
+    "#800080",
+    "#FFC0CB",
+    "#FFD700",
+];
 // lista de tamanhos possiveis para camiseta personalizada
 const sizes = ["PP", "P", "M", "G", "GG"];
 
-watch(selectedColor);
-
 const addToCart = () => {
-    console.log(selectedColor.value, amount, imageLink.value, size);
+    const customs = JSON.parse(localStorage.getItem('customs')) ?? [];
+    customs.push({
+        id: (customs.at(-1)?.id ?? 0) + 1,
+        amount,
+        color: selectedColor.value,
+        image: imageLink.value,
+        size,
+    });
+    localStorage.setItem('customs', JSON.stringify(customs));
+    alert('Produto adicionado ao carrinho');
 }
 
 </script>
@@ -35,11 +50,19 @@ const addToCart = () => {
                 <img class="imageOverlay" :src="imageLink" />
             </div>
             <div class="rows">
-                <p class="price">{{ utils.toPriceString(product.price ?? 0) }}</p>
+                <p class="price">{{ utils.toPriceString(50) }}</p>
                 <form @submit.prevent.stop="addToCart">
                     <label for="colors">Cor</label>
                     <div class="colors">
-                        <input type="radio" name="colors" :id="color" v-for="color in colors" :style="{backgroundColor: color}" :value="color" v-model="selectedColor">
+                        <input
+                            type="radio"
+                            name="colors"
+                            v-for="color in colors"
+                            :key="color" :id="color"
+                            :style="{backgroundColor: color}"
+                            :value="color"
+                            v-model="selectedColor"
+                        />
                     </div>
 
                     <div class="columns">
@@ -47,10 +70,8 @@ const addToCart = () => {
                             <label for="amount">Quantidade</label>
                             <input
                                 required
-                                :disabled="cartProduct"
                                 class="amount"
                                 type="number"
-                                :max="product.stock"
                                 min="1"
                                 v-model="amount"
                                 name="amount"

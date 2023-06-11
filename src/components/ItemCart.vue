@@ -9,10 +9,11 @@ const props = defineProps({
     stock: Number,
     price: Number,
     amount: Number,
+    preview: String,
     purchase: Boolean, // identificar se e o carrinho ou uma compra ja finalizada
 });
 
-const image = `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
+const image = props.preview ?? `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
 const emit = defineEmits(['amountChanged', 'removeItem']);
 
 // alterar a quantidade desejada do produto, emitir evento para componente pai
@@ -34,7 +35,7 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
             <div class="left">
                 <h3> {{ name ?? 'Lorem Ipsum' }} </h3>
                 <label for="amount">Quantidade:</label>
-                <div class="purchaseAmount" v-if="purchase"> {{ amount }} </div>
+                <div class="purchaseAmount" v-if="purchase || preview"> {{ amount }} </div>
                 <input v-else class="amount" name="amount" type="number" :value="amount" :max="stock" min="1" @change="changeAmount"/>
             </div>
             <div class="right">

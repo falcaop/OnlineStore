@@ -7,10 +7,12 @@ let code = '';
 const router = useRouter();
 // finalizar compra, esvaziar carrinho e adicionar compra a lista de compras do usuario
 const submitPayment = async event => {
-    const products = JSON.parse(localStorage.getItem('cart'));
-    if (!products) return alert('Nenhum produto no carrinho');
+    const products = JSON.parse(localStorage.getItem('cart')) ?? [];
+    const customs = JSON.parse(localStorage.getItem('customs')) ?? [];
+    if (!products.length && !customs.length) return alert('Nenhum produto no carrinho');
     const formData = new FormData(event.target);
     formData.append('cart', JSON.stringify(products));
+    formData.append('customs', JSON.stringify(customs));
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/purchases`, {
         method: 'POST',
         headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
@@ -19,10 +21,12 @@ const submitPayment = async event => {
     switch(res.status){
         case 201: {
             localStorage.removeItem('cart');
+            localStorage.removeItem('customs');
             alert('Compra finalizada');
             router.push('/');
         }
         break;
+        // fazer o case 400 data errada
         case 401: {
             alert('Usuário não autenticado');
             router.push('/signin');

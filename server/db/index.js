@@ -16,6 +16,7 @@ if(!fs.existsSync(dbpath)){
             phone: '',
             password: sha256('admin'),
             isAdmin: true,
+            purchases: [],
         }],
         products: [],
     }));

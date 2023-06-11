@@ -210,11 +210,21 @@ router.post(
         min: 3,
         max: 3,
     }),
-    body('cart').toArray().isArray({min: 1}),
+    body('cart').toArray().isArray(),
     body('cart.*.id').isInt({min: 1}),
     body('cart.*.amount').isInt({min: 1}),
+    body('customs').toArray().isArray(),
+    body('customs.*.color').isHexColor(),
+    body('customs.*.amount').isInt({min: 1}),
+    body('customs.*.image').isURL({
+        protocols: ['http', 'https'],
+        require_tld: false,
+    }),
+    body('customs.*.size').isIn(["PP", "P", "M", "G", "GG"]),
     async (req, res) => {
-        if(!validationResult(req).isEmpty()) return res.sendStatus(400);
+        const cart = JSON.parse(req.body.cart).map(({id, amount}) => ({id, amount}));
+        const customs = JSON.parse(req.body.customs).map(({color, amount, image}) => ({color, amount, image}));
+        if(!validationResult(req).isEmpty() || (!cart.length && !customs.length)) return res.sendStatus(400);
         let data;
         try{
             data = await fetchData();
@@ -223,7 +233,6 @@ router.post(
             console.error(err);
             return res.sendStatus(500);
         }
-        const cart = JSON.parse(req.body.cart);
         for(const {id, amount} of cart){
             const product = data.products.find(p => (p.id === id));
             if(!product || (amount > product.stock)) return res.sendStatus(406);
@@ -235,6 +244,7 @@ router.post(
             id: (user.purchases.at(-1)?.id ?? 0) + 1,
             date: Date.now(),
             products: cart,
+            customs,
         };
         user.purchases.push(purchase);
         writeData(data, err => {

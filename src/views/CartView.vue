@@ -6,6 +6,7 @@ import utils from '../assets/utils.js';
 
 // itens do carrinho (id do produto e quantidade)
 const cartProducts = ref(JSON.parse(localStorage.getItem('cart')) ?? []);
+const customProducts = ref(JSON.parse(localStorage.getItem('customs')) ?? []);
 
 const totalPriceString = ref('');
 let products = [];
@@ -13,10 +14,9 @@ const findProduct = id => products.find(product => (product.id === id));
 // atualizar o valor total da compra
 const updateTotalPriceString = () => {
     totalPriceString.value = utils.toPriceString(
-        cartProducts.value.reduce(
-            (acc, {id, amount}) => (acc + (findProduct(id).price * amount)),
-            0,
-        ),
+        cartProducts.value.reduce((acc, {id, amount}) => (acc + (findProduct(id).price * amount)), 0)
+        +
+        customProducts.value.reduce((acc, {amount}) => (acc + (50 * amount)), 0),
     );
 }
 watch(cartProducts, updateTotalPriceString);
@@ -43,6 +43,10 @@ const remove = (id) => {
     cartProducts.value = cartProducts.value.filter(product => (product.id !== id));
     localStorage.setItem("cart", JSON.stringify(cartProducts.value));
 }
+const removeCustom = (id) => {
+    customProducts.value = customProducts.value.filter(product => (product.id !== id));
+    localStorage.setItem("customs", JSON.stringify(customProducts.value));
+}
 
 const changeAmount = (id, amount) => {
     cartProducts.value.find((p) => p.id === id).amount = amount;
@@ -55,7 +59,7 @@ const changeAmount = (id, amount) => {
     <main>
         <h2>Meu carrinho</h2>
         <div class="container">
-            <div v-if="cartProducts.length && totalPriceString">
+            <div v-if="(cartProducts.length || customProducts.length) && totalPriceString">
                 <div class="alignRight">
                     <a  
                         class="empty"
@@ -73,6 +77,18 @@ const changeAmount = (id, amount) => {
                     class="cartItem"
                     @removeItem="remove"
                     @amountChanged="changeAmount"
+                />
+                <ItemCart
+                    v-for="{id, amount, image} in customProducts"
+                    :key="id"
+                    :id="id"
+                    name="Camisa customizada"
+                    :stock="Infinity"
+                    :price="50"
+                    :amount="amount"
+                    :preview="image"
+                    class="cartItem"
+                    @removeItem="removeCustom"
                 />
                 <div class="total">
                     <p>Total: <strong>{{ totalPriceString }}</strong></p>
