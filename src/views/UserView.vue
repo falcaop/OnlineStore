@@ -103,7 +103,7 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
                 <ul>
                     <li v-for="purchase in user.purchases">
                         <a :href="`/purchase/${purchase.id}`">
-                            {{ purchase.id }} {{ new Date(purchase.date).toLocaleDateString() }}
+                            {{ new Date(purchase.date).toLocaleDateString() }} - Compra de {{ purchase.products.length }} produto(s)
                         </a>
                     </li>
                 </ul>
@@ -116,6 +116,13 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
 .container input[type="button"]{
     width: 50%;
     margin-bottom: 2rem;
+}
+ul{
+    list-style:unset;
+    list-style-position: inside;
+}
+li{
+    margin-bottom: 1em;
 }
 @media screen and (max-width: 767px){ 
     hr{
