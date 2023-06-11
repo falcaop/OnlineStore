@@ -1,6 +1,9 @@
 <script setup>
 import { reactive } from 'vue';
+import UserFormInputs from '../components/UserFormInputs.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const credentials = localStorage.getItem('credentials');
 const user = reactive({
     name: '',
@@ -23,46 +26,52 @@ fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key]
 const purchases = JSON.parse(localStorage.getItem('purchases'));
 
 // editar dados do usuario
-let newUser = reactive({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-});
 const showUpdateModal = () => {
-    for (const key in newUser) newUser[key] = user[key];
     modal.showModal();
     document.body.style.overflowY = 'hidden';
 };
 const closeModal = () => modal.close();
-const updateUser = async target => {
-    alert('terminar');
-}
+const updateUser = async event => {
+    const formData = new FormData(event.target);
+    if(!formData.get('password')) formData.delete('password');
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/users/me`, {
+        method: 'PUT',
+        headers: {Authorization: `Basic ${credentials}`},
+        body: formData,
+    });
+    switch(res.status){
+        case 200: {
+            alert(`Dados atualizados`);
+            const body = await res.json();
+            localStorage.setItem(
+                'credentials',
+                btoa(`${body.email}:${formData.get('password') ?? atob(credentials).split(':')[1]}`),
+            );
+            for(const key in user) user[key] = body[key];
+        }
+        break;
+        case 400: alert('Dados inválidos');
+        break;
+        case 401: {
+            alert('Usuário não autenticado');
+            router.push({path: '/signin'});
+        }
+        break;
+        case 409: alert('Já existe um usuário cadastrado com esse email');
+        break;
+        default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
+    }
+};
+const unhideScroll = () => document.body.style.overflowY = 'unset';
 </script>
 
 <template>
     <main>
         <!-- Modal para editar os dados de um usuario -->
         <dialog @close="unhideScroll" id="modal">
-            <h1>Editar usuario</h1>
-            <form @submit="event => updateUser(event.target)" method="dialog">
-                <label for="name">Nome</label>
-                <input v-model="newUser.name" required type="text" id="name" name="name" @focusout="trim"/>
-
-                <label for="email">E-mail</label>
-                <input v-model="newUser.email" required id="email" type="text" name="email"/>
-
-                <label for="address">Endereço</label>
-                <input v-model="newUser.address" required type="text" id="address" name="address" @focusout="trim"/>
-                <label for="phone">Telefone</label>
-                <input
-                    v-model="newUser.phone"
-                    required
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
-                />
+            <h1>Editar dados</h1>
+            <form @submit="updateUser" method="dialog">
+                <UserFormInputs :address="user.address" :email="user.email" :name="user.name" :phone="user.phone"/>
                 
                 <div class="columns">
                     <input type="submit" value="Confirmar">

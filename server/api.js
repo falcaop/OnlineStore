@@ -231,9 +231,50 @@ router.put(
     },
 );
 router.put(
+    '/users/me',
+    upload.none(),
+    authenticate(),
+    body('name').trim().notEmpty(),
+    body('email').isEmail({
+        allow_utf8_local_part: false,
+        domain_specific_validation: true,
+    }).not().contains(':'),
+    body('address').trim().notEmpty(),
+    body('phone').isMobilePhone('pt-BR'),
+    body('password').isStrongPassword().not().contains(':').optional(),
+    async (req, res) => {
+        if(!validationResult(req).isEmpty()) return res.sendStatus(400);
+        let data;
+        try{
+            data = await fetchData();
+        }
+        catch(err){
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        const user = data.users.find(({id}) => (id === req.user.id));
+        if(user.email !== req.body.email){
+            if(data.users.some(({email}) => (email === req.body.email))) return res.sendStatus(409);
+            user.email = req.body.email;
+        }
+        user.name = req.body.name.trim();
+        user.address = req.body.address.trim();
+        user.phone = req.body.phone.replace(/[^\d]/g, '').replace(/55(?=\d{10})/, '');
+        if(req.body.password) user.password = sha256(req.body.password);
+        writeData(data, err => {
+            if(err){
+                console.error(err);
+                return res.sendStatus(500);
+            }
+            user.password = null;
+            res.status(200).json(user);
+        });
+    }
+);
+router.put(
     '/users/:id',
     upload.none(),
-    (req, res) => (req.params.id === '0') ? res.sendStatus(403) : next(),
+    (req, res, next) => (req.params.id === '0') ? res.sendStatus(403) : next(),
     authenticate(true),
     fetchDocument('users', true),
     body('name').trim().notEmpty(),
@@ -294,7 +335,7 @@ router.delete('/products/:id', authenticate(true), fetchDocument('products', tru
 });
 router.delete(
     '/users/:id',
-    (req, res) => (req.params.id === '0') ? res.sendStatus(403) : next(),
+    (req, res, next) => (req.params.id === '0') ? res.sendStatus(403) : next(),
     authenticate(true),
     fetchDocument('users', true),
     async (req, res) => {
