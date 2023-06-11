@@ -6,13 +6,12 @@ import utils from '../assets/utils.js';
 const route = useRoute();
 const product = ref({});
 const cartProducts = JSON.parse(localStorage.getItem("cart")) ?? [];
-const image = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${route.params.id}/image`;
+const productURL = `${import.meta.env.VITE_API_HOST}/products/${route.params.id}`;
+const image = `${productURL}/image`;
 let cartProduct = ref();
 let amount = 1;
 const fetchProduct = async () => {
-    const res = await fetch(
-        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${route.params.id}`,
-    );
+    const res = await fetch(productURL);
     return await res.json();
 }
 fetchProduct().then(res => {

@@ -18,7 +18,7 @@ const fetchUser = async () => {
     const credentials = localStorage.getItem('credentials');
     user.email = atob(credentials).split(':')[0];
     const res = await fetch(
-        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/users/${user.email}`,
+        `${import.meta.env.VITE_API_HOST}/users/${user.email}`,
         {headers: {Authorization: `Basic ${credentials}`}},
     );
     return await res.json();

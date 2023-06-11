@@ -10,7 +10,7 @@ const props = defineProps({
     amount: Number,
     purchase: Boolean,
 });
-const image = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${props.id}/image`;
+const image = `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
 const emit = defineEmits(['amountChanged', 'removeItem']);
 const changeAmount = event => {
     let valueInt = parseInt(event.target.value, 10);

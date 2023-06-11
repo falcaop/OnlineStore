@@ -10,7 +10,7 @@ const emit = defineEmits(['signedIn']);
 const signUp = async event => {
     if(passwdConfirm !== passwd) return alert('Senhas inconsistentes');
     const formData = new FormData(event.target);
-    const res = await fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/users`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/users`, {
         method: 'POST',
         body: formData,
     });

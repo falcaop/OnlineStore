@@ -19,8 +19,7 @@ const updateTotalPriceString = () => {
 watch(cartProducts, updateTotalPriceString);
 const fetchProducts = async () => {
     const res = await fetch(
-        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products?` +
-        cartProducts.value.map(({id}) => `id=${id}`).join('&')
+        `${import.meta.env.VITE_API_HOST}/products?${cartProducts.value.map(({id}) => `id=${id}`).join('&')}`
     );
     return await res.json();
 }
