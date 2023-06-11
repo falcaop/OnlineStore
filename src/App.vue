@@ -157,11 +157,11 @@ footer{
 
 @media screen and (max-width: 767px) {
     .open-menu {
-        z-index: 100;
-        left: 0%;
+        z-index: 2;
+        top: unset;
     }
     .closed-menu {
-        left: 100%;
+        top: -100%;
     }
     .mobileMenu{
         display: flex;
