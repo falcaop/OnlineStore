@@ -6,6 +6,10 @@ import { ref } from 'vue';
 let passwd = '';
 let passwdConfirm = '';
 const isPasswordShown = ref(false);
+const passwordTitle = (
+    'A senha deve conter letras maiúsculas e minúsculas, números, e caracteres especiais, e não deve conter o' +
+    ' caractere ":".'
+);
 const emit = defineEmits(['signedIn']);
 const signUp = async event => {
     if(passwdConfirm !== passwd) return alert('Senhas inconsistentes');
@@ -76,9 +80,9 @@ const trim = event => (event.target.value = event.target.value.trim());
                     new-password
                     minlength="8"
                     :pattern="(
-                        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-#!$@£%^&*\(\)_+\|~=`\{\}\[\]:\x22;'<>?,.\/\s]).+/.source
+                        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-#!$@£%^&*\(\)_+\|~=`\{\}\[\]\x22;'<>?,.\/\s])(?!.*:).+/.source
                     )"
-                    title="A senha deve conter letras maiúsculas e minúsculas, números, e caracteres especiais"
+                    :title="passwordTitle"
                 />
                 <label for="password_confirm">Confirmar Senha</label>
                 <input
