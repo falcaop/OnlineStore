@@ -76,8 +76,8 @@ const trim = event => (event.target.value = event.target.value.trim());
                     new-password
                     minlength="8"
                     :pattern="(
-                        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\-#!$@£%^&*\(\)_+\|~=`\{\}\[\]:\x22;'<>?,.\/\s]).{8,}/
-                    ).source"
+                        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-#!$@£%^&*\(\)_+\|~=`\{\}\[\]:\x22;'<>?,.\/\s]).+/.source
+                    )"
                     title="A senha deve conter letras maiúsculas e minúsculas, números, e caracteres especiais"
                 />
                 <label for="password_confirm">Confirmar Senha</label>
