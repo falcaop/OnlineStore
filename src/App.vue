@@ -6,31 +6,41 @@ import IconProfile from './components/icons/IconProfile.vue';
 import IconLogin from './components/icons/IconLogin.vue';
 import IconLogout from './components/icons/IconLogout.vue';
 import IconBars from './components/icons/IconBars.vue';
+import IconSettings from './components/icons/IconSettings.vue';
 
 import { ref, watch } from 'vue';
 const router = useRouter();
 const route = useRoute();
 const q = ref('');
 const loggedIn = ref(localStorage.getItem('credentials'));
-if(loggedIn.value) fetch(`${import.meta.env.VITE_API_HOST}/authenticate`, {
-    method: 'HEAD',
-    headers: {Authorization: `Basic ${loggedIn.value}`},
-}).then(res => (loggedIn.value = res.ok));
+const isAdmin = ref(false);
+const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
+let mobileMenu = ref(false);
+const fetchMe = async () => {
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOST}/users/me`,
+        {headers: {Authorization: `Basic ${loggedIn.value}`},
+    });
+    loggedIn.value = res.ok;
+    const body = await res.json();
+    isAdmin.value = body.isAdmin;
+}
+if(loggedIn.value) fetchMe();
 watch(() => route.query.q, () => ((route.path === '/search') && (q.value = route.query.q)), {immediate: true});
 const search = query => router.push({path: '/search', query});
-const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 const logout = () => {
     localStorage.removeItem('credentials');
     loggedIn.value = false;
+    isAdmin.value = false;
     router.go(0);
 }
-const login = credentials => {
+const login = (credentials, admin) => {
     localStorage.setItem('credentials', credentials);
     loggedIn.value = true;
+    isAdmin.value = admin;
     router.push(route.redirectedFrom ?? '/account');
 } 
 
-let mobileMenu = ref(false);
 const openMenu = () => { mobileMenu.value = !mobileMenu.value; };
 
 </script>
@@ -51,18 +61,13 @@ const openMenu = () => { mobileMenu.value = !mobileMenu.value; };
                 </button>
             </form>
             <div class="user-buttons" :class="mobileMenu ? 'open-menu' : 'closed-menu'">
+                <RouterLink to="/cart"><IconCart/></RouterLink>
                 <template v-if="loggedIn">
-                    <RouterLink to="/cart">
-                        <IconCart/>
-                    </RouterLink>
-                    <RouterLink to="/account">
-                        <IconProfile/>
-                    </RouterLink>
+                    <RouterLink to="/account"><IconProfile/></RouterLink>
+                    <RouterLink v-if="isAdmin" to="/admin"><IconSettings/></RouterLink>
                     <IconLogout tabindex="0" @click="logout" @keyup.space.enter="logout"/>
                 </template>
-                <RouterLink v-else to="/signin">
-                    <IconLogin/>
-                </RouterLink>
+                <RouterLink v-else to="/signin"><IconLogin/></RouterLink>
             </div>
         </header>
         <nav :class="mobileMenu ? 'open-menu' : 'closed-menu'">

@@ -11,12 +11,13 @@ const emit = defineEmits(['signedIn']);
 
 const signIn = async () => {
     const credentials = btoa(`${email}:${passwd}`);
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/authenticate`, {
-        method: 'HEAD',
-        headers: {Authorization: `Basic ${credentials}`},
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOST}/users/me`,
+        {headers: {Authorization: `Basic ${credentials}`},
     });
     if(!res.ok) return alert('E-mail ou senha incorretos.');
-    emit('signedIn', credentials);
+    const body = await res.json();
+    emit('signedIn', credentials, body.isAdmin);
 }
 </script>
 

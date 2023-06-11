@@ -84,7 +84,7 @@ router.get(
 );
 router.get('/users/me', authenticate(), (req, res) => {
     const user = {};
-    for(const field of ['name', 'phone', 'address']) user[field] = req.user[field];
+    for(const field of ['name', 'phone', 'address', 'isAdmin']) user[field] = req.user[field];
     res.status(200).json(user);
 });
 router.get('/users', authenticate(true), async (req, res) => {

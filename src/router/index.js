@@ -61,7 +61,6 @@ const router = createRouter({
         {
             path: '/cart',
             component: () => import('../views/CartView.vue'),
-            beforeEnter: isAuthenticated(),
         },
         {
             path: '/payment',
