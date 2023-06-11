@@ -14,8 +14,8 @@ fetchProducts().then(res => (products.value = res));
 <template>
     <main>
         <section class="featured">
-            <RouterLink to="/customise">
-                <img class="banner" src="../assets/featuredmockup.png" />
+            <RouterLink to="/customize">
+                <img class="banner" src="../assets/banner.png" />
             </RouterLink>
         </section>
 
