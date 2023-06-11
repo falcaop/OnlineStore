@@ -2,16 +2,20 @@
 import IconDelete from './icons/IconDelete.vue';
 import utils from '../assets/utils.js';
 
+// atributos do produto, recebidos do componente pai
 const props = defineProps({
     id: Number,
     name: String,
     stock: Number,
     price: Number,
     amount: Number,
-    purchase: Boolean,
+    purchase: Boolean, // identificar se e o carrinho ou uma compra ja finalizada
 });
+
 const image = `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
 const emit = defineEmits(['amountChanged', 'removeItem']);
+
+// alterar a quantidade desejada do produto, emitir evento para componente pai
 const changeAmount = event => {
     let valueInt = parseInt(event.target.value, 10);
     if(isNaN(valueInt) || (valueInt < 1)) event.target.value = (valueInt = 1);
@@ -19,6 +23,7 @@ const changeAmount = event => {
     event.target.value = props.stock;
     alert(`Esse produto tem apenas ${props.stock} unidades em estoque no momento`);
 }
+// remover o produto do carrinho, emitir evento para componente pai
 const remove = () => (confirm("Tem certeza que deseja remover o produto do carrinho?") && emit('removeItem', props.id));
 </script>
 
@@ -76,6 +81,15 @@ img {
 label{
     margin-top: 0;
 }
+svg{
+    width: 30px;
+    height: 30px;
+    transition: .3s;
+    cursor: pointer;
+}
+svg:hover{
+    fill: var(--green);
+}
 
 @media screen and (max-width: 1200px){
     input[type="number"]{
@@ -96,14 +110,4 @@ label{
     }
 }
 
-/* */
-svg{
-    width: 30px;
-    height: 30px;
-    transition: .3s;
-    cursor: pointer;
-}
-svg:hover{
-    fill: var(--green);
-}
 </style>

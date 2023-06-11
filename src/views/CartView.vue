@@ -4,10 +4,13 @@ import { RouterLink } from 'vue-router';
 import ItemCart from '../components/ItemCart.vue';
 import utils from '../assets/utils.js';
 
+// itens do carrinho (id do produto e quantidade)
 const cartProducts = ref(JSON.parse(localStorage.getItem('cart')) ?? []);
-let products = [];
+
 const totalPriceString = ref('');
+let products = [];
 const findProduct = id => products.find(product => (product.id === id));
+// atualizar o valor total da compra
 const updateTotalPriceString = () => {
     totalPriceString.value = utils.toPriceString(
         cartProducts.value.reduce(
@@ -17,6 +20,8 @@ const updateTotalPriceString = () => {
     );
 }
 watch(cartProducts, updateTotalPriceString);
+
+// solicitar informacoes dos produtos no carrinho
 const fetchProducts = async () => {
     const res = await fetch(
         `${import.meta.env.VITE_API_HOST}/products?${cartProducts.value.map(({id}) => `id=${id}`).join('&')}`
@@ -27,6 +32,7 @@ fetchProducts().then(res => {
     products = res;
     updateTotalPriceString();
 });
+
 const empty = () =>{
     if (confirm("Tem certeza que deseja esvaziar o carrinho?")){
         cartProducts.value = [];

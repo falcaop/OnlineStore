@@ -3,6 +3,7 @@ import { RouterLink } from 'vue-router';
 import IconShow from '../components/icons/IconShow.vue';
 import IconHide from '../components/icons/IconHide.vue';
 import { ref } from 'vue';
+
 let passwd = '';
 let passwdConfirm = '';
 const isPasswordShown = ref(false);

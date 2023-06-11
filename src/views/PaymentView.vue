@@ -3,6 +3,8 @@ let number = '';
 let date = null;
 let code = '';
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// finalizar compra, esvaziar carrinho e adicionar compra a lista de compras do usuario
 const submitPayment = async () => {
     await delay();
     const products = JSON.parse(localStorage.getItem('cart'));

@@ -7,13 +7,8 @@ const user = reactive({
     phone: '',
     address: '',
 });
-let newUser = reactive({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-});
 
+// solicitar informacoes do usuario logado
 const fetchUser = async () => {
     const credentials = localStorage.getItem('credentials');
     user.email = atob(credentials).split(':')[0];
@@ -24,9 +19,17 @@ const fetchUser = async () => {
     return await res.json();
 }
 fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key] = value)));
+
+// solicitar compras do usuario
 const purchases = JSON.parse(localStorage.getItem('purchases'));
 
-
+// editar dados do usuario
+let newUser = reactive({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+});
 const showUpdateModal = () => {
     for (const key in newUser) newUser[key] = user[key];
     modal.showModal();
@@ -40,6 +43,7 @@ const updateUser = async target => {
 
 <template>
     <main>
+        <!-- Modal para editar os dados de um usuario -->
         <dialog @close="unhideScroll" id="modal">
             <h1>Editar usuario</h1>
             <form @submit="event => updateUser(event.target)" method="dialog">
@@ -68,6 +72,7 @@ const updateUser = async target => {
             </form>
         </dialog>
 
+        <!-- Conteudo da pagina -->
         <h2>Minha conta</h2>
         <div class="container">
             <h3>Informações pessoais</h3>

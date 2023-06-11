@@ -2,13 +2,16 @@
 import { useRouter } from 'vue-router';
 import utils from '../assets/utils.js';
 
-const router = useRouter();
+// atributos do produto, recebidos do componente pai
 const props = defineProps({
     id: Number,
     name: String,
     price: Number,
 });
 const image = `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
+
+// abrir pagina do produto quando clicar no card
+const router = useRouter();
 const showProduct = () => router.push({
     name: 'product',
     params: { id: props.id },
