@@ -1,24 +1,33 @@
 <script setup>
-import { ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 import ItemCart from '../components/ItemCart.vue';
 import utils from '../assets/utils.js';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const purchase = ref({});
-let products = [];
-
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
-const fetchPurchase= async () => {
-    await delay();
-    return JSON.parse(localStorage.getItem('purchases')).find(e => (e.id === parseInt(route.params.id, 10)));
-}
-fetchPurchase().then(res => {
-    purchase.value = res;
+const purchase = ref({
+    id: 0,
+    date: 0,
+    products: [],
 });
-
+let products = [];
 const totalPriceString = ref('');
+
+const fetchPurchase = async () => {
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOST}/purchases/${route.params.id}`,
+        {headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
+    });
+    return res.ok ? await res.json() : {};
+}
+
+const fetchProducts = async () => {
+    const res = await fetch(
+        `${import.meta.env.VITE_API_HOST}/products?${purchase.value.products.map(({id}) => `id=${id}`).join('&')}`
+    );
+    return res.ok ? await res.json() : [];
+}
+
 const findProduct = id => products.find(product => (product.id === id));
 const updateTotalPriceString = () => {
     totalPriceString.value = utils.toPriceString(
@@ -29,14 +38,9 @@ const updateTotalPriceString = () => {
     );
 }
 
-const fetchProducts = async () => {
-    await delay();
-    return JSON
-        .parse(localStorage.getItem('products'))
-        .filter(product => purchase.value.products.some(({id}) => (product.id === id)));
-}
-fetchProducts().then(res => {
-    products = res;
+fetchPurchase().then(async res => {
+    purchase.value = res;
+    products = await fetchProducts(); 
     updateTotalPriceString();
 });
 </script>

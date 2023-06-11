@@ -10,6 +10,7 @@ const user = reactive({
     email: atob(credentials).split(':')[0],
     phone: '',
     address: '',
+    purchases: [],
 });
 
 // solicitar informacoes do usuario logado
@@ -21,9 +22,6 @@ const fetchUser = async () => {
     return res.ok ? await res.json() : {};
 }
 fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key] = value)));
-
-// solicitar compras do usuario
-const purchases = JSON.parse(localStorage.getItem('purchases'));
 
 // editar dados do usuario
 const showUpdateModal = () => {
@@ -103,7 +101,7 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
             <div class="purchases">
                 <h3>Histórico de Compras</h3>
                 <ul>
-                    <li v-for="purchase in purchases">
+                    <li v-for="purchase in user.purchases">
                         <a :href="`/purchase/${purchase.id}`">
                             {{ purchase.id }} {{ new Date(purchase.date).toLocaleDateString() }}
                         </a>

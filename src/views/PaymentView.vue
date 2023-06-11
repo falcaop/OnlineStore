@@ -1,23 +1,40 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
 let number = '';
 let date = null;
 let code = '';
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
-
+const router = useRouter();
 // finalizar compra, esvaziar carrinho e adicionar compra a lista de compras do usuario
-const submitPayment = async () => {
-    await delay();
+const submitPayment = async event => {
     const products = JSON.parse(localStorage.getItem('cart'));
     if (!products) return alert('Nenhum produto no carrinho');
-    const purchases = JSON.parse(localStorage.getItem('purchases')) ?? [];
-    let id = 0;
-    if (purchases.length){
-        id = purchases[purchases.length-1].id + 1;
+    const formData = new FormData(event.target);
+    formData.append('cart', JSON.stringify(products));
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/purchases`, {
+        method: 'POST',
+        headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
+        body: formData,
+    });
+    switch(res.status){
+        case 201: {
+            localStorage.removeItem('cart');
+            alert('Compra finalizada');
+            router.push('/');
+        }
+        break;
+        case 401: {
+            alert('Usuário não autenticado');
+            router.push('/signin');
+        }
+        break;
+        case 406: {
+            // fazer ele ver qual produto nao tem avisar e tirar do carrinho
+            alert('algum produto ta sem estoque');
+        }
+        break;
+        default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
-    purchases.push({id: id, date: new Date(), products: products});
-    localStorage.setItem('purchases', JSON.stringify(purchases));
-    localStorage.removeItem('cart');
-    alert('Compra finalizada');
 }
 </script>
 
@@ -25,17 +42,17 @@ const submitPayment = async () => {
     <main>
         <h2>Pagamento</h2>
         <div class="container">
-            <form @submit.prevent.stop="submitPayment()">
+            <form @submit.prevent.stop="submitPayment">
                 <label for="number">Numero do cartao</label>
-                <input v-model="number" required id="number" type="text"/>
+                <input v-model="number" required id="number" type="text" :pattern="/\d+/.source" name="cardNumber"/>
                 <div class="columns">
                     <div class="left">
                         <label for="date">Data de validade</label>
-                        <input v-model="date" required id="date" type="month"/>
+                        <input v-model="date" required id="date" type="month" name="cardDate"/>
                     </div>
                     <div class="right">
                         <label for="code">Codigo de seguranca</label>
-                        <input v-model="code" required id="code" type="text"/>
+                        <input v-model="code" required id="code" type="text" :pattern="/\d{3}/.source" name="cardCode"/>
                     </div> 
                 </div>
                 <div class="alignRight">

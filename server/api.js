@@ -71,7 +71,7 @@ router.get('/products', async (req, res) => {
     if(req.query.sortField === 'name'){
         products.sort((a, b) => (a.name.localeCompare(b.name) * sortOrder));
     }
-    else if(['price', 'stock'].includes(req.query.sortField)){
+    else if(['price', 'sold'].includes(req.query.sortField)){
         products.sort((a, b) => ((a[req.query.sortField] - b[req.query.sortField]) * sortOrder));
     }
     res.status(200).json(products);
@@ -84,7 +84,7 @@ router.get(
 );
 router.get('/users/me', authenticate(), (req, res) => {
     const user = {};
-    for(const field of ['name', 'phone', 'address', 'isAdmin']) user[field] = req.user[field];
+    for(const field of ['name', 'phone', 'address', 'isAdmin', 'purchases']) user[field] = req.user[field];
     res.status(200).json(user);
 });
 router.get('/users', authenticate(true), async (req, res) => {
@@ -106,6 +106,11 @@ router.get('/users', authenticate(true), async (req, res) => {
         break;
     }
     res.status(200).json(users.filter(({id}) => id));
+});
+router.get('/purchases/:id', authenticate(), (req, res) => {
+    const purchase = req.user.purchases.find(({id}) => (id.toString() === req.params.id));
+    if(!purchase) return res.sendStatus(404);
+    res.status(200).json(purchase);
 });
 router.post(
     '/products',
@@ -135,6 +140,7 @@ router.post(
             price: Math.round(parseFloat(req.body.price) * 100) / 100,
             category: parseInt(req.body.category, 10),
             stock: parseInt(req.body.stock, 10),
+            sold: 0,
         };
         if(req.file) writeImage(product.id, req.file.buffer);
         data.products.push(product);
@@ -179,6 +185,7 @@ router.post(
             address: req.body.address.trim(),
             phone: req.body.phone.replace(/[^\d]/g, '').replace(/55(?=\d{10})/, ''),
             password: sha256(req.body.password),
+            purchases: [],
         };
         data.users.push(user);
         writeData(data, err => {
@@ -190,6 +197,54 @@ router.post(
             res
                 .status(201)
                 .json(user);
+        });
+    },
+);
+router.post(
+    '/purchases',
+    upload.none(),
+    authenticate(),
+    body('cardNumber').isInt({min: 0}),
+    body('cardDate').isAfter(Date().toString()),
+    body('cardCode').isInt({min: 0}).isLength({
+        min: 3,
+        max: 3,
+    }),
+    body('cart').toArray().isArray({min: 1}),
+    body('cart.*.id').isInt({min: 1}),
+    body('cart.*.amount').isInt({min: 1}),
+    async (req, res) => {
+        if(!validationResult(req).isEmpty()) return res.sendStatus(400);
+        let data;
+        try{
+            data = await fetchData();
+        }
+        catch(err){
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        const cart = JSON.parse(req.body.cart);
+        for(const {id, amount} of cart){
+            const product = data.products.find(p => (p.id === id));
+            if(!product || (amount > product.stock)) return res.sendStatus(406);
+            product.stock -= amount;
+            product.sold += amount;
+        }
+        const user = data.users.find(({id}) => (id === req.user.id));
+        const purchase = {
+            id: (user.purchases.at(-1)?.id ?? 0) + 1,
+            date: Date.now(),
+            products: cart,
+        };
+        user.purchases.push(purchase);
+        writeData(data, err => {
+            if(err){
+                console.error(err);
+                return res.sendStatus(500);
+            };
+            res
+                .status(201)
+                .json(purchase);
         });
     },
 );

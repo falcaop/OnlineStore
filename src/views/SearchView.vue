@@ -33,9 +33,9 @@ const sortMethods = {
         },
     },
     soldDesc: {
-        description: 'Mais vendidos (temporariamente maior estoque)',
+        description: 'Mais vendidos',
         info: {
-            field: 'stock',
+            field: 'sold',
             order: -1,
         },
     },
