@@ -145,6 +145,22 @@ const priceDescription = ({minPrice, maxPrice}) => {
                 <div>
                     <h4>Preço</h4>
                     <a
+                        :href="searchURL({
+                            minPrice: null,
+                            maxPrice: null,
+                        })"
+                        @click.prevent.stop="filterProducts({
+                            minPrice: null,
+                            maxPrice: null,
+                        })"
+                        :class="{
+                            active: isCurrentPrice({
+                                minPrice: null,
+                                maxPrice: null,
+                            }),
+                        }"
+                    >Todos</a>
+                    <a
                         v-for="price in prices"
                         :href="searchURL(price)"
                         @click.prevent.stop="filterProducts(price)"
