@@ -1,16 +1,19 @@
 <script setup>
+defineProps({
+    queryName: String,
+    options: Array,
+})
 let q = '';
-let category = '';
-const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
+let selected = '';
 </script>
 
 <template>
     <main>
-        <form class="searchbar" @submit.prevent.stop="$router.push({query: {q, category}})">
+        <form class="searchbar" @submit.prevent.stop="$router.push({query: {q, [queryName]: selected}})">
             <input v-model="q" type="search"/>
-            <select v-model.number="category">
+            <select v-model.number="selected">
                 <option value="">Todas</option>
-                <option v-for="(categoryName, i) in categories" :key="i" :value="i">{{ categoryName }}</option>
+                <option v-for="(optionName, i) in options" :key="i" :value="i">{{ optionName }}</option>
             </select>
             <button>
                 <i class="fa fa-search fa-2x clickable"></i>
@@ -25,9 +28,11 @@ main{
     width: 100%;
 }
 .searchbar input{
-    width: 90%;
     padding: 0.7rem;
     box-sizing: border-box;
+}
+.searchbar select{
+    width: auto;
 }
 .searchbar{
     margin-bottom: 50px;
@@ -35,9 +40,14 @@ main{
     justify-content: space-between;
     gap: 20px;
 }
-@media screen and (max-width: 767px) {
-    .searchbar input{
-        width: 80%;
+@media screen and (max-width: 768px) {
+    .searchbar{
+        flex-direction: column;
+        gap: 10px;
+        align-items: start;
+    }
+    .searchbar select{
+        width: 100%;
     }
 }
 button{

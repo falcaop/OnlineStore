@@ -1,22 +1,21 @@
 <script setup>
 import { reactive } from 'vue';
 
+const credentials = localStorage.getItem('credentials');
 const user = reactive({
     name: '',
-    email: '',
+    email: atob(credentials).split(':')[0],
     phone: '',
     address: '',
 });
 
 // solicitar informacoes do usuario logado
 const fetchUser = async () => {
-    const credentials = localStorage.getItem('credentials');
-    user.email = atob(credentials).split(':')[0];
     const res = await fetch(
-        `${import.meta.env.VITE_API_HOST}/users/${user.email}`,
+        `${import.meta.env.VITE_API_HOST}/users/me`,
         {headers: {Authorization: `Basic ${credentials}`}},
     );
-    return await res.json();
+    return res.ok ? await res.json() : {};
 }
 fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key] = value)));
 
@@ -86,7 +85,7 @@ const updateUser = async target => {
                 <hr>
                 <div class="right">
                     <h4>Telefone</h4>
-                    <p> {{ user.phone }}</p>
+                    <p> {{ `(${user.phone.slice(0, 2)}) ${user.phone.slice(2, -4)}-${user.phone.slice(-4)}` }}</p>
                     <h4>Endereço</h4>
                     <p> {{ user.address }}</p>
                 </div> 

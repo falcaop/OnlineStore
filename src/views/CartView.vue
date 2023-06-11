@@ -26,7 +26,7 @@ const fetchProducts = async () => {
     const res = await fetch(
         `${import.meta.env.VITE_API_HOST}/products?${cartProducts.value.map(({id}) => `id=${id}`).join('&')}`
     );
-    return await res.json();
+    return res.ok ? await res.json() : [];
 }
 fetchProducts().then(res => {
     products = res;

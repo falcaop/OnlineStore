@@ -1,95 +1,79 @@
 <script setup>
 import AdminSearch from '../components/AdminSearch.vue';
 import AdminListItem from '../components/AdminListItem.vue';
+import UserFormInputs from '../components/UserFormInputs.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { reactive, ref, watch } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
-const apiHost = `${import.meta.env.VITE_API_HOST}`;
 
-const users = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
-const fetchProducts = async () => {
+const users = ref([{email: 'a'}, {email: 'b'}, {email: 'c'}, {email: 'd'}, {email: 'e'}, {email: 'f'}, {email: 'g'}]);
+const url = `${import.meta.env.VITE_API_HOST}/users`;
+const Authorization = `Basic ${localStorage.getItem('credentials')}`;
+const fetchUsers = async () => {
     const queries = {};
     if(route.query.q) queries.q = route.query.q;
-    if(route.query.category) queries.category = route.query.category;
-    const res = await fetch(`${apiHost}/products?${new URLSearchParams(queries)}`);
-    return await res.json();
+    if(route.query.admin) queries.admin = route.query.admin;
+    const res = await fetch(`${url}?${new URLSearchParams(queries)}`, {headers: {Authorization}});
+    return res.ok ? await res.json() : [];
 }
-watch(() => route.query, async () => {
-    const tmpProducts = await fetchProducts();
-    tmpProducts.forEach(product => (product.image = `${apiHost}/products/${product.id}/image`));
-    products.value = tmpProducts;
-}, {immediate: true});
-const categories = ['categoria1', 'categoria2', 'categoria3', 'categoria4', 'categoria5', 'categoria6', 'categoria7'];
-let currentProduct = null;
-let newProduct = reactive({
-    id: null,
+watch(() => route.query, async () => (users.value = await fetchUsers()), {immediate: true});
+let currentUser = null;
+const newUser = reactive({
+    email: null,
     name: null,
-    description: null,
-    price: null,
-    category: null,
-    stock: null,
-    image: null,
+    address: null,
+    phone: null,
+    password: null,
+    isAdmin: null,
 });
 const showUpdateModal = id => {
-    currentProduct = products.value.find(product => (product.id === id));
-    for(const key in newProduct) newProduct[key] = currentProduct[key];
+    currentUser = users.value.find(user => (user.id === id));
+    for(const key in newUser) newUser[key] = currentUser[key];
     modal.showModal();
     document.body.style.overflowY = 'hidden';
 };
 const showAddModal = () => {
-    currentProduct = null;
-    for(const key in newProduct) newProduct[key] = null;
+    currentUser = null;
+    for(const key in newUser) newUser[key] = null;
     modal.showModal();
     document.body.style.overflowY = 'hidden';
 }
 const closeModal = () => modal.close();
 const addItem = async target => {
     const formData = new FormData(target);
-    if(!formData.get('image').size) formData.delete('image');
-    const res = await fetch(`${apiHost}/products`, {
+    const res = await fetch(url, {
         method: 'POST',
-        headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
         body: formData,
     });
     switch(res.status){
         case 201: {
-            alert(`${newProduct.name} adicionado`);
-            const product = await res.json();
-            product.image = `${apiHost}/products/${product.id}/image`;
-            products.value.push(product);
+            alert(`${formData.get('name')} adicionado`);
+            const user = await res.json();
+            users.value.push(user);
         }
         break;
         case 400: alert('Dados inválidos');
         break;
-        case 401: {
-            alert('Usuário não autenticado');
-            router.push({path: '/signin'});
-        }
-        break;
-        case 403: {
-            alert('Permissões insuficientes');
-            router.push({path: '/'});
-        }
+        case 409: alert('Já existe um usuário cadastrado com esse email');
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
 const updateItem = async target => {
     const formData = new FormData(target);
-    if(!formData.get('image').size) formData.delete('image');
-    const res = await fetch(`${apiHost}/products/${currentProduct.id}`, {
+    if(!formData.get('password')) formData.delete('password');
+    const res = await fetch(`${url}/${currentUser.id}`, {
         method: 'PUT',
-        headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
+        headers: {Authorization},
         body: formData,
     });
     switch(res.status){
         case 200: {
-            alert(`${currentProduct.name} atualizado`);
-            const product = await res.json();
-            product.image = `${apiHost}/products/${product.id}/image`;
-            for(const key in product) currentProduct[key] = product[key];
+            alert(`${currentUser.name} atualizado`);
+            const user = await res.json();
+            for(const key in user) currentUser[key] = user[key];
         }
         break;
         case 400: alert('Dados inválidos');
@@ -105,24 +89,26 @@ const updateItem = async target => {
         }
         break;
         case 404: {
-            alert('Produto não encontrado');
-            products.value = products.value.filter(({id}) => (id !== currentProduct.id));
+            alert('Usuário não encontrado');
+            users.value = users.value.filter(({id}) => (id !== currentUser.id));
         }
+        break;
+        case 409: alert('Já existe um usuário cadastrado com esse email');
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
 const deleteItem = async id => {
-    currentProduct = products.value.find(product => (product.id === id));
-    if(!confirm(`Tem certeza que deseja deletar ${currentProduct.name}?`)) return;
-    const res = await fetch(`${apiHost}/products/${id}`, {
+    currentUser = users.value.find(user => (user.id === id));
+    if(!confirm(`Tem certeza que deseja deletar ${currentUser.name}?`)) return;
+    const res = await fetch(`${url}/${id}`, {
         method: 'DELETE',
-        headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
+        headers: {Authorization},
     });
     switch(res.status){
         case 204: {
-            alert(`${currentProduct.name} deletado`);
-            products.value = products.value.filter(product => (product.id !== id));
+            alert(`${currentUser.name} deletado`);
+            users.value = users.value.filter(user => (user.id !== id));
         }
         break;
         case 401: {
@@ -136,8 +122,8 @@ const deleteItem = async id => {
         }
         break;
         case 404: {
-            alert('Produto não encontrado');
-            products.value = products.value.filter(product => (product.id !== id));
+            alert('Usuário não encontrado');
+            users.value = users.value.filter(user => (user.id !== id));
         }
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
@@ -149,24 +135,17 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
 <template>
     <section>
         <dialog @close="unhideScroll" id="modal">
-            <h1>{{ currentProduct ? `Editar ${currentProduct.name}` : 'Adicionar usuario' }}</h1>
-            <form @submit="event => currentProduct ? updateItem(event.target) : addItem(event.target)" method="dialog">
-                <label for="name">Nome</label>
-                <input required type="text" id="name" name="name" @focusout="trim"/>
-
-                <label for="email">E-mail</label>
-                <input required id="email" type="email" name="email"/>
-
-                <label for="address">Endereço</label>
-                <input required type="text" id="address" name="address" @focusout="trim"/>
-                <label for="phone">Telefone</label>
-                <input
-                    required
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
+            <h1 v-if="currentUser">{{ `Editar ${currentUser.name}` }}</h1>
+            <h1 v-else>Adicionar usuario</h1>
+            <form @submit="event => currentUser ? updateItem(event.target) : addItem(event.target)" method="dialog">
+                <UserFormInputs
+                    :email="newUser.email"
+                    :name="newUser.name"
+                    :address="newUser.address"
+                    :phone="newUser.phone"
                 />
+                <input type="checkbox" id="admin" name="admin" :checked="newUser.isAdmin"/>
+                <label for="admin">Administrator</label>
                 <div class="columns">
                     <input type="submit" value="Confirmar">
                     <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
@@ -174,8 +153,8 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
             </form>
         </dialog>
         
-        <h1>Usuarios</h1>
-        <AdminSearch/>
+        <h1>Usuários</h1>
+        <AdminSearch queryName="admin" :options="['Clientes', 'Administradores']"/>
 
         <div class="alignRight">
             <i
@@ -187,11 +166,11 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
         </div>
         <ul>
             <hr>
-            <template v-for="product in products" :key="product.id">
+            <template v-for="user in users" :key="user.id">
                 <AdminListItem
                     @updateItem="showUpdateModal"
                     @deleteItem="deleteItem"
-                    v-bind="product"
+                    v-bind="user"
                 />
                 <hr>
             </template>

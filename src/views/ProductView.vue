@@ -14,7 +14,7 @@ let amount = 1;
 // solicitar informacoes do produto 
 const fetchProduct = async () => {
     const res = await fetch(productURL);
-    return await res.json();
+    return res.ok ? await res.json() : [];
 }
 fetchProduct().then(res => {
     product.value = res;

@@ -6,23 +6,23 @@ import { reactive, ref, watch } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
-const apiHost = `${import.meta.env.VITE_API_HOST}`;
 const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
+const Authorization = `Basic ${localStorage.getItem('credentials')}`;
 const fetchProducts = async () => {
     const queries = {};
     if(route.query.q) queries.q = route.query.q;
     if(route.query.category) queries.category = route.query.category;
-    const res = await fetch(`${apiHost}/products?${new URLSearchParams(queries)}`);
-    return await res.json();
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
+    return res.ok ? await res.json() : [];
 }
 watch(() => route.query, async () => {
     const tmpProducts = await fetchProducts();
-    tmpProducts.forEach(product => (product.image = `${apiHost}/products/${product.id}/image`));
+    tmpProducts.forEach(product => (product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`));
     products.value = tmpProducts;
 }, {immediate: true});
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 let currentProduct = null;
-let newProduct = reactive({
+const newProduct = reactive({
     id: null,
     name: null,
     description: null,
@@ -47,16 +47,16 @@ const closeModal = () => modal.close();
 const addItem = async target => {
     const formData = new FormData(target);
     if(!formData.get('image').size) formData.delete('image');
-    const res = await fetch(`${apiHost}/products`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products`, {
         method: 'POST',
-        headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
+        headers: {Authorization},
         body: formData,
     });
     switch(res.status){
         case 201: {
             alert(`${newProduct.name} adicionado`);
             const product = await res.json();
-            product.image = `${apiHost}/products/${product.id}/image`;
+            product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`;
             products.value.push(product);
         }
         break;
@@ -78,16 +78,16 @@ const addItem = async target => {
 const updateItem = async target => {
     const formData = new FormData(target);
     if(!formData.get('image').size) formData.delete('image');
-    const res = await fetch(`${apiHost}/products/${currentProduct.id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products/${currentProduct.id}`, {
         method: 'PUT',
-        headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
+        headers: {Authorization},
         body: formData,
     });
     switch(res.status){
         case 200: {
             alert(`${currentProduct.name} atualizado`);
             const product = await res.json();
-            product.image = `${apiHost}/products/${product.id}/image`;
+            product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`;
             for(const key in product) currentProduct[key] = product[key];
         }
         break;
@@ -114,9 +114,9 @@ const updateItem = async target => {
 const deleteItem = async id => {
     currentProduct = products.value.find(product => (product.id === id));
     if(!confirm(`Tem certeza que deseja deletar ${currentProduct.name}?`)) return;
-    const res = await fetch(`${apiHost}/products/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products/${id}`, {
         method: 'DELETE',
-        headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
+        headers: {Authorization},
     });
     switch(res.status){
         case 204: {
@@ -149,7 +149,8 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
 <template>
     <section>
         <dialog @close="unhideScroll" id="modal">
-            <h1>{{ currentProduct ? `Editar ${currentProduct.name}` : 'Adicionar produto' }}</h1>
+            <h1 v-if="currentProduct">{{ `Editar ${currentProduct.name}` }}</h1>
+            <h1 v-else>Adicionar produto</h1>
             <form @submit="event => currentProduct ? updateItem(event.target) : addItem(event.target)" method="dialog">
                 <label for="name">Nome</label>
                 <input v-model="newProduct.name" required type="text" id="name" name="name"/>
@@ -187,7 +188,7 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
             </form>
         </dialog>
         <h1>Produtos</h1>
-        <AdminSearch/>
+        <AdminSearch queryName="category" :options="categories"/>
 
         <div class="alignRight">
             <i

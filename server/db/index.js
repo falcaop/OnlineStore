@@ -8,15 +8,15 @@ const dbpath = join(__dirname, 'tempdb.json');
 const imagespath = join(__dirname, 'images');
 if(!fs.existsSync(dbpath)){
     fs.writeFileSync(dbpath, JSON.stringify({
-        users: {
-            admin: {
-                name: 'admin',
-                address: '',
-                phone: '',
-                password: sha256('admin'),
-                isAdmin: true,
-            },
-        },
+        users: [{
+            id: 0,
+            email: 'admin',
+            name: 'admin',
+            address: '',
+            phone: '',
+            password: sha256('admin'),
+            isAdmin: true,
+        }],
         products: [],
     }));
 }

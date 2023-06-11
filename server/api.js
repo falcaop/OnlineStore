@@ -17,12 +17,12 @@ const authenticate = admin => async (req, res, next) => {
         console.error(err);
         return res.sendStatus(500);
     }
-    const user = data.users[email];
-    if(!user || (user.password !== sha256(password))) return res.sendStatus(401);
-    if(admin && !user.isAdmin) return res.sendStatus(403);
+    req.user = data.users.find(user => (user.email === email));
+    if(!req.user || (req.user.password !== sha256(password))) return res.sendStatus(401);
+    if(admin && !req.user.isAdmin) return res.sendStatus(403);
     next();
 }
-const fetchProduct = dry => async (req, res, next) => {
+const fetchDocument = (model, dry) => async (req, res, next) => {
     let data;
     try{
         data = await fetchData();
@@ -31,7 +31,7 @@ const fetchProduct = dry => async (req, res, next) => {
         console.error(err);
         return res.sendStatus(500);
     }
-    const document = data.products.find(({id}) => (id.toString() === req.params.id));
+    const document = data[model].find(({id}) => (id.toString() === req.params.id));
     if(!document) return res.sendStatus(404);
     if(!dry) req.document = document;
     next();
@@ -39,10 +39,10 @@ const fetchProduct = dry => async (req, res, next) => {
 const router = Router();
 router.head(
     '/authenticate',
-    (req, res, next) => authenticate(req.query.admin === '1')(req, res, next),
+    async (req, res, next) => await authenticate(req.query.admin === '1')(req, res, next),
     (_, res) => res.sendStatus(204),
 );
-router.head('/products/:id', fetchProduct(true), (_, res) => res.sendStatus(204));
+router.head('/products/:id', fetchDocument('products', true), (_, res) => res.sendStatus(204));
 router.get('/products', async (req, res) => {
     let data;
     try{
@@ -76,32 +76,36 @@ router.get('/products', async (req, res) => {
     }
     res.status(200).json(products);
 });
-router.get('/products/:id', fetchProduct(), (req, res) => res.status(200).json(req.document));
+router.get('/products/:id', fetchDocument('products'), (req, res) => res.status(200).json(req.document));
 router.get(
     '/products/:id/image',
-    fetchProduct(true),
+    fetchDocument('products', true),
     (req, res) => fetchImage(req.params.id, (err, data) => err ? res.sendStatus(404) : res.status(200).send(data)),
 );
-router.get('/users/:email', (req, res, next) => {
-    const authorization = req.header('Authorization');
-    if(!authorization || !authorization.startsWith('Basic ')) return res.sendStatus(401);
-    authenticate(
-        req.params.email !== Buffer.from(authorization.split(' ')[1], 'base64').toString().split(':')[0],
-    )(req, res, next);
-}, async (req, res) => {
+router.get('/users/me', authenticate(), (req, res) => {
+    const user = {};
+    for(const field of ['name', 'phone', 'address']) user[field] = req.user[field];
+    res.status(200).json(user);
+});
+router.get('/users', authenticate(true), async (req, res) => {
     let data;
     try{
         data = await fetchData();
     }
     catch(err){
         console.error(err);
-        return res.sendStatus(500);
+        res.sendStatus(500);
     }
-    const document = data.users[req.params.email];
-    if(!document) return res.sendStatus(404);
-    const user = {};
-    for(const field of ['name', 'phone', 'address']) user[field] = document[field];
-    res.status(200).json(user);
+    data.users.forEach(user => (user.password = null));
+    let {users} = data;
+    if(req.query.q) users = users.filter(({name}) => name.toUpperCase().includes(req.query.q.toUpperCase()));
+    switch(req.query.admin){
+        case '0': users = users.filter(({isAdmin}) => !isAdmin);
+        break;
+        case '1': users = users.filter(({isAdmin}) => isAdmin);
+        break;
+    }
+    res.status(200).json(users.filter(({id}) => id));
 });
 router.post(
     '/products',
@@ -152,8 +156,13 @@ router.post(
     body('address').trim().notEmpty(),
     body('phone').isMobilePhone('pt-BR'),
     body('password').isStrongPassword().not().contains(':'),
-    async (req, res) => {
+    body('admin').equals('on').optional(),
+    async (req, res, next) => {
         if(!validationResult(req).isEmpty()) return res.sendStatus(400);
+        if(req.body.admin) return await authenticate(true)(req, res, next);
+        next();
+    },
+    async (req, res) => {
         let data;
         try{
             data = await fetchData();
@@ -162,21 +171,25 @@ router.post(
             console.error(err);
             return res.sendStatus(500);
         }
-        if(data.users[req.body.email]) return res.sendStatus(409);
-        data.users[req.body.email] = {
+        if(data.users.some(({email}) => (email === req.body.email))) return res.sendStatus(409);
+        const user = {
+            id: data.users.at(-1).id + 1,
+            email: req.body.email,
             name: req.body.name.trim(),
             address: req.body.address.trim(),
-            phone: req.body.phone,
+            phone: req.body.phone.replace(/[^\d]/g, '').replace(/55(?=\d{10})/, ''),
             password: sha256(req.body.password),
         };
+        data.users.push(user);
         writeData(data, err => {
             if(err){
                 console.error(err);
                 return res.sendStatus(500);
             };
+            user.password = null;
             res
                 .status(201)
-                .json({credentials: Buffer.from(`${req.body.email}:${req.body.password}`).toString('base64')});
+                .json(user);
         });
     },
 );
@@ -184,7 +197,7 @@ router.put(
     '/products/:id',
     upload.single('image'),
     authenticate(true),
-    fetchProduct(true),
+    fetchDocument('products', true),
     body('name').trim().notEmpty(),
     body('price').isFloat({min: 0}),
     body('category').isInt({
@@ -217,7 +230,52 @@ router.put(
         });
     },
 );
-router.delete('/products/:id', authenticate(true), fetchProduct(true), async (req, res) => {
+router.put(
+    '/users/:id',
+    upload.none(),
+    (req, res) => (req.params.id === '0') ? res.sendStatus(403) : next(),
+    authenticate(true),
+    fetchDocument('users', true),
+    body('name').trim().notEmpty(),
+    body('email').isEmail({
+        allow_utf8_local_part: false,
+        domain_specific_validation: true,
+    }).not().contains(':'),
+    body('address').trim().notEmpty(),
+    body('phone').isMobilePhone('pt-BR'),
+    body('password').isStrongPassword().not().contains(':').optional(),
+    body('admin').equals('on').optional(),
+    async (req, res) => {
+        if(!validationResult(req).isEmpty()) return res.sendStatus(400);
+        let data;
+        try{
+            data = await fetchData();
+        }
+        catch(err){
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        const user = data.users.find(({id}) => (id.toString() === req.params.id));
+        if(user.email !== req.body.email){
+            if(data.users.some(({email}) => (email === req.body.email))) return res.sendStatus(409);
+            user.email = req.body.email;
+        }
+        user.name = req.body.name.trim();
+        user.address = req.body.address.trim();
+        user.phone = req.body.phone.replace(/[^\d]/g, '').replace(/55(?=\d{10})/, '');
+        user.isAdmin = Boolean(req.body.admin);
+        if(req.body.password) user.password = sha256(req.body.password);
+        writeData(data, err => {
+            if(err){
+                console.error(err);
+                return res.sendStatus(500);
+            }
+            user.password = null;
+            res.status(200).json(user);
+        });
+    },
+);
+router.delete('/products/:id', authenticate(true), fetchDocument('products', true), async (req, res) => {
     let data;
     try{
         data = await fetchData();
@@ -234,6 +292,28 @@ router.delete('/products/:id', authenticate(true), fetchProduct(true), async (re
         res.sendStatus(500);
     });
 });
+router.delete(
+    '/users/:id',
+    (req, res) => (req.params.id === '0') ? res.sendStatus(403) : next(),
+    authenticate(true),
+    fetchDocument('users', true),
+    async (req, res) => {
+        let data;
+        try{
+            data = await fetchData();
+        }
+        catch(err){
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        data.users = data.users.filter(({id}) => (id.toString() !== req.params.id));
+        writeData(data, err => {
+            if(!err) return res.sendStatus(204);
+            console.error(err);
+            res.sendStatus(500);
+        });
+    },
+);
 router.get('/coffee', (_, res) => res.sendStatus(418));
 router.get('/*', (_, res) => res.sendStatus(404));
 

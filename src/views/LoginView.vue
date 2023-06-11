@@ -15,7 +15,7 @@ const signIn = async () => {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });
-    if(res.status !== 204) return alert('E-mail ou senha incorretos.');
+    if(!res.ok) return alert('E-mail ou senha incorretos.');
     emit('signedIn', credentials);
 }
 </script>

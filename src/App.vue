@@ -15,7 +15,7 @@ const loggedIn = ref(localStorage.getItem('credentials'));
 if(loggedIn.value) fetch(`${import.meta.env.VITE_API_HOST}/authenticate`, {
     method: 'HEAD',
     headers: {Authorization: `Basic ${loggedIn.value}`},
-}).then(res => (loggedIn.value = (res.status === 204)));
+}).then(res => (loggedIn.value = res.ok));
 watch(() => route.query.q, () => ((route.path === '/search') && (q.value = route.query.q)), {immediate: true});
 const search = query => router.push({path: '/search', query});
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];

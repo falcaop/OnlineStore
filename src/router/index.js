@@ -9,7 +9,7 @@ const isAuthenticated = (admin = false) => async () => {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });
-    if(res.status !== 204) return (admin ? '/404' : '/signin');
+    if(!res.ok) return (admin ? '/404' : '/signin');
 }
 const isUnauthenticated = async () => {
     const credentials = localStorage.getItem('credentials');
@@ -18,7 +18,7 @@ const isUnauthenticated = async () => {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });
-    if(res.status === 204) return '/account';
+    if(res.ok) return '/account';
 }
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,7 +37,7 @@ const router = createRouter({
             component: () => import('../views/ProductView.vue'),
             beforeEnter: async to => {
                 const res = await fetch(`${apiHost}/products/${to.params.id}`, {method: 'HEAD'});
-                if(res.status !== 204) return '/404';
+                if(!res.ok) return '/404';
             },
         },
         {

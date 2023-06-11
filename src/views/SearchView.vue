@@ -74,7 +74,7 @@ const fetchProducts = async () => {
         if(route.query[query]) queries[query] = route.query[query];
     }
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
-    return await res.json();
+    return res.ok ? await res.json() : [];
 }
 watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });
 
