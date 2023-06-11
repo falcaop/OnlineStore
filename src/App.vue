@@ -12,7 +12,7 @@ const router = useRouter();
 const route = useRoute();
 const q = ref('');
 const loggedIn = ref(localStorage.getItem('credentials'));
-if(loggedIn.value) fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/authenticate`, {
+if(loggedIn.value) fetch(`${import.meta.env.VITE_API_HOST}/authenticate`, {
     method: 'HEAD',
     headers: {Authorization: `Basic ${loggedIn.value}`},
 }).then(res => (loggedIn.value = (res.status === 204)));

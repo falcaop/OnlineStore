@@ -9,7 +9,7 @@ const isPasswordShown = ref(false);
 const emit = defineEmits(['signedIn']);
 const signIn = async () => {
     const credentials = btoa(`${email}:${passwd}`);
-    const res = await fetch(`${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/authenticate`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/authenticate`, {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });

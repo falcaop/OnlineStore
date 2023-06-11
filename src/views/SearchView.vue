@@ -46,9 +46,7 @@ const fetchProducts = async () => {
     for(const query of ['q', 'category', 'minPrice', 'maxPrice']){
         if(route.query[query]) queries[query] = route.query[query];
     }
-    const res = await fetch(
-        `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products?${new URLSearchParams(queries)}`
-    );
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
     return await res.json();
 }
 watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });

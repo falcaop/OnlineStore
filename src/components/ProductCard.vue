@@ -8,7 +8,7 @@ const props = defineProps({
     name: String,
     price: Number,
 });
-const image = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}/products/${props.id}/image`;
+const image = `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
 const showProduct = () => router.push({
     name: 'product',
     params: { id: props.id },

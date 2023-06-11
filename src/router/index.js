@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 
-const apiHost = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}`;
+const apiHost = `${import.meta.env.VITE_API_HOST}`;
 const isAuthenticated = (admin = false) => async () => {
     const credentials = localStorage.getItem('credentials');
     if(!credentials) return '/signin';

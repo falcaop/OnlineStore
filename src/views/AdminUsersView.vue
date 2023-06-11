@@ -6,7 +6,7 @@ import { reactive, ref, watch } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
-const apiHost = `${import.meta.env.VITE_API_HOSTNAME}:${import.meta.env.VITE_API_PORT}`;
+const apiHost = `${import.meta.env.VITE_API_HOST}`;
 
 const users = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
 const fetchProducts = async () => {
