@@ -50,6 +50,10 @@ const router = createRouter({
             component: () => import('../views/CustomizeView.vue'),
         },
         {
+            path: '/404',
+            component: () => import('../views/404View.vue'),
+        },
+        {
             path: '/signin',
             component: () => import('../views/LoginView.vue'),
             beforeEnter: isUnauthenticated,

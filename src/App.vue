@@ -152,6 +152,7 @@ footer{
 
 @media screen and (max-width: 767px) {
     .open-menu {
+        z-index: 100;
         left: 0%;
     }
     .closed-menu {
@@ -182,5 +183,4 @@ footer{
         transition: .3s;
     }
 }
-
 </style>

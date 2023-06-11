@@ -8,7 +8,7 @@ const product = {price: 0, amount: 1, size: 'P', image: 'https://upload.wikimedi
 const cartProducts = JSON.parse(localStorage.getItem("cart")) ?? [];
 let cartProduct = ref();
 let amount = 1;
-let selectedColor = ref('#000');
+let selectedColor = ref('#FFFFFF');
 let imageLink = ref('');
 let size = '';
 
@@ -17,7 +17,19 @@ watch(selectedColor);
 const addToCart = () => {
     console.log(selectedColor.value, amount, imageLink.value, size);
 }
-const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFFFF", "#000000", "#FFFF00", "#00FFFF", "#FF00FF", "#808080"];
+const colors = [
+  "#FFFFFF", // White
+  "#808080", // Gray
+  "#000000", // Black
+  "#000080", // Navy Blue
+  "#4169E1", // Royal Blue
+  "#FF0000", // Red
+  "#800000", // Maroon
+  "#228B22", // Forest Green
+  "#800080", // Purple
+  "#FFC0CB", // Pink
+  "#FFD700"  // Gold
+]
 const sizes = ["PP", "P", "M", "G", "GG"];
 </script>
 
@@ -26,8 +38,9 @@ const sizes = ["PP", "P", "M", "G", "GG"];
         <h2>Personalizar camiseta</h2>
         <div class="product">
             <div class="imagePreview">
-                <img class="preview" src="https://i.pinimg.com/originals/c0/12/af/c012af0a0bf232e9d5b6f776e78cf8fc.png">
-                <img class="imageOverlay" :src="imageLink"/>
+                <img class="preview" src="https://static.vecteezy.com/system/resources/previews/012/628/183/non_2x/isolated-regular-plain-white-t-shirt-free-png.png">
+                <div class="colorOverlay" :style="{backgroundColor: selectedColor}"></div>
+                <img class="imageOverlay" :src="imageLink" />
             </div>
             <div class="rows">
                 <p class="price">{{ utils.toPriceString(product.price ?? 0) }}</p>
@@ -59,7 +72,7 @@ const sizes = ["PP", "P", "M", "G", "GG"];
                         </div>
                     </div>
                     <label for="estampa">Escolher estampa</label>
-                    <input name="estampa" required type=text v-model="imageLink">
+                    <input name="estampa" required type="url" v-model="imageLink">
                     <button class="button">Adicionar ao carrinho</button>
                 </form>
             </div>
@@ -98,7 +111,51 @@ input[type="radio"] {
 input[type="radio"]:focus, input[type="radio"]:checked {
     outline: max(2px, 0.15em) solid black;
 }
+.product{
+    align-items: start;
+}
 
+.imagePreview{
+    width: 40%;
+    position: relative;
+    background-color: black;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.preview{
+    border-radius: 10px;
+    width: 100%;
+    aspect-ratio: 5/6;
+    object-fit: cover;
+}
+.colorOverlay{
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    mix-blend-mode: multiply;
+    opacity: 0.8;
+}
+.imageOverlay{
+    width: 40%;
+    position: absolute;
+    top: -20%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+@media screen and (max-width: 1330px){
+    .imagePreview{
+        width: 100%;
+        min-width: 0;
+        max-width: 273px;
+    }
+}
 @media screen and (max-width: 1215px) {
     .columns{
         display: block;
@@ -108,37 +165,6 @@ input[type="radio"]:focus, input[type="radio"]:checked {
 @media screen and (max-width: 767px){
     .price{
         margin-top: 2rem;
-    }
-}
-
-/* */
-
-.imagePreview{
-    width: 40%;
-    position: relative;
-}
-.preview{
-    border-radius: 10px;
-    width: 100%;
-    aspect-ratio: 5/6;
-    object-fit: cover;
-}
-.imageOverlay{
-    width: 30%;
-    min-width: 100px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-}
-
-@media screen and (max-width: 1330px){
-    .imagePreview, .info{
-        width: 100%;
-        min-width: 0;
-        max-width: 273px;
     }
 }
 </style>
