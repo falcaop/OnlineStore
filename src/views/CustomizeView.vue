@@ -3,7 +3,6 @@ import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import utils from '../assets/utils.js';
 
-const route = useRoute();
 const product = {price: 0, amount: 1, size: 'P', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/2048px-Instagram_icon.png'};
 const cartProducts = JSON.parse(localStorage.getItem("cart")) ?? [];
 let cartProduct = ref();
@@ -12,25 +11,18 @@ let selectedColor = ref('#FFFFFF');
 let imageLink = ref('');
 let size = '';
 
+// lista de cores possiveis para camiseta personalizada
+const colors = [
+  "#FFFFFF", "#808080", "#000000", "#000080", "#4169E1", "#FF0000", "#800000", "#228B22", "#800080", "#FFC0CB", "#FFD700"];
+// lista de tamanhos possiveis para camiseta personalizada
+const sizes = ["PP", "P", "M", "G", "GG"];
+
 watch(selectedColor);
 
 const addToCart = () => {
     console.log(selectedColor.value, amount, imageLink.value, size);
 }
-const colors = [
-  "#FFFFFF", // White
-  "#808080", // Gray
-  "#000000", // Black
-  "#000080", // Navy Blue
-  "#4169E1", // Royal Blue
-  "#FF0000", // Red
-  "#800000", // Maroon
-  "#228B22", // Forest Green
-  "#800080", // Purple
-  "#FFC0CB", // Pink
-  "#FFD700"  // Gold
-]
-const sizes = ["PP", "P", "M", "G", "GG"];
+
 </script>
 
 <template>

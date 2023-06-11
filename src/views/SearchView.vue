@@ -7,6 +7,9 @@ import utils from '../assets/utils.js';
 const route = useRoute();
 const router = useRouter();
 const products = ref([{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }]);
+const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
+
+// lista dos possiveis metodos de ordenacao dos produtos
 const sortMethods = {
     nameAsc: {
         description: 'A-Z',
@@ -38,19 +41,8 @@ const sortMethods = {
     },
 };
 let sortMethod = ref('nameAsc');
-const fetchProducts = async () => {
-    const queries = {
-        sortField: sortMethods[sortMethod.value].info.field,
-        sortOrder: sortMethods[sortMethod.value].info.order,
-    };
-    for(const query of ['q', 'category', 'minPrice', 'maxPrice']){
-        if(route.query[query]) queries[query] = route.query[query];
-    }
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
-    return await res.json();
-}
-watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });
-const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
+
+// lista dos possiveis filtros por preco
 const prices = [
     {
         minPrice: null,
@@ -69,6 +61,23 @@ const prices = [
         maxPrice: null,
     },
 ];
+
+// solicitar os produtos cadastrados
+const fetchProducts = async () => {
+    // indicar metodo de ordenacao
+    const queries = {
+        sortField: sortMethods[sortMethod.value].info.field,
+        sortOrder: sortMethods[sortMethod.value].info.order,
+    };
+    // indicar filtro por pesquisa, categoria ou preco
+    for(const query of ['q', 'category', 'minPrice', 'maxPrice']){
+        if(route.query[query]) queries[query] = route.query[query];
+    }
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
+    return await res.json();
+}
+watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });
+
 const filterProducts = ({
     category = (route.query.category ?? null),
     minPrice = (route.query.minPrice ?? null),
@@ -100,6 +109,8 @@ const isCurrentPrice = ({minPrice, maxPrice}) => {
         (maxPrice === (route.query.maxPrice ? parseFloat(route.query.maxPrice, 10) : null))
     );
 }
+
+// formatacao das string dos filtros por preco
 const priceDescription = ({minPrice, maxPrice}) => {
     if(!minPrice) return `Até ${utils.toPriceString(maxPrice)}`;
     return (

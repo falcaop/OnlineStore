@@ -3,10 +3,12 @@ import { RouterLink } from 'vue-router';
 import IconShow from '../components/icons/IconShow.vue';
 import IconHide from '../components/icons/IconHide.vue';
 import { ref } from 'vue';
+
 let email = '';
 let passwd = '';
 const isPasswordShown = ref(false);
 const emit = defineEmits(['signedIn']);
+
 const signIn = async () => {
     const credentials = btoa(`${email}:${passwd}`);
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/authenticate`, {

@@ -30,7 +30,7 @@ const login = credentials => {
     router.push(route.redirectedFrom ?? '/account');
 } 
 
-let mobileMenu = ref(true);
+let mobileMenu = ref(false);
 const openMenu = () => { mobileMenu.value = !mobileMenu.value; };
 
 </script>

@@ -4,6 +4,8 @@ import { RouterLink } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
 
 const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
+
+// solicitar informacoes dos produtos mais vendidos
 const fetchProducts = async () => {
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/products`);
     return await res.json();
@@ -14,8 +16,8 @@ fetchProducts().then(res => (products.value = res));
 <template>
     <main>
         <section class="featured">
-            <RouterLink to="/customise">
-                <img class="banner" src="../assets/featuredmockup.png" />
+            <RouterLink to="/customize">
+                <img class="banner" src="../assets/banner.png" />
             </RouterLink>
         </section>
 

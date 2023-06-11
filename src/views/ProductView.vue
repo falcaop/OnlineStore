@@ -10,6 +10,8 @@ const productURL = `${import.meta.env.VITE_API_HOST}/products/${route.params.id}
 const image = `${productURL}/image`;
 let cartProduct = ref();
 let amount = 1;
+
+// solicitar informacoes do produto 
 const fetchProduct = async () => {
     const res = await fetch(productURL);
     return await res.json();
@@ -19,6 +21,8 @@ fetchProduct().then(res => {
     cartProduct.value = cartProducts.find(({id}) => (id === product.value.id));
     if(cartProduct.value) amount = cartProduct.value.amount;
 });
+
+// adicionar produto e quantidade no carrinho (localStorage)
 const addToCart = () => {
     alert(`${product.value.name} adicionado ao carrinho.`);
     cartProduct.value = {id: product.value.id, amount};
