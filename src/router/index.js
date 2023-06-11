@@ -103,6 +103,14 @@ const router = createRouter({
             ],
             beforeEnter: isAuthenticated(true),
         },
+        {
+            path: '/404',
+            component: () => import('../views/404View.vue'),
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            redirect: '/404',
+        },
     ],
     scrollBehavior(){
         return {
