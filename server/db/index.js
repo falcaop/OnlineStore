@@ -20,6 +20,7 @@ if(!fs.existsSync(dbpath)){
         products: [],
     }));
 }
+if(!fs.existsSync(imagespath)) fs.mkdirSync(imagespath);
 const fetchData = () => {
     return new Promise((resolve, reject) => {
         fs.readFile(dbpath, (err, data) => (err ? reject(err) : resolve(JSON.parse(data))));
