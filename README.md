@@ -61,7 +61,49 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   
   
   ## 4. Test Plan
-  
+  To verify that the website is properly functioning, some manual tests will be performed on the main functionalities on situations where they successfully occur and on situations where there may be an error. The tests to be performed are listed below.
+- Customer
+1. Create Account
+  a) Success
+  b) Invalid input
+2. Login
+Success
+Invalid input
+3. View category
+4. Search
+Order by
+Filter by price
+FIlter by category
+5. Add product to cart
+6. Customize
+7. Complete purchase
+8. See purchase
+9. Edit personal information
+10. Logout
+11. Access to pages
+Admin page
+
+- Admin:
+12. Create product
+Invalid input
+Success
+13. Update product
+Invalid input
+Success
+14. Remove product
+15. Create user
+Invalid input
+Success
+16. Update user
+Invalid input
+Success
+17. Remove user
+
+Not Logged In:
+18. Access to pages:
+Admin pages
+User pages
+
   
   ## 5. Test Results
   
