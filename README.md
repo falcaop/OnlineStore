@@ -62,51 +62,97 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   
   ## 4. Test Plan
   To verify that the website is properly functioning, some manual tests will be performed on the main functionalities on situations where they successfully occur and on situations where there may be an error. The tests to be performed are listed below.
-- Customer
+- Customer:
+
 1. Create Account
-  a) Success
-  b) Invalid input
+  * Invalid input
+  * Success
 2. Login
-Success
-Invalid input
+  * Invalid input
+  * Success
 3. View category
 4. Search
-Order by
-Filter by price
-FIlter by category
+  * Order by
+  * Filter by price
+  * FIlter by category
 5. Add product to cart
 6. Customize
 7. Complete purchase
 8. See purchase
-9. Edit personal information
+9. Edit personal information  
+  * Invalid input
+  * Success
 10. Logout
 11. Access to pages
-Admin page
+  * Admin page
 
 - Admin:
 12. Create product
-Invalid input
-Success
+  * Invalid input
+  * Success
 13. Update product
-Invalid input
-Success
+  * Invalid input
+  * Success
 14. Remove product
 15. Create user
-Invalid input
-Success
+  * Invalid input
+  * Success
 16. Update user
-Invalid input
-Success
+  * Invalid input
+  * Success
 17. Remove user
 
-Not Logged In:
+- Not Logged In:
 18. Access to pages:
-Admin pages
-User pages
-
+  * Admin pages
+  * User pages
   
   ## 5. Test Results
-  
+  The results of the tests can be seen below.
+
+- Customer:
+1.
+  * Cannot submit form if input is not in expected format, alert details invalid input.
+  * Alert informs that the user was created successfully, redirected to the account page.
+2.
+  * Alert informs wrong email address or password.
+  * Logged in successfully, redirected to the account page.
+3. All products displayed are from the selected category.
+4. 
+  * All of the sorting methods work properly.
+  * Only products in the selected price range are displayed.
+  * Only products from the selected category are displayed.
+5. Alert informs the user that the product was successfully added to the cart. “Add to cart” button becomes unavailable.
+6. Image preview properly changes based on color selected and file URL.
+7. Alert informs the user that the purchase was successfully completed.
+8. Products and customized shirts from the selected purchase are displayed.
+9. 
+  * Cannot submit form if input is not in expected format, alert informing invalid input.
+  * Alert informs that the personal information was successfully updated.
+10. Successfully logged out, icons on menu are changed from user and logout to login.
+11.
+  * Redirected to 404 Page not found
+
+- Admin:
+12. 
+  * Cannot submit form if input is not in expected format, alert informing invalid input.
+  * Alert informs that the product was successfully added.
+13.
+  * Cannot submit form if input is not in expected format, alert informing invalid input.
+  * Alert informs that the product was successfully updated.
+14. Alert informs the administrator that the product was successfully removed.
+15. 
+  * Cannot submit form if input is not in expected format, alert informing invalid input.
+  * Alert informs that the user was successfully added.
+16.
+  * Cannot submit form if input is not in expected format, alert informing invalid input.
+  * Alert informs that the user was successfully updated.
+17. Alert informs the administrator that the user was successfully removed. 
+
+- Not Logged In:
+  * Redirected to Login
+  * Redirected to Login
+
   
   ## 6. Build Procedures
 
