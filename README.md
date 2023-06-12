@@ -67,9 +67,46 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   
   
   ## 6. Build Procedures
-  `npm i`
-  
-  `npm run dev`
+
+  ### 6.1. Installation
+
+  1. Make sure that you have version 18 or superior of [Node.js](https://nodejs.org/) installed in your system
+  2. Clone the repository to your preferred location with the following command:
+  ```bash
+  git clone https://github.com/falcaop/OnlineStore.git
+  ```
+  3. Move the terminal to the directory created for the repository with the following command:
+  ```bash
+  cd OnlineStore
+  ```
+  4. Install the necessary dependencies with the following command:
+  ```bash
+  npm i
+  ```
+  5. In the root directory, create a file called `.env` and paste the following content into it:
+  ```env
+  # Can be either "development" or "production"
+  # If you use "development" you will need to manually start the client with `npm run dev`
+  # Only use "production" after creating the production build with `npm run build`
+  NODE_ENV="development"
+  # The base URL the client will use to make requests to the API
+  VITE_API_HOST="http://localhost:3000"
+  # Only used for production builds to start the client listener
+  CLIENT_PORT="8080"
+  # The port from which the API should listen for requests
+  API_PORT="3000"
+  ```
+
+  ### 6.2 Execution
+
+  1. Start the server process with the following command:
+  ```bash
+  npm start
+  ```
+  2. If running a development build, you need to also start the client process with the following command:
+  ```bash
+  npm run dev
+  ```
   
   ## 7. Problems
   
