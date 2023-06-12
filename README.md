@@ -103,7 +103,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   ```bash
   npm start
   ```
-  2. If running a development build, you need to also start the client process with the following command:
+  2. If running a development build, open a new terminal window and start the client process with the following command:
   ```bash
   npm run dev
   ```
