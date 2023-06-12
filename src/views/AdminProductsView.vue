@@ -6,8 +6,10 @@ import { reactive, ref, watch } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
+// valores iniciais para popular a UI enquanto os valores reais são carregados do banco
 const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
 const Authorization = `Basic ${localStorage.getItem('credentials')}`;
+// retorna produtos da API opcionalmente usando pesquisa pelo nome e pela categoria nas query strings
 const fetchProducts = async () => {
     const queries = {};
     if(route.query.q) queries.q = route.query.q;
@@ -15,6 +17,7 @@ const fetchProducts = async () => {
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
     return res.ok ? await res.json() : [];
 }
+// recarrega os produtos quando as query strings são alteradas e no carregamento inicial da página
 watch(() => route.query, async () => {
     const tmpProducts = await fetchProducts();
     tmpProducts.forEach(product => (product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`));
@@ -22,6 +25,7 @@ watch(() => route.query, async () => {
 }, {immediate: true});
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 let currentProduct = null;
+// valores dos inputs do form de adicionar/atualizar produto
 const newProduct = reactive({
     id: null,
     name: null,
@@ -31,12 +35,15 @@ const newProduct = reactive({
     stock: null,
     image: null,
 });
+// carrega os dados do produto atual nos campos e mostra o modal com o form
 const showUpdateModal = id => {
     currentProduct = products.value.find(product => (product.id === id));
     for(const key in newProduct) newProduct[key] = currentProduct[key];
     modal.showModal();
+    // esconde a barra de scroll principal
     document.body.style.overflowY = 'hidden';
 };
+// reseta os valores dos campos e mostra o modal com o form
 const showAddModal = () => {
     currentProduct = null;
     for(const key in newProduct) newProduct[key] = null;
@@ -44,8 +51,10 @@ const showAddModal = () => {
     document.body.style.overflowY = 'hidden';
 }
 const closeModal = () => modal.close();
+// envia uma requisição de adicionar um novo produto para a API e atualiza os produtos em cache em caso de sucesso
 const addItem = async target => {
     const formData = new FormData(target);
+    // não envia um campo de imagem caso não tenha sido feito o upload de uma imagem
     if(!formData.get('image').size) formData.delete('image');
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/products`, {
         method: 'POST',
@@ -75,8 +84,10 @@ const addItem = async target => {
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
+// envia uma requisição para atualizar um produto para a API e atualiza os produtos em cache em caso de sucesso
 const updateItem = async target => {
     const formData = new FormData(target);
+    // não envia um campo de imagem caso não tenha sido feito o upload de uma imagem
     if(!formData.get('image').size) formData.delete('image');
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/products/${currentProduct.id}`, {
         method: 'PUT',
@@ -105,12 +116,14 @@ const updateItem = async target => {
         break;
         case 404: {
             alert('Produto não encontrado');
+            // remove o produto do cache da página
             products.value = products.value.filter(({id}) => (id !== currentProduct.id));
         }
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
+// envia uma requisição para remover um produto para a API e atualiza os produtos em cache em caso de sucesso
 const deleteItem = async id => {
     currentProduct = products.value.find(product => (product.id === id));
     if(!confirm(`Tem certeza que deseja deletar ${currentProduct.name}?`)) return;
@@ -142,6 +155,7 @@ const deleteItem = async id => {
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
+// transforma a imagem entrada por upload em um URL para mostrar a preview
 const loadImage = event => (newProduct.image = URL.createObjectURL(event.target.files[0]));
 const unhideScroll = () => document.body.style.overflowY = 'unset';
 </script>

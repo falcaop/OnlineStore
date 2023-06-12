@@ -11,6 +11,7 @@ const submitPayment = async event => {
     const customs = JSON.parse(localStorage.getItem('customs')) ?? [];
     if (!products.length && !customs.length) return alert('Nenhum produto no carrinho');
     const formData = new FormData(event.target);
+    if(Date.parse(formData.get('cardDate')) < Date.now()) return alert('Data de validade do cartão expirada');
     formData.append('cart', JSON.stringify(products));
     formData.append('customs', JSON.stringify(customs));
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/purchases`, {
@@ -26,15 +27,9 @@ const submitPayment = async event => {
             router.push('/');
         }
         break;
-        // fazer o case 400 data errada
         case 401: {
             alert('Usuário não autenticado');
             router.push('/signin');
-        }
-        break;
-        case 406: {
-            // fazer ele ver qual produto nao tem avisar e tirar do carrinho
-            alert('algum produto ta sem estoque');
         }
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');

@@ -9,6 +9,7 @@ let passwd = '';
 const isPasswordShown = ref(false);
 const emit = defineEmits(['signedIn']);
 
+// envia uma requisição de usuário para a API e emite o resultado para o componente pai
 const signIn = async () => {
     const credentials = btoa(`${email}:${passwd}`);
     const res = await fetch(

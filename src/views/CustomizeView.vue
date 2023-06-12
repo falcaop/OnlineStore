@@ -25,6 +25,7 @@ const colors = [
 // lista de tamanhos possiveis para camiseta personalizada
 const sizes = ["PP", "P", "M", "G", "GG"];
 
+// adiciona o produto customizado ao localStorage
 const addToCart = () => {
     const customs = JSON.parse(localStorage.getItem('customs')) ?? [];
     customs.push({

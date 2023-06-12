@@ -9,7 +9,7 @@ const props = defineProps({
     stock: Number,
     price: Number,
     amount: Number,
-    preview: String,
+    preview: String, // caso seja um produto customizado, a imagem escolhida pelo usuário
     purchase: Boolean, // identificar se e o carrinho ou uma compra ja finalizada
 });
 

@@ -3,12 +3,14 @@ import IconShow from '../components/icons/IconShow.vue';
 import IconHide from '../components/icons/IconHide.vue';
 import { reactive, ref, watchEffect } from 'vue';
 
+// valores predefinidos dos campos caso seja um form de atualização de dados
 const props = defineProps({
     email: String,
     name: String,
     address: String,
     phone: String,
 });
+// usado nos valores reais dos inputs para que sejam reativos a mudanças
 const cachedProps = reactive({
     email: props.email,
     name: props.name,
@@ -17,6 +19,7 @@ const cachedProps = reactive({
     password: '',
     passwordC: '',
 });
+// redefine os valores dos inputs caso sejam recebidos novos atributos padrões do componente pai
 watchEffect(() => {
     for(const key of ['email', 'name', 'address', 'phone']) cachedProps[key] = props[key];
     cachedProps.passwordC = cachedProps.password = '';
@@ -26,6 +29,7 @@ const passwordTitle = (
     'A senha deve conter letras maiúsculas e minúsculas, números, e caracteres especiais, e não deve conter o' +
     ' caractere ":".'
 );
+// remove espaços no inicio e no final do valor do input
 const trim = event => (event.target.value = event.target.value.trim());
 </script>
 

@@ -8,6 +8,8 @@ import { reactive, ref, watch } from 'vue';
 const route = useRoute();
 const router = useRouter();
 
+// veja os comentários de /src/views/AdminProductsView.vue para mais explicações sobre o funcionamento dessa página
+// ambas funcionam de forma semelhante
 const users = ref([{email: 'a'}, {email: 'b'}, {email: 'c'}, {email: 'd'}, {email: 'e'}, {email: 'f'}, {email: 'g'}]);
 const url = `${import.meta.env.VITE_API_HOST}/users`;
 const Authorization = `Basic ${localStorage.getItem('credentials')}`;
