@@ -155,10 +155,7 @@ router.post(
     '/users',
     upload.none(),
     body('name').trim().notEmpty(),
-    body('email').isEmail({
-        allow_utf8_local_part: false,
-        domain_specific_validation: true,
-    }).not().contains(':'),
+    body('email').isEmail({allow_utf8_local_part: false}).not().contains(':'),
     body('address').trim().notEmpty(),
     body('phone').isMobilePhone('pt-BR'),
     body('password').isStrongPassword().not().contains(':'),
