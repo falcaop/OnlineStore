@@ -65,26 +65,26 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
 - Customer:
 
 1. Create Account
-  * Invalid input
-  * Success
+    - Invalid input
+    - Success
 2. Login
-  * Invalid input
-  * Success
+    - Invalid input
+    - Success
 3. View category
 4. Search
-  * Order by
-  * Filter by price
-  * FIlter by category
+    - Order by
+    - Filter by price
+    - FIlter by category
 5. Add product to cart
 6. Customize
 7. Complete purchase
 8. See purchase
 9. Edit personal information  
-  * Invalid input
-  * Success
+    - Invalid input
+    - Success
 10. Logout
 11. Access to pages
-  * Admin page
+    - Admin page
 
 - Admin:
 12. Create product
