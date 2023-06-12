@@ -58,7 +58,16 @@ The diagram shows the pages organized to represent the sequences of pages access
 Furthermore, there were developed medium to high fidelity mockups for all major app screens. These can be found [here](https://www.figma.com/file/iVZQMGcoJsFiGn5aPwzvxx/Prototipos?type=design&node-id=1%3A14&t=P3IddQNjZLe303y2-1).
   
   ## 3. Comments About the Code
-  
+  This project was developed using the JavaScript framework Vue 3 for building the user interface and Vite as a build tool
+  The project structure is organized into the following main sections:
+  - **/src/assets:** files that can be imported througout the code whenever necessary
+  - **/src/components:** pieces of user interface that can be used by multiple pages
+  - **/src/router/index.js?** The code that dictates which URL path routes to each page
+  - **/src/views:** The pages that can be accessed through URL routes
+  - **/src/App.vue:** The basic structure of the website with its fixed parts and the space the pages should occupy
+  - **/server:** Basic API functionality that implements a temporary database system with raw JSON
+
+  The user interface was designed to be fully responsive to a wide range of screen sizes.
   
   ## 4. Test Plan
   To verify that the website is properly functioning, some manual tests will be performed on the main functionalities on situations where they successfully occur and on situations where there may be an error. The tests to be performed are listed below.
