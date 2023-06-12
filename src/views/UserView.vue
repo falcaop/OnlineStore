@@ -103,7 +103,7 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
                 <ul>
                     <li v-for="purchase in user.purchases">
                         <a :href="`/purchase/${purchase.id}`">
-                            {{ new Date(purchase.date).toLocaleDateString() }} - Compra de {{ purchase.products.length }} produto(s)
+                            {{ new Date(purchase.date).toLocaleDateString() }} - Compra de {{ purchase.products.length }} produto(s) e {{ purchase.customs.length }} camiseta(s) customizada(s).
                         </a>
                     </li>
                 </ul>
