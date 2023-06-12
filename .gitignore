@@ -141,5 +141,3 @@ dist
 *.njsproj
 *.sln
 *.sw?
-server/db/tempdb.json
-server/db/images/*
