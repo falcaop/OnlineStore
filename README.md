@@ -59,10 +59,11 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   
   ## 3. Comments About the Code
   This project was developed using the JavaScript framework Vue 3 for building the user interface and Vite as a build tool
+  
   The project structure is organized into the following main sections:
   - **/src/assets:** files that can be imported througout the code whenever necessary
   - **/src/components:** pieces of user interface that can be used by multiple pages
-  - **/src/router/index.js?** The code that dictates which URL path routes to each page
+  - **/src/router/index.js:** The code that dictates which URL path routes to each page
   - **/src/views:** The pages that can be accessed through URL routes
   - **/src/App.vue:** The basic structure of the website with its fixed parts and the space the pages should occupy
   - **/server:** Basic API functionality that implements a temporary database system with raw JSON
