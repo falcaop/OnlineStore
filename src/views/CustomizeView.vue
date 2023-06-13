@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import utils from '../assets/utils.js';
 
-const cartProduct = ref(JSON.parse(localStorage.getItem("customs")) ?? []);
 let amount = 1;
 const selectedColor = ref('#FFFFFF');
 const imageLink = ref('');

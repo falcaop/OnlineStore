@@ -232,7 +232,15 @@ router.post(
         }
         for(const {id, amount} of cart){
             const product = data.products.find(p => (p.id === id));
-            if(!product || (amount > product.stock)) return res.sendStatus(406);
+            if(!product || (amount > product.stock)){
+                return res
+                    .status(406)
+                    .json({
+                        id,
+                        name: product?.name,
+                        stock: product?.stock ?? null,
+                    });
+            }
             product.stock -= amount;
             product.sold += amount;
         }

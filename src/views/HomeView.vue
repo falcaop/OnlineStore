@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
 
-const products = ref([]);
+const products = ref([{ id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }]);
 
 // solicitar informacoes dos 4 produtos mais vendidos
 const fetchProducts = async () => {

@@ -8,7 +8,7 @@ const props = defineProps({
     name: String,
     price: Number,
 });
-const image = `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
+const image = props.id ? `${import.meta.env.VITE_API_HOST}/products/${props.id}/image` : 'https://placehold.co/500x600';
 
 // abrir pagina do produto quando clicar no card
 const router = useRouter();

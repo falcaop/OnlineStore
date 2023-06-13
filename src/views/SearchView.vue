@@ -6,7 +6,7 @@ import utils from '../assets/utils.js';
 
 const route = useRoute();
 const router = useRouter();
-const products = ref([{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }]);
+const products = ref([{ id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }]);
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 
 // lista dos possiveis metodos de ordenacao dos produtos
