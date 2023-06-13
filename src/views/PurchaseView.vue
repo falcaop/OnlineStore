@@ -40,6 +40,7 @@ const updateTotalPriceString = () => {
 
 fetchPurchase().then(async res => {
     purchase.value = res;
+    console.log(purchase.value.customs);
     products = await fetchProducts(); 
     updateTotalPriceString();
 });
@@ -64,7 +65,7 @@ fetchPurchase().then(async res => {
                     :purchase="true"
                 />
                 <ItemCart
-                    v-for="{id, amount, image} in purchase.customs"
+                    v-for="{id, amount, image, size, color} in purchase.customs"
                     :key="id"
                     :id="id"
                     name="Camisa customizada"
@@ -72,6 +73,8 @@ fetchPurchase().then(async res => {
                     :price="50"
                     :amount="amount"
                     :preview="image"
+                    :size="size"
+                    :color="color"
                     class="cartItem"
                     :purchase="true"
                 />

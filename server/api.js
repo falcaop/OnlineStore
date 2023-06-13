@@ -220,7 +220,9 @@ router.post(
     body('customs.*.size').isIn(["PP", "P", "M", "G", "GG"]),
     async (req, res) => {
         const cart = JSON.parse(req.body.cart).map(({id, amount}) => ({id, amount}));
-        const customs = JSON.parse(req.body.customs).map(({color, amount, image}) => ({color, amount, image}));
+        const customs = JSON
+            .parse(req.body.customs)
+            .map(({color, amount, image, size}) => ({color, amount, image, size}));
         if(!validationResult(req).isEmpty() || (!cart.length && !customs.length)) return res.sendStatus(400);
         let data;
         try{

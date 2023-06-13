@@ -53,6 +53,11 @@ const changeAmount = (id, amount) => {
     localStorage.setItem("cart", JSON.stringify(cartProducts.value));
     updateTotalPriceString();
 }
+const changeAmountCustom = (id, amount) => {
+    customProducts.value.find((p) => p.id === id).amount = amount;
+    localStorage.setItem("customs", JSON.stringify(customProducts.value));
+    updateTotalPriceString();
+}
 </script>
 
 <template>
@@ -79,7 +84,7 @@ const changeAmount = (id, amount) => {
                     @amountChanged="changeAmount"
                 />
                 <ItemCart
-                    v-for="{id, amount, image} in customProducts"
+                    v-for="{id, amount, image, size, color} in customProducts"
                     :key="id"
                     :id="id"
                     name="Camisa customizada"
@@ -87,8 +92,11 @@ const changeAmount = (id, amount) => {
                     :price="50"
                     :amount="amount"
                     :preview="image"
+                    :size="size"
+                    :color="color"
                     class="cartItem"
                     @removeItem="removeCustom"
+                    @amountChanged="changeAmountCustom"
                 />
                 <div class="total">
                     <p>Total: <strong>{{ totalPriceString }}</strong></p>

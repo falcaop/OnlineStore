@@ -9,8 +9,12 @@ const props = defineProps({
     stock: Number,
     price: Number,
     amount: Number,
-    preview: String, // caso seja um produto customizado, a imagem escolhida pelo usuário
-    purchase: Boolean, // identificar se e o carrinho ou uma compra ja finalizada
+    // caso seja um produto customizado
+    preview: String,
+    size: String,
+    color: String,
+    // identificar se e o carrinho ou uma compra ja finalizada
+    purchase: Boolean,
 });
 
 const image = props.preview ?? `${import.meta.env.VITE_API_HOST}/products/${props.id}/image`;
@@ -30,13 +34,26 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
 
 <template>
     <main class="item">
-        <img :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
+        <img :class="{customImage: preview}" :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
         <div class="columns">
             <div class="left">
                 <h3> {{ name ?? 'Lorem Ipsum' }} </h3>
+                <template v-if="preview">
+                    <div class="purchaseSize">Tamanho: {{ size }} </div>
+                    <div class="purchaseSize">Cor: <span :style="{backgroundColor: color}">{{ color }}</span></div>
+                </template>
                 <label for="amount">Quantidade:</label>
-                <div class="purchaseAmount" v-if="purchase || preview"> {{ amount }} </div>
-                <input v-else class="amount" name="amount" type="number" :value="amount" :max="stock" min="1" @change="changeAmount"/>
+                <div v-if="purchase" class="purchaseAmount"> {{ amount }} </div>
+                <input
+                    v-else
+                    class="amount"
+                    name="amount"
+                    type="number"
+                    :value="amount"
+                    :max="stock"
+                    min="1"
+                    @change="changeAmount"
+                />
             </div>
             <div class="right">
                 <h3>{{ utils.toPriceString(price ?? 0) }}</h3>
@@ -90,6 +107,18 @@ svg{
 }
 svg:hover{
     fill: var(--green);
+}
+.customImage{
+    object-fit: contain;
+}
+.purchaseSize{
+    margin-bottom: 0.5rem;
+}
+.purchaseSize span{
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--black);
+    border-radius: 3px;
 }
 
 @media screen and (max-width: 1200px){
