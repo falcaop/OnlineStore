@@ -40,7 +40,7 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
                 <h3> {{ name ?? 'Lorem Ipsum' }} </h3>
                 <template v-if="preview">
                     <div class="purchaseSize">Tamanho: {{ size }} </div>
-                    <div class="purchaseSize">Cor: <span :style="{backgroundColor: color}">{{ color }}</span></div>
+                    <div class="purchaseSize purchaseColor">Cor: <div :style="{backgroundColor: color}"></div></div>
                 </template>
                 <label for="amount">Quantidade:</label>
                 <div v-if="purchase" class="purchaseAmount"> {{ amount }} </div>
@@ -114,11 +114,17 @@ svg:hover{
 .purchaseSize{
     margin-bottom: 0.5rem;
 }
-.purchaseSize span{
+.purchaseColor{
+    display: flex;
+    gap: 5px;
+}
+.purchaseSize div{
     border-width: 1px;
     border-style: solid;
     border-color: var(--black);
-    border-radius: 3px;
+    border-radius: 50%;
+    height: 1rem;
+    width: 1rem;
 }
 
 @media screen and (max-width: 1200px){
