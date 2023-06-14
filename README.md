@@ -69,6 +69,10 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   - **/server:** Basic API functionality that implements a temporary database system with raw JSON
 
   The user interface was designed to be fully responsive to a wide range of screen sizes.
+
+  For the purpose of facilitating the testing and reviewing of this project we have provided a test version of `/server/db/tempdb.json` with sample data about products, users, purchases, and so on, to be cloned together with the rest of the repository. This way the interface will already be populated with dynamic data when you first run it on your machine and you will have a more authentical experience of what the system is actually supposed to look like.
+
+  Most importantly, this includes an administrator user with login `admin` and password `admin`, and a customer user with login `user@user.com` and password `user!ABC123`. We recommend using these to test the system functionalities more thoroughly.
   
   ## 4. Test Plan
   To verify that the website is properly functioning, some manual tests will be performed on the main functionalities on situations where they successfully occur and on situations where there may be an error. The tests to be performed are listed below.
