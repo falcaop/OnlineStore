@@ -1,6 +1,6 @@
 <script setup>
 import IconDelete from './icons/IconDelete.vue';
-import utils from '../assets/utils.js';
+import {toPriceString, setDefaultImage} from '../assets/utils.js';
 
 // atributos do produto, recebidos do componente pai
 const props = defineProps({
@@ -34,7 +34,7 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
 
 <template>
     <main class="item">
-        <img :class="{customImage: preview}" :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
+        <img :class="{customImage: preview}" :src="image" @error="setDefaultImage"/>
         <div class="columns">
             <div class="left">
                 <h3> {{ name ?? 'Lorem Ipsum' }} </h3>
@@ -56,7 +56,7 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
                 />
             </div>
             <div class="right">
-                <h3>{{ utils.toPriceString(price ?? 0) }}</h3>
+                <h3>{{ toPriceString(price ?? 0) }}</h3>
                 <a v-if="!purchase" tabindex="0" @click.prevent.stop="remove" @keyup.enter.space="remove">
                     <IconDelete/>
                 </a>

@@ -1,14 +1,14 @@
 <script setup>
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-import utils from '../assets/utils.js';
+import {toPriceString} from '../assets/utils.js';
 
 const route = useRoute();
 const product = ref({});
 const cartProducts = JSON.parse(localStorage.getItem("cart")) ?? [];
 const productURL = `${import.meta.env.VITE_API_HOST}/products/${route.params.id}`;
 const image = `${productURL}/image`;
-let cartProduct = ref();
+const cartProduct = ref();
 let amount = 1;
 
 // solicitar informacoes do produto 
@@ -18,6 +18,7 @@ const fetchProduct = async () => {
 }
 fetchProduct().then(res => {
     product.value = res;
+    // checa se o produto já está no carrinho do usuário e se sim altera a quantidade mostrada na UI
     cartProduct.value = cartProducts.find(({id}) => (id === product.value.id));
     if(cartProduct.value) amount = cartProduct.value.amount;
 });
@@ -38,7 +39,7 @@ const addToCart = () => {
             <img class="preview" :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
             <div class="rows">
                 <div>
-                    <p class="price">{{ utils.toPriceString(product.price ?? 0) }}</p>
+                    <p class="price">{{ toPriceString(product.price ?? 0) }}</p>
                     <p class="description">{{ product.description ?? 'Lorem Ipsum' }}</p>
                 </div>
                 <div>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import ItemCart from '../components/ItemCart.vue';
-import utils from '../assets/utils.js';
+import {fetchProducts, calcTotalPriceString} from '../assets/utils.js';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -14,6 +14,7 @@ const purchase = ref({
 let products = [];
 const totalPriceString = ref('');
 
+// envia uma requisição dos dados da compra para a API
 const fetchPurchase = async () => {
     const res = await fetch(
         `${import.meta.env.VITE_API_HOST}/purchases/${route.params.id}`,
@@ -22,27 +23,11 @@ const fetchPurchase = async () => {
     return res.ok ? await res.json() : {};
 }
 
-const fetchProducts = async () => {
-    const res = await fetch(
-        `${import.meta.env.VITE_API_HOST}/products?${purchase.value.products.map(({id}) => `id=${id}`).join('&')}`
-    );
-    return res.ok ? await res.json() : [];
-}
-
-const findProduct = id => products.find(product => (product.id === id));
-const updateTotalPriceString = () => {
-    totalPriceString.value = utils.toPriceString(
-        purchase.value.products.reduce((acc, {id, amount}) => (acc + (findProduct(id).price * amount)), 0)
-        +
-        purchase.value.customs.reduce((acc, {amount}) => (acc + (50 * amount)), 0),
-    );
-}
-
 fetchPurchase().then(async res => {
     purchase.value = res;
-    console.log(purchase.value.customs);
-    products = await fetchProducts(); 
-    updateTotalPriceString();
+    // envia uma requisição dos dados dos produtos presentes nessa compra para a API e atualiza o preço total
+    products = await fetchProducts({ids: purchase.value.products.map(({id}) => id)}); 
+    totalPriceString.value = calcTotalPriceString(purchase.value.products, products, purchase.value.customs);
 });
 </script>
 

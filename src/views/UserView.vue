@@ -2,11 +2,13 @@
 import { reactive } from 'vue';
 import UserFormInputs from '../components/UserFormInputs.vue';
 import { useRouter } from 'vue-router';
+import { closeModal, unhideScroll } from '../assets/utils';
 
 const router = useRouter();
 const credentials = localStorage.getItem('credentials');
 const user = reactive({
     name: '',
+    // extrai o email das credenciais salvas em base64 no localStorage
     email: atob(credentials).split(':')[0],
     phone: '',
     address: '',
@@ -23,14 +25,16 @@ const fetchUser = async () => {
 }
 fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key] = value)));
 
-// editar dados do usuario
+// mostra o modal para editar os dados do usuário
 const showUpdateModal = () => {
     modal.showModal();
     document.body.style.overflowY = 'hidden';
 };
-const closeModal = () => modal.close();
+
+// envia uma requisição para substituir os dados do usuário logado pelos dados informados pelo usuário para a API
 const updateUser = async event => {
     const formData = new FormData(event.target);
+    // não envia um campo de senha caso o usuário não tenha informado uma nova senha
     if(!formData.get('password')) formData.delete('password');
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/users/me`, {
         method: 'PUT',
@@ -41,6 +45,7 @@ const updateUser = async event => {
         case 200: {
             alert(`Dados atualizados`);
             const body = await res.json();
+            // atualiza as credenciais salvas no localStorage para que o usuário não seja imediatamente desconectado
             localStorage.setItem(
                 'credentials',
                 btoa(`${body.email}:${formData.get('password') ?? atob(credentials).split(':')[1]}`),
@@ -60,7 +65,6 @@ const updateUser = async event => {
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
-const unhideScroll = () => document.body.style.overflowY = 'unset';
 </script>
 
 <template>

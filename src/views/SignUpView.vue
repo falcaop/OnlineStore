@@ -3,6 +3,9 @@ import { RouterLink } from 'vue-router';
 import UserFormInputs from '../components/UserFormInputs.vue';
 
 const emit = defineEmits(['signedIn']);
+
+// envia uma requisição para a criação de uma nova conta utilizando os dados informados pelo usuário e emite um evento
+// de login para o componente pai em caso de sucesso
 const signUp = async event => {
     const formData = new FormData(event.target);
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/users`, {
@@ -13,6 +16,7 @@ const signUp = async event => {
         case 201: {
             const body = await res.json();
             alert('Cadastro realizado');
+            // envia as novas credenciais convertidas para a codificação base64
             emit('signedIn', btoa(`${body.email}:${formData.get('password')}`));
         }
         break;

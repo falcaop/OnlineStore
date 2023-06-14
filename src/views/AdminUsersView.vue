@@ -4,15 +4,16 @@ import AdminListItem from '../components/AdminListItem.vue';
 import UserFormInputs from '../components/UserFormInputs.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { reactive, ref, watch } from 'vue';
+import { closeModal, unhideScroll } from '../assets/utils';
 
 const route = useRoute();
 const router = useRouter();
 
-// veja os comentários de /src/views/AdminProductsView.vue para mais explicações sobre o funcionamento dessa página
-// ambas funcionam de forma semelhante
+// valores iniciais para popular a UI enquanto os valores reais são carregados do banco
 const users = ref([{email: 'a'}, {email: 'b'}, {email: 'c'}, {email: 'd'}, {email: 'e'}, {email: 'f'}, {email: 'g'}]);
 const url = `${import.meta.env.VITE_API_HOST}/users`;
 const Authorization = `Basic ${localStorage.getItem('credentials')}`;
+// retorna usuários da API opcionalmente usando pesquisa pelo nome e pelo nível de permissão (administrador ou não)
 const fetchUsers = async () => {
     const queries = {};
     if(route.query.q) queries.q = route.query.q;
@@ -20,8 +21,10 @@ const fetchUsers = async () => {
     const res = await fetch(`${url}?${new URLSearchParams(queries)}`, {headers: {Authorization}});
     return res.ok ? await res.json() : [];
 }
+// recarrega os usuários quando as query strings são alteradas e no carregamento inicial da página
 watch(() => route.query, async () => (users.value = await fetchUsers()), {immediate: true});
 let currentUser = null;
+// valores dos inputs do form de adicionar/atualizar usuário
 const newUser = reactive({
     email: null,
     name: null,
@@ -30,23 +33,27 @@ const newUser = reactive({
     password: null,
     isAdmin: null,
 });
+// carrega os dados do usuário atual nos campos e mostra o modal com o form
 const showUpdateModal = id => {
     currentUser = users.value.find(user => (user.id === id));
     for(const key in newUser) newUser[key] = currentUser[key];
     modal.showModal();
+    // esconde a barra de scroll principal
     document.body.style.overflowY = 'hidden';
 };
+// reseta os valores dos campos e mostra o modal com o form
 const showAddModal = () => {
     currentUser = null;
     for(const key in newUser) newUser[key] = null;
     modal.showModal();
     document.body.style.overflowY = 'hidden';
 }
-const closeModal = () => modal.close();
+// envia uma requisição de adicionar um novo usuário para a API e atualiza os usuários em cache em caso de sucesso
 const addItem = async target => {
     const formData = new FormData(target);
     const res = await fetch(url, {
         method: 'POST',
+        headers: {Authorization},
         body: formData,
     });
     switch(res.status){
@@ -63,8 +70,10 @@ const addItem = async target => {
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
+// envia uma requisição para atualizar um usuário para a API e atualiza os usuários em cache em caso de sucesso
 const updateItem = async target => {
     const formData = new FormData(target);
+    // não envia um campo de senha caso nenhuma nova senha tenho sido definida
     if(!formData.get('password')) formData.delete('password');
     const res = await fetch(`${url}/${currentUser.id}`, {
         method: 'PUT',
@@ -92,6 +101,7 @@ const updateItem = async target => {
         break;
         case 404: {
             alert('Usuário não encontrado');
+            // remove o usuário do cache da página
             users.value = users.value.filter(({id}) => (id !== currentUser.id));
         }
         break;
@@ -100,6 +110,7 @@ const updateItem = async target => {
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
+// envia uma requisição para remover um usuário para a API e atualiza os usuários em cache em caso de sucesso
 const deleteItem = async id => {
     currentUser = users.value.find(user => (user.id === id));
     if(!confirm(`Tem certeza que deseja deletar ${currentUser.name}?`)) return;
@@ -131,7 +142,6 @@ const deleteItem = async id => {
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
     }
 };
-const unhideScroll = () => document.body.style.overflowY = 'unset';
 </script>
 
 <template>

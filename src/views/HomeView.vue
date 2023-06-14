@@ -2,19 +2,17 @@
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
+import { fetchProducts } from '../assets/utils';
 
 const products = ref([{ id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }]);
 
 // solicitar informacoes dos 4 produtos mais vendidos
-const fetchProducts = async () => {
-    const queries = {
+fetchProducts({
+    queries: {
         sortField: 'sold',
         sortOrder: -1,
-    };
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
-    return res.ok ? await res.json() : [];
-}
-fetchProducts().then(res => (products.value = res.slice(0, Math.min(4, res.length))));
+    }
+}).then(res => (products.value = res.slice(0, 4)));
 
 </script>
 

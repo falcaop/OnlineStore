@@ -12,32 +12,44 @@ import { ref, watch } from 'vue';
 const router = useRouter();
 const route = useRoute();
 const q = ref('');
+// define o estado layout inicial da página como o de um usuário logado caso hajam credenciais salvas no localStorage
 const loggedIn = ref(localStorage.getItem('credentials'));
 const isAdmin = ref(false);
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
-let mobileMenu = ref(false);
+const mobileMenu = ref(false);
+
+// envia uma requisição dos dados do usuário referente as credenciais para a API e atualiza o layout da página de acordo
 const fetchMe = async () => {
     const res = await fetch(
         `${import.meta.env.VITE_API_HOST}/users/me`,
         {headers: {Authorization: `Basic ${loggedIn.value}`},
     });
-    loggedIn.value = res.ok;
+    if(!(loggedIn.value = res.ok)) return;
     const body = await res.json();
     isAdmin.value = body.isAdmin;
 }
 if(loggedIn.value) fetchMe();
+
+// caso a query de busca seja alterada e a página atual seja a de pesquisa mostra o valor no campo de busca do header
 watch(() => route.query.q, () => ((route.path === '/search') && (q.value = route.query.q)), {immediate: true});
+
 const search = query => router.push({path: '/search', query});
+
 const logout = () => {
     localStorage.removeItem('credentials');
     loggedIn.value = false;
     isAdmin.value = false;
+    // recarrega a página para rodar novamente as "navigation guards" da rota atual, desse modo caso o usuário tenha
+    // deslogado enquanto acessa uma página que requer autenticação, será redirecionado para a página de login
     router.go(0);
 }
+
 const login = (credentials, admin) => {
     localStorage.setItem('credentials', credentials);
     loggedIn.value = true;
     isAdmin.value = admin;
+    // devolve o usuário para a página que ele tentou acessar originalmente antes de ser redirecionado para a página de
+    // login por não estar autenticado
     router.push(route.redirectedFrom ?? '/account');
 } 
 

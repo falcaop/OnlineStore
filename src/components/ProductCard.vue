@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
-import utils from '../assets/utils.js';
+import {toPriceString, setDefaultImage} from '../assets/utils.js';
 
 // atributos do produto, recebidos do componente pai
 const props = defineProps({
@@ -21,9 +21,9 @@ const showProduct = () => router.push({
 
 <template>
     <a :href="`/product/${id}?name=${name}`" @click.prevent.stop="showProduct">
-        <img :src="image" @error="event => (event.target.src = 'https://placehold.co/500x600')"/>
+        <img :src="image" @error="setDefaultImage"/>
         <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
-        <h3>{{ utils.toPriceString(price ?? 0) }}</h3>
+        <h3>{{ toPriceString(price ?? 0) }}</h3>
     </a>
 </template>
 

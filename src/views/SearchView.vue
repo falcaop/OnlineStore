@@ -2,10 +2,11 @@
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
-import utils from '../assets/utils.js';
+import {toPriceString, fetchProducts} from '../assets/utils.js';
 
 const route = useRoute();
 const router = useRouter();
+// valores iniciais para popular a UI enquanto os valores reais são carregados do banco
 const products = ref([{ id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }]);
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 
@@ -15,6 +16,7 @@ const sortMethods = {
         description: 'A-Z',
         info: {
             field: 'name',
+            // 1 para crescente
             order: 1,
         },
     },
@@ -29,6 +31,7 @@ const sortMethods = {
         description: 'Maior preço',
         info: {
             field: 'price',
+            // -1 para decrescente
             order: -1,
         },
     },
@@ -40,7 +43,7 @@ const sortMethods = {
         },
     },
 };
-let sortMethod = ref('nameAsc');
+const sortMethod = ref('nameAsc');
 
 // lista dos possiveis filtros por preco
 const prices = [
@@ -62,46 +65,51 @@ const prices = [
     },
 ];
 
-// solicitar os produtos cadastrados
-const fetchProducts = async () => {
-    // indicar metodo de ordenacao
-    const queries = {
-        sortField: sortMethods[sortMethod.value].info.field,
-        sortOrder: sortMethods[sortMethod.value].info.order,
-    };
-    // indicar filtro por pesquisa, categoria ou preco
-    for(const query of ['q', 'category', 'minPrice', 'maxPrice']){
-        if(route.query[query]) queries[query] = route.query[query];
-    }
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
-    return res.ok ? await res.json() : [];
-}
-watch([() => route.query, sortMethod], async () => (products.value = await fetchProducts()), { immediate: true });
+// recarrega os produtos quando os filtros ou o metódo de ordenação são alterados e no carregamento inicial
+watch(
+    [() => route.query, sortMethod],
+    async () => {
+        products.value = await fetchProducts({
+            queries: {
+                sortField: sortMethods[sortMethod.value].info.field,
+                sortOrder: sortMethods[sortMethod.value].info.order,
+                ...route.query,
+            },
+        });
+    },
+    { immediate: true },
+);
 
-const filterProducts = ({
+// retorna um objeto formatado corretamente das queries que devem ser aplicadas à página
+// recebe apenas as queries que devem ser alteradas, as que não forem definidas terão a informação atual da rota mantida
+const toQueryObject = ({
     category = (route.query.category ?? null),
-    minPrice = (route.query.minPrice ?? null),
-    maxPrice = (route.query.maxPrice ?? null),
+    minPrice = route.query.minPrice,
+    maxPrice = route.query.maxPrice,
 }) => {
-    const query = {};
-    if(category !== null) query.category = category;
-    if(minPrice !== null) query.minPrice = minPrice;
-    if(maxPrice !== null) query.maxPrice = maxPrice;
-    if(route.query.q) query.q = route.query.q;
-    router.push({path: '/search', query});
+    const queryObj = {};
+    if(category !== null) queryObj.category = category;
+    if(minPrice) queryObj.minPrice = minPrice;
+    if(maxPrice) queryObj.maxPrice = maxPrice;
+    if(route.query.q) queryObj.q = route.query.q;
+    return queryObj;
 }
-const searchURL = ({
-    category = (route.query.category ?? null),
-    minPrice = (route.query.minPrice ?? null),
-    maxPrice = (route.query.maxPrice ?? null),
-}) => {
-    const queries = {};
-    if(category !== null) queries.category = category;
-    if(minPrice !== null) queries.minPrice = minPrice;
-    if(maxPrice !== null) queries.maxPrice = maxPrice;
-    if(route.query.q) queries.q = route.query.q;
-    return `/search?${new URLSearchParams(queries)}`;
+
+// atualiza as queries da página com os novos filtros de produtos
+// recebe um objeto representando apenas as queries que devem ser alteradas
+const filterProducts = queries => {
+    router.push({
+        path: '/search',
+        query: toQueryObject(queries),
+    });
 }
+
+// retorna uma string referente a uma alteração no URL da rota atual caso certas queries sejam modificadas
+// recebe um objeto representando apenas as queries que devem alteradas em relacao as da rota atual
+const searchURL = queries => `/search?${new URLSearchParams(toQueryObject(queries))}`;
+
+// checa se um objeto que representa um filtro de preço é o filtro sendo aplicado pelas queries da rota atual
+// recebe um objeto com `minPrice` e `maxPrice` que representa um filtro de intervalo de preços 
 const isCurrentPrice = ({minPrice, maxPrice}) => {
     return (
         (minPrice === (route.query.minPrice ? parseFloat(route.query.minPrice, 10) : null))
@@ -111,12 +119,13 @@ const isCurrentPrice = ({minPrice, maxPrice}) => {
 }
 
 // formatacao das string dos filtros por preco
+// recebe um objeto com `minPrice` e `maxPrice` que representa um filtro de intervalo de preços 
 const priceDescription = ({minPrice, maxPrice}) => {
-    if(!minPrice) return `Até ${utils.toPriceString(maxPrice)}`;
+    if(!minPrice) return `Até ${toPriceString(maxPrice)}`;
     return (
         maxPrice
-        ? `Entre ${utils.toPriceString(minPrice)} e ${utils.toPriceString(maxPrice)}`
-        : `Maior que ${utils.toPriceString(minPrice)}`
+        ? `Entre ${toPriceString(minPrice)} e ${toPriceString(maxPrice)}`
+        : `Maior que ${toPriceString(minPrice)}`
     );
 }
 </script>
@@ -126,7 +135,7 @@ const priceDescription = ({minPrice, maxPrice}) => {
         <h2 v-if="$route.query.q">Resultados da pesquisa: "{{ route.query.q }}"</h2>
         <h2 v-else-if="$route.query.category">{{ categories[route.query.category] }}</h2>
 
-        <div class="product">
+        <div class="results">
             <section class="filters">
                 <h3>
                     <label for="order">Ordenar por</label>
@@ -199,7 +208,6 @@ const priceDescription = ({minPrice, maxPrice}) => {
     display: flex;
     align-items: start;
     gap: 2.5rem;
-    flex-wrap: wrap;
 }
 a {
     display: block;
@@ -230,7 +238,7 @@ hr {
 .products {
     width: 80%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-wrap: wrap;
     max-width: calc(100% - 250px);
     min-width: 220px;
@@ -267,8 +275,7 @@ hr {
 
 @media screen and (max-width: 480px) {
     .products{
-        width: 70%;
-        display: block;
+        flex-direction: column;
     }
     .products .card{
         margin: 2rem 0;

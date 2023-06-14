@@ -34,7 +34,6 @@ const submitPayment = async event => {
         break;
         case 406: {
             const body = await res.json();
-
             switch(body.stock){
                 case null: {
                     localStorage.setItem('cart', JSON.stringify(products.filter(({id}) => (id !== body.id))));

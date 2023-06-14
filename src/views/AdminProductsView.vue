@@ -3,23 +3,17 @@ import AdminSearch from '../components/AdminSearch.vue';
 import AdminListItem from '../components/AdminListItem.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { reactive, ref, watch } from 'vue';
+import { fetchProducts, closeModal, unhideScroll } from '../assets/utils';
 
 const route = useRoute();
 const router = useRouter();
 // valores iniciais para popular a UI enquanto os valores reais são carregados do banco
 const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
 const Authorization = `Basic ${localStorage.getItem('credentials')}`;
-// retorna produtos da API opcionalmente usando pesquisa pelo nome e pela categoria nas query strings
-const fetchProducts = async () => {
-    const queries = {};
-    if(route.query.q) queries.q = route.query.q;
-    if(route.query.category) queries.category = route.query.category;
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products?${new URLSearchParams(queries)}`);
-    return res.ok ? await res.json() : [];
-}
 // recarrega os produtos quando as query strings são alteradas e no carregamento inicial da página
 watch(() => route.query, async () => {
-    const tmpProducts = await fetchProducts();
+    // retorna produtos da API opcionalmente usando pesquisa pelo nome e pela categoria nas query strings
+    const tmpProducts = await fetchProducts({queries: route.query});
     tmpProducts.forEach(product => (product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`));
     products.value = tmpProducts;
 }, {immediate: true});
@@ -50,7 +44,6 @@ const showAddModal = () => {
     modal.showModal();
     document.body.style.overflowY = 'hidden';
 }
-const closeModal = () => modal.close();
 // envia uma requisição de adicionar um novo produto para a API e atualiza os produtos em cache em caso de sucesso
 const addItem = async target => {
     const formData = new FormData(target);
@@ -157,7 +150,6 @@ const deleteItem = async id => {
 };
 // transforma a imagem entrada por upload em um URL para mostrar a preview
 const loadImage = event => (newProduct.image = URL.createObjectURL(event.target.files[0]));
-const unhideScroll = () => document.body.style.overflowY = 'unset';
 </script>
 
 <template>
@@ -184,12 +176,23 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
                     <div class="left">
                         <label for="category">Categoria</label>
                         <select v-model.number="newProduct.category" required id="category" name="category">
-                            <option v-for="(categoryName, i) in categories" :key="i" :value="i">{{ categoryName }}</option>
+                            <option
+                                v-for="(categoryName, i) in categories"
+                                :key="i"
+                                :value="i"
+                            >{{ categoryName }}</option>
                         </select>
                     </div>
                     <div class="right">
                         <label for="stock">Quantidade em estoque</label>
-                        <input v-model.number="newProduct.stock" required min="0" type="number" id="stock" name="stock"/>
+                        <input
+                            v-model.number="newProduct.stock"
+                            required
+                            min="0"
+                            type="number"
+                            id="stock"
+                            name="stock"
+                        />
                     </div>
                 </div>
                 <label for="image">Imagem</label>

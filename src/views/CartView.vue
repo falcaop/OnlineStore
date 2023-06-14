@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import ItemCart from '../components/ItemCart.vue';
-import utils from '../assets/utils.js';
+import {fetchProducts, calcTotalPriceString} from '../assets/utils.js';
 
 // itens do carrinho (id do produto e quantidade)
 const cartProducts = ref(JSON.parse(localStorage.getItem('cart')) ?? []);
@@ -10,33 +10,24 @@ const customProducts = ref(JSON.parse(localStorage.getItem('customs')) ?? []);
 
 const totalPriceString = ref('');
 let products = [];
-const findProduct = id => products.find(product => (product.id === id));
-// atualizar o valor total da compra
-const updateTotalPriceString = () => {
-    totalPriceString.value = utils.toPriceString(
-        cartProducts.value.reduce((acc, {id, amount}) => (acc + (findProduct(id).price * amount)), 0)
-        +
-        customProducts.value.reduce((acc, {amount}) => (acc + (50 * amount)), 0),
-    );
-}
-watch(cartProducts, updateTotalPriceString);
 
-// solicitar informacoes dos produtos no carrinho
-const fetchProducts = async () => {
-    const res = await fetch(
-        `${import.meta.env.VITE_API_HOST}/products?${cartProducts.value.map(({id}) => `id=${id}`).join('&')}`
-    );
-    return res.ok ? await res.json() : [];
-}
-fetchProducts().then(res => {
+// atualiza o preço total quando algum produto é removido
+watch(
+    [cartProducts, customProducts],
+    () => (totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value)),
+);
+
+fetchProducts({ids: cartProducts.value.map(({id}) => id)}).then(res => {
     products = res;
-    updateTotalPriceString();
+    totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 });
 
 const empty = () =>{
     if (confirm("Tem certeza que deseja esvaziar o carrinho?")){
         cartProducts.value = [];
+        customProducts.value = [];
         localStorage.removeItem('cart');
+        localStorage.removeItem('customs');
     }   
 }
 const remove = (id) => {
@@ -51,12 +42,12 @@ const removeCustom = (id) => {
 const changeAmount = (id, amount) => {
     cartProducts.value.find((p) => p.id === id).amount = amount;
     localStorage.setItem("cart", JSON.stringify(cartProducts.value));
-    updateTotalPriceString();
+    totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 }
 const changeAmountCustom = (id, amount) => {
     customProducts.value.find((p) => p.id === id).amount = amount;
     localStorage.setItem("customs", JSON.stringify(customProducts.value));
-    updateTotalPriceString();
+    totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 }
 </script>
 

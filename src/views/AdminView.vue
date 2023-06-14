@@ -1,14 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
 import { Transition } from 'vue';
-import { useRoute } from 'vue-router';
-import utils from '../assets/utils.js';
-
-const route = useRoute();
-const navColor = (path) => {
-    if (route.path === path) return '#fff';
-    else return '#ccc';
-}
 </script>
 
 <template>
@@ -16,10 +8,10 @@ const navColor = (path) => {
         <nav>
             <ul>
                 <RouterLink to="products">
-                    <li :style="{backgroundColor: navColor('/admin/products')}">Produtos</li>
+                    <li>Produtos</li>
                 </RouterLink>
                 <RouterLink to="users">
-                    <li :style="{backgroundColor: navColor('/admin/users')}">Usuários</li>
+                    <li>Usuários</li>
                 </RouterLink>
             </ul>
         </nav>
@@ -42,8 +34,11 @@ li{
     padding: 1rem;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    background-color: white;
+    background-color: #ccc;
     display: inline-block;
     margin-right: 0.5rem;
+}
+.router-link-active li{
+    background-color: #fff;
 }
 </style>

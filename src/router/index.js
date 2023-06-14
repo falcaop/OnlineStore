@@ -1,20 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 
-const apiHost = `${import.meta.env.VITE_API_HOST}`;
+// retorna uma funcao que redireciona o usuário caso ele não cumpra com o criterio de permissão para acessar uma página
+// recebe um boolean indicando se a função deve requerir que o usuário seja administrador ou não
 const isAuthenticated = (admin = false) => async () => {
     const credentials = localStorage.getItem('credentials');
     if(!credentials) return '/signin';
-    const res = await fetch(`${apiHost}/authenticate?admin=${Number(admin)}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/authenticate?admin=${Number(admin)}`, {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });
     if(!res.ok) return (admin ? '/404' : '/signin');
 }
+
+// redireciona o usuário caso ele já esteja logado no sistema
 const isUnauthenticated = async () => {
     const credentials = localStorage.getItem('credentials');
     if(!credentials) return true;
-    const res = await fetch(`${apiHost}/authenticate`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/authenticate`, {
         method: 'HEAD',
         headers: {Authorization: `Basic ${credentials}`},
     });
@@ -31,12 +34,12 @@ const router = createRouter({
         {
             path: '/product/:id',
             name: 'product',
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
+            // quando o componente é importado dinamicamente ele é "lazy-loaded" apenas quando o usuário tenta acessar
+            // a página pela primeira vez, diminuindo a carga inicial possivelmente desnecessária recebida pelo client
             component: () => import('../views/ProductView.vue'),
+            // checa se o produto existe antes de começar a carregar a página
             beforeEnter: async to => {
-                const res = await fetch(`${apiHost}/products/${to.params.id}`, {method: 'HEAD'});
+                const res = await fetch(`${import.meta.env.VITE_API_HOST}/products/${to.params.id}`, {method: 'HEAD'});
                 if(!res.ok) return '/404';
             },
         },
@@ -81,6 +84,9 @@ const router = createRouter({
         {
             path: '/signup',
             component: () => import('../views/SignUpView.vue'),
+            // transfere a informação da página que o usuário tentou acessar originalmente antes de ser redirecionado
+            // para o login/cadastro da página de login para a página de cadastro para o redirecionar de volta ao
+            // finalizar o cadastro
             beforeEnter: [isUnauthenticated, (to, from) => {to.redirectedFrom = from.redirectedFrom}],
         },
         {
@@ -111,6 +117,7 @@ const router = createRouter({
             redirect: '/404',
         },
     ],
+    // "scrollar" para o topo suavemente ao mudar de página
     scrollBehavior(){
         return {
             top: 0,

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import utils from '../assets/utils.js';
+import {toPriceString} from '../assets/utils.js';
 
 let amount = 1;
 const selectedColor = ref('#FFFFFF');
@@ -28,6 +28,7 @@ const sizes = ["PP", "P", "M", "G", "GG"];
 const addToCart = () => {
     const customs = JSON.parse(localStorage.getItem('customs')) ?? [];
     customs.push({
+        // id usado pelo client para diferenciar os produtos customizados em um mesmo carrinho
         id: (customs.at(-1)?.id ?? 0) + 1,
         amount,
         color: selectedColor.value,
@@ -50,7 +51,7 @@ const addToCart = () => {
                 <img class="imageOverlay" :src="imageLink" />
             </div>
             <div class="rows">
-                <p class="price">{{ utils.toPriceString(50) }}</p>
+                <p class="price">{{ toPriceString(50) }}</p>
                 <form @submit.prevent.stop="addToCart">
                     <label for="colors">Cor</label>
                     <div class="colors">

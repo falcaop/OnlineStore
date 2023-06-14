@@ -9,8 +9,10 @@ let passwd = '';
 const isPasswordShown = ref(false);
 const emit = defineEmits(['signedIn']);
 
-// envia uma requisição de usuário para a API e emite o resultado para o componente pai
+// envia uma requisição dos dados do usuário referente as credenciais entradas pelo usuário
+// para a API e emite o resultado para o componente pai
 const signIn = async () => {
+    // converte a concatenação do email e da senha para base64
     const credentials = btoa(`${email}:${passwd}`);
     const res = await fetch(
         `${import.meta.env.VITE_API_HOST}/users/me`,
