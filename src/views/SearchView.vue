@@ -141,7 +141,7 @@ const priceDescription = ({minPrice, maxPrice}) => {
                     <label for="order">Ordenar por</label>
                 </h3>
                 
-                <select v-model="sortMethod" name="order">
+                <select v-model="sortMethod" name="order" id="order">
                     <option
                         v-for="({description}, name) in sortMethods"
                         :key="name"

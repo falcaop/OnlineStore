@@ -41,6 +41,10 @@ main {
     aspect-ratio: 16/5;
 }
 
+.featured img{
+    display: block;
+}
+
 .banner {
     width: 100%;
 }

@@ -21,7 +21,7 @@ const showProduct = () => router.push({
 
 <template>
     <a :href="`/product/${id}?name=${name}`" @click.prevent.stop="showProduct">
-        <img :src="image" @error="setDefaultImage"/>
+        <div><img :src="image" @error="setDefaultImage"/></div>
         <h3 class="name"> {{ name ?? 'Lorem Ipsum' }} </h3>
         <h3>{{ toPriceString(price ?? 0) }}</h3>
     </a>
@@ -44,10 +44,20 @@ a:focus {
     background-color: #f2f2f2;
 }
 
+a:hover img, a:focus img{
+    scale: 1.1;
+}
+
+a div{
+    overflow: hidden;
+}
+
 img {
     width: 100%;
     aspect-ratio: 5/6;
     object-fit: cover;
+    transition: .3s;
+    display: block;
 }
 
 .name {

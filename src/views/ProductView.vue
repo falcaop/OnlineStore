@@ -54,6 +54,7 @@ const addToCart = () => {
                             :max="product.stock"
                             min="1"
                             v-model="amount"
+                            id="amount"
                         />
                         <button class="button inCart" v-if="cartProduct" type="button">No carrinho</button>
                         <button class="button" v-else>Adicionar ao carrinho</button>
