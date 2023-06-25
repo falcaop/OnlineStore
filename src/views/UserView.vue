@@ -109,7 +109,7 @@ const updateUser = async event => {
             <div class="purchases">
                 <h3>Histórico de Compras</h3>
                 <ul>
-                    <li v-for="purchase in purchases">
+                    <li v-for="purchase in [...purchases].reverse()">
                         <RouterLink :to="`/purchase/${purchase._id}`">
                             {{ new Date(purchase.createdAt).toLocaleDateString() }} - Compra de {{ purchase.numProducts }}
                             produto(s) e {{ purchase.numCustoms }} camiseta(s) customizada(s).

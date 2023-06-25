@@ -116,6 +116,7 @@ router.get('/users/me/purchases', authenticate(), async (req, res) => {
     await req.user.populate({
         path: 'purchases',
         populate: ['numProducts', 'numCustoms'],
+        options: {sort: {createdAt: 1}},
     })
     res.status(200).json(req.user.purchases);
 });
@@ -186,7 +187,7 @@ router.post(
     },
 );
 router.post(
-    '/purchases',
+    '/users/me/purchases',
     upload.none(),
     authenticate(),
     body('cardNumber').isInt({min: 0}),

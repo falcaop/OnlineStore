@@ -14,7 +14,7 @@ const submitPayment = async event => {
     if(Date.parse(formData.get('cardDate')) < Date.now()) return alert('Data de validade do cartão expirada');
     formData.append('cart', JSON.stringify(products));
     formData.append('customs', JSON.stringify(customs));
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/purchases`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/users/me/purchases`, {
         method: 'POST',
         headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
         body: formData,
