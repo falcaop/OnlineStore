@@ -36,12 +36,17 @@ router.head('/products/:id', fetchDocument(productModel, '_id'), (_, res) => res
 router.get('/products', async (req, res) => {
     if(Array.isArray(req.query.id)){
         const facet = {};
+        let valid = false;
         req.query.id.forEach(id => {
-            if(id.match(/^[\da-f]{24}$/)) facet[id] = [
-                {$match: {_id: new Types.ObjectId(id)}},
-                {$project: {image: 0}},
-            ];
+            if(id.match(/^[\da-f]{24}$/)){
+                facet[id] = [
+                    {$match: {_id: new Types.ObjectId(id)}},
+                    {$project: {image: 0}},
+                ];
+                valid = true;
+            }
         });
+        if(!valid) return res.status(200).json([]);
         const aggregatedProducts = await productModel.aggregate([{$facet: facet}]);
         const products = [];
         for(const id in facet){

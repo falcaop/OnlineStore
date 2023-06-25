@@ -17,7 +17,13 @@ watch(
     () => (totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value)),
 );
 
-fetchProducts({ids: cartProducts.value.map(({id}) => id)}).then(res => {
+fetchProducts({
+    ids: (
+        (cartProducts.value.length > 1)
+        ? cartProducts.value.map(({id}) => id)
+        : cartProducts.value.map(({id}) => id).concat(Array(2 - cartProducts.value.length).fill(''))
+    ),
+}).then(res => {
     products = res;
     totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 });
