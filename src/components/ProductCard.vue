@@ -4,7 +4,7 @@ import {toPriceString, setDefaultImage} from '../assets/utils.js';
 
 // atributos do produto, recebidos do componente pai
 const props = defineProps({
-    id: Number,
+    id: String,
     name: String,
     price: Number,
 });

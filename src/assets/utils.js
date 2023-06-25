@@ -30,7 +30,7 @@ const unhideScroll = () => document.body.style.overflowY = 'unset';
 const calcTotalPriceString = (cartProducts, products, customProducts) => {
     return toPriceString(
         cartProducts.reduce(
-            (acc, {id, amount}) => (acc + (products.find(product => (product.id === id)).price * amount)),
+            (acc, {id, amount}) => (acc + ((products.find(product => (product._id === id))?.price ?? 0) * amount)),
             0,
         )
         +

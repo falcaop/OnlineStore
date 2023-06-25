@@ -31,11 +31,11 @@ const empty = () =>{
     }   
 }
 const remove = (id) => {
-    cartProducts.value = cartProducts.value.filter(product => (product.id !== id));
+    cartProducts.value.splice(cartProducts.value.findIndex(product => (product.id === id)));
     localStorage.setItem("cart", JSON.stringify(cartProducts.value));
 }
 const removeCustom = (id) => {
-    customProducts.value = customProducts.value.filter(product => (product.id !== id));
+    customProducts.value.splice(customProducts.value.findIndex(product => (product.id === id)));
     localStorage.setItem("customs", JSON.stringify(customProducts.value));
 }
 
@@ -68,7 +68,7 @@ const changeAmountCustom = (id, amount) => {
                 <ItemCart
                     v-for="{id, amount} in cartProducts"
                     :key="id"
-                    v-bind="products.find(product => (product.id === id))"
+                    v-bind="products.map(({_id, name, stock, price}) => ({id: _id, name, stock, price})).find(product => (product.id === id))"
                     :amount="amount"
                     class="cartItem"
                     @removeItem="remove"
@@ -76,15 +76,15 @@ const changeAmountCustom = (id, amount) => {
                 />
                 <ItemCart
                     v-for="{id, amount, image, size, color} in customProducts"
-                    :key="id"
+                    :key="id.toString()"
                     :id="id"
                     name="Camisa customizada"
                     :stock="Infinity"
                     :price="50"
                     :amount="amount"
                     :preview="image"
-                    :size="size"
-                    :color="color"
+                    :size="['PP', 'P', 'M', 'G', 'GG'][size]"
+                    :color="`#${color.toString(16).padStart(6, '0')}`"
                     class="cartItem"
                     @removeItem="removeCustom"
                     @amountChanged="changeAmountCustom"

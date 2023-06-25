@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
 import { fetchProducts } from '../assets/utils';
 
-const products = ref([{ id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }]);
+const products = ref([{ _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }]);
 
 // solicitar informacoes dos 4 produtos mais vendidos
 fetchProducts({
@@ -25,7 +25,7 @@ fetchProducts({
         </section>
 
         <section class="products">
-                <ProductCard class="card" v-for="product in products" :key="product.id" v-bind="product" />  
+                <ProductCard class="card" v-for="product in products" :key="product._id" :id="product._id" :name="product.name" :price="product.price" />  
         </section>
     </main>
 </template>

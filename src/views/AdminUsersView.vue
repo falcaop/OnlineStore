@@ -35,7 +35,7 @@ const newUser = reactive({
 });
 // carrega os dados do usuário atual nos campos e mostra o modal com o form
 const showUpdateModal = id => {
-    currentUser = users.value.find(user => (user.id === id));
+    currentUser = users.value.find(user => (user._id === id));
     for(const key in newUser) newUser[key] = currentUser[key];
     modal.showModal();
     // esconde a barra de scroll principal
@@ -75,7 +75,7 @@ const updateItem = async target => {
     const formData = new FormData(target);
     // não envia um campo de senha caso nenhuma nova senha tenho sido definida
     if(!formData.get('password')) formData.delete('password');
-    const res = await fetch(`${url}/${currentUser.id}`, {
+    const res = await fetch(`${url}/${currentUser._id}`, {
         method: 'PUT',
         headers: {Authorization},
         body: formData,
@@ -102,7 +102,7 @@ const updateItem = async target => {
         case 404: {
             alert('Usuário não encontrado');
             // remove o usuário do cache da página
-            users.value = users.value.filter(({id}) => (id !== currentUser.id));
+            users.value.splice(users.value.findIndex(({_id}) => (_id === currentUser._id)));
         }
         break;
         case 409: alert('Já existe um usuário cadastrado com esse email');
@@ -112,7 +112,7 @@ const updateItem = async target => {
 };
 // envia uma requisição para remover um usuário para a API e atualiza os usuários em cache em caso de sucesso
 const deleteItem = async id => {
-    currentUser = users.value.find(user => (user.id === id));
+    currentUser = users.value.find(user => (user._id === id));
     if(!confirm(`Tem certeza que deseja deletar ${currentUser.name}?`)) return;
     const res = await fetch(`${url}/${id}`, {
         method: 'DELETE',
@@ -121,7 +121,7 @@ const deleteItem = async id => {
     switch(res.status){
         case 204: {
             alert(`${currentUser.name} deletado`);
-            users.value = users.value.filter(user => (user.id !== id));
+            users.value.splice(users.value.findIndex(({_id}) => (_id === id)));
         }
         break;
         case 401: {
@@ -136,7 +136,7 @@ const deleteItem = async id => {
         break;
         case 404: {
             alert('Usuário não encontrado');
-            users.value = users.value.filter(user => (user.id !== id));
+            users.value.splice(users.value.findIndex(({_id}) => (_id === id)));
         }
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
@@ -178,11 +178,12 @@ const deleteItem = async id => {
         </div>
         <ul>
             <hr>
-            <template v-for="user in users" :key="user.id">
+            <template v-for="{_id, name} in users" :key="_id">
                 <AdminListItem
                     @updateItem="showUpdateModal"
                     @deleteItem="deleteItem"
-                    v-bind="user"
+                    :id="_id"
+                    :name="name"
                 />
                 <hr>
             </template>

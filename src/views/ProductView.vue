@@ -19,14 +19,14 @@ const fetchProduct = async () => {
 fetchProduct().then(res => {
     product.value = res;
     // checa se o produto já está no carrinho do usuário e se sim altera a quantidade mostrada na UI
-    cartProduct.value = cartProducts.find(({id}) => (id === product.value.id));
+    cartProduct.value = cartProducts.find(({id}) => (id === product.value._id));
     if(cartProduct.value) amount = cartProduct.value.amount;
 });
 
 // adicionar produto e quantidade no carrinho (localStorage)
 const addToCart = () => {
     alert(`${product.value.name} adicionado ao carrinho.`);
-    cartProduct.value = {id: product.value.id, amount};
+    cartProduct.value = {id: product.value._id, amount};
     cartProducts.push(cartProduct.value);
     localStorage.setItem("cart", JSON.stringify(cartProducts));
 }

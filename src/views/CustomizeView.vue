@@ -5,7 +5,7 @@ import {toPriceString} from '../assets/utils.js';
 let amount = 1;
 const selectedColor = ref('#FFFFFF');
 const imageLink = ref('');
-let size = 'P';
+let size = 0;
 
 // lista de cores possiveis para camiseta personalizada
 const colors = [
@@ -31,7 +31,7 @@ const addToCart = () => {
         // id usado pelo client para diferenciar os produtos customizados em um mesmo carrinho
         id: (customs.at(-1)?.id ?? 0) + 1,
         amount,
-        color: selectedColor.value,
+        color: selectedColor.value.slice(1),
         image: imageLink.value,
         size,
     });
@@ -81,7 +81,7 @@ const addToCart = () => {
                         <div class="right">
                             <label for="size">Tamanho</label>
                             <select name="size" class="amount" v-model="size">
-                                <option v-for="size in sizes" :value="size"> {{ size }} </option>
+                                <option v-for="(size, i) in sizes" :value="i"> {{ size }} </option>
                             </select>
                         </div>
                     </div>

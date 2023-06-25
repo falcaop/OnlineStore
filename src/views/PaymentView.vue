@@ -34,32 +34,30 @@ const submitPayment = async event => {
         break;
         case 406: {
             const body = await res.json();
-            switch(body.stock){
-                case null: {
-                    localStorage.setItem('cart', JSON.stringify(products.filter(({id}) => (id !== body.id))));
-                    alert(
-                        'Um ou mais itens do seu pedido não foram encontrado no sistema, confira o seu carrinho e' +
-                        ' tente novamente'
-                    );
-                }
-                break;
-                case 0: {
-                    localStorage.setItem('cart', JSON.stringify(products.filter(({id}) => (id !== body.id))));
+            if(body.name){
+                if(body.stock === 0){
+                    products.splice(products.findIndex(({id}) => (id === body.id)), 1);
+                    localStorage.setItem('cart', JSON.stringify(products));
                     alert(
                         `O produto ${body.name} não está mais em estoque, então removemos ele do seu carrinho,` +
                         ' confira o seu pedido e tente novamente'
                     );
+                    return router.push('/cart');
                 }
-                break;
-                default: {
-                    products.find(({id}) => (id === body.id)).amount = body.stock;
-                    localStorage.setItem('cart', JSON.stringify(products));
-                    alert(
-                        `O produto ${body.name} possui apenas ${body.stock} itens em estoque, então removemos a` +
-                        ' quantia excedente do seu carrinho, confira o seu pedido e tente novamente'
-                    );
-                }
+                products.find(({id}) => (id === body.id)).amount = body.stock;
+                localStorage.setItem('cart', JSON.stringify(products));
+                alert(
+                    `O produto ${body.name} possui apenas ${body.stock} itens em estoque, então removemos a` +
+                    ' quantia excedente do seu carrinho, confira o seu pedido e tente novamente'
+                );
+                return router.push('/cart');
             }
+            products.splice(products.findIndex(({id}) => (id === body.id)), 1);
+            localStorage.setItem('cart', JSON.stringify(products));
+            alert(
+                'Um ou mais itens do seu pedido não foram encontrado no sistema, confira o seu carrinho e' +
+                ' tente novamente'
+            );
             router.push('/cart');
         }
         break;

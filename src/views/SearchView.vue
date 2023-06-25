@@ -7,7 +7,7 @@ import {toPriceString, fetchProducts} from '../assets/utils.js';
 const route = useRoute();
 const router = useRouter();
 // valores iniciais para popular a UI enquanto os valores reais são carregados do banco
-const products = ref([{ id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }, { id: 0 }]);
+const products = ref([{ _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }]);
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 
 // lista dos possiveis metodos de ordenacao dos produtos
@@ -196,7 +196,7 @@ const priceDescription = ({minPrice, maxPrice}) => {
             <section class="products">
                 <p> {{ products.length }} produto(s) encontrado(s).</p>
 
-                <ProductCard class="card" v-for="product in products" :key="product.id" v-bind="product" />
+                <ProductCard class="card" v-for="product in products" :key="product._id" :id="product._id" :name="product.name" :price="product.price" />
             </section>
         </div>
 

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import ItemCart from '../components/ItemCart.vue';
-import {fetchProducts, calcTotalPriceString} from '../assets/utils.js';
+import {toPriceString} from '../assets/utils.js';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -11,13 +11,12 @@ const purchase = ref({
     products: [],
     customs: [],
 });
-let products = [];
 const totalPriceString = ref('');
 
 // envia uma requisição dos dados da compra para a API
 const fetchPurchase = async () => {
     const res = await fetch(
-        `${import.meta.env.VITE_API_HOST}/purchases/${route.params.id}`,
+        `${import.meta.env.VITE_API_HOST}/users/me/purchases/${route.params.id}`,
         {headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
     });
     return res.ok ? await res.json() : {};
@@ -25,9 +24,11 @@ const fetchPurchase = async () => {
 
 fetchPurchase().then(async res => {
     purchase.value = res;
-    // envia uma requisição dos dados dos produtos presentes nessa compra para a API e atualiza o preço total
-    products = await fetchProducts({ids: purchase.value.products.map(({id}) => id)}); 
-    totalPriceString.value = calcTotalPriceString(purchase.value.products, products, purchase.value.customs);
+    totalPriceString.value = toPriceString(
+        purchase.value.products.reduce((acc, {amount, price}) => (acc + (price * amount)), 0)
+        +
+        purchase.value.customs.reduce((acc, {amount}) => (acc + (50 * amount)), 0),
+    );
 });
 </script>
 
@@ -37,31 +38,32 @@ fetchPurchase().then(async res => {
         <div class="container">
             <div v-if="totalPriceString"> 
                 <div>
-                    Compra finalizada em {{ new Date(purchase.date).toLocaleDateString() }}
+                    Compra finalizada em {{ new Date(purchase.createdAt).toLocaleDateString() }}
                 </div>
                 <hr>
 
                 <ItemCart
-                    v-for="{id, amount} in purchase.products"
-                    :key="id"
-                    v-bind="products.find(product => (product.id === id))"
+                    v-for="{product, name, price, amount} in purchase.products"
+                    :key="product"
+                    :id="product"
+                    :name="name"
+                    :price="price"
                     :amount="amount"
-                    class="cartItem"
                     :purchase="true"
+                    class="cartItem"
                 />
                 <ItemCart
-                    v-for="{id, amount, image, size, color} in purchase.customs"
-                    :key="id"
-                    :id="id"
+                    v-for="{_id, amount, image, size, color} in purchase.customs"
+                    :key="_id"
+                    :id="_id"
                     name="Camisa customizada"
-                    :stock="Infinity"
                     :price="50"
                     :amount="amount"
                     :preview="image"
-                    :size="size"
-                    :color="color"
-                    class="cartItem"
+                    :size="['PP', 'P', 'M', 'G', 'GG'][size]"
+                    :color="`#${color.toString(16).padStart(6, '0')}`"
                     :purchase="true"
+                    class="cartItem"
                 />
                 <div class="alignRight">
                     <p class="total">Total: <strong>{{ totalPriceString }}</strong></p>

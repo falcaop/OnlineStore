@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import UserFormInputs from '../components/UserFormInputs.vue';
 import { useRouter } from 'vue-router';
 import { closeModal, unhideScroll } from '../assets/utils';
@@ -12,8 +12,8 @@ const user = reactive({
     email: atob(credentials).split(':')[0],
     phone: '',
     address: '',
-    purchases: [],
 });
+const purchases = ref([]);
 
 // solicitar informacoes do usuario logado
 const fetchUser = async () => {
@@ -24,6 +24,10 @@ const fetchUser = async () => {
     return res.ok ? await res.json() : {};
 }
 fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key] = value)));
+fetch(
+    `${import.meta.env.VITE_API_HOST}/users/me/purchases`,
+    {headers: {Authorization: `Basic ${credentials}`}},
+).then(async res => res.ok && (purchases.value = await res.json()));
 
 // mostra o modal para editar os dados do usuário
 const showUpdateModal = () => {
@@ -105,10 +109,11 @@ const updateUser = async event => {
             <div class="purchases">
                 <h3>Histórico de Compras</h3>
                 <ul>
-                    <li v-for="purchase in user.purchases">
-                        <a :href="`/purchase/${purchase.id}`">
-                            {{ new Date(purchase.date).toLocaleDateString() }} - Compra de {{ purchase.products.length }} produto(s) e {{ purchase.customs.length }} camiseta(s) customizada(s).
-                        </a>
+                    <li v-for="purchase in purchases">
+                        <RouterLink :to="`/purchase/${purchase._id}`">
+                            {{ new Date(purchase.createdAt).toLocaleDateString() }} - Compra de {{ purchase.numProducts }}
+                            produto(s) e {{ purchase.numCustoms }} camiseta(s) customizada(s).
+                        </RouterLink>
                     </li>
                 </ul>
             </div>

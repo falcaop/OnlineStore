@@ -8,20 +8,20 @@ import { fetchProducts, closeModal, unhideScroll } from '../assets/utils';
 const route = useRoute();
 const router = useRouter();
 // valores iniciais para popular a UI enquanto os valores reais são carregados do banco
-const products = ref([{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}]);
+const products = ref([{_id: '0'}, {_id: '1'}, {_id: '2'}, {_id: '3'}, {_id: '4'}, {_id: '5'}, {_id: '6'}, {_id: '7'}]);
 const Authorization = `Basic ${localStorage.getItem('credentials')}`;
 // recarrega os produtos quando as query strings são alteradas e no carregamento inicial da página
 watch(() => route.query, async () => {
     // retorna produtos da API opcionalmente usando pesquisa pelo nome e pela categoria nas query strings
     const tmpProducts = await fetchProducts({queries: route.query});
-    tmpProducts.forEach(product => (product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`));
+    tmpProducts.forEach(product => (product.image = `${import.meta.env.VITE_API_HOST}/products/${product._id}/image`));
     products.value = tmpProducts;
 }, {immediate: true});
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 let currentProduct = null;
 // valores dos inputs do form de adicionar/atualizar produto
 const newProduct = reactive({
-    id: null,
+    _id: null,
     name: null,
     description: null,
     price: null,
@@ -31,7 +31,7 @@ const newProduct = reactive({
 });
 // carrega os dados do produto atual nos campos e mostra o modal com o form
 const showUpdateModal = id => {
-    currentProduct = products.value.find(product => (product.id === id));
+    currentProduct = products.value.find(product => (product._id === id));
     for(const key in newProduct) newProduct[key] = currentProduct[key];
     modal.showModal();
     // esconde a barra de scroll principal
@@ -58,7 +58,7 @@ const addItem = async target => {
         case 201: {
             alert(`${newProduct.name} adicionado`);
             const product = await res.json();
-            product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`;
+            product.image = `${import.meta.env.VITE_API_HOST}/products/${product._id}/image`;
             products.value.push(product);
         }
         break;
@@ -82,7 +82,7 @@ const updateItem = async target => {
     const formData = new FormData(target);
     // não envia um campo de imagem caso não tenha sido feito o upload de uma imagem
     if(!formData.get('image').size) formData.delete('image');
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products/${currentProduct.id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_HOST}/products/${currentProduct._id}`, {
         method: 'PUT',
         headers: {Authorization},
         body: formData,
@@ -91,7 +91,7 @@ const updateItem = async target => {
         case 200: {
             alert(`${currentProduct.name} atualizado`);
             const product = await res.json();
-            product.image = `${import.meta.env.VITE_API_HOST}/products/${product.id}/image`;
+            product.image = `${import.meta.env.VITE_API_HOST}/products/${product._id}/image`;
             for(const key in product) currentProduct[key] = product[key];
         }
         break;
@@ -110,7 +110,7 @@ const updateItem = async target => {
         case 404: {
             alert('Produto não encontrado');
             // remove o produto do cache da página
-            products.value = products.value.filter(({id}) => (id !== currentProduct.id));
+            products.value.splice(products.value.findIndex(({_id}) => (_id === currentProduct._id)), 1);
         }
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
@@ -118,7 +118,7 @@ const updateItem = async target => {
 };
 // envia uma requisição para remover um produto para a API e atualiza os produtos em cache em caso de sucesso
 const deleteItem = async id => {
-    currentProduct = products.value.find(product => (product.id === id));
+    currentProduct = products.value.find(product => (product._id === id));
     if(!confirm(`Tem certeza que deseja deletar ${currentProduct.name}?`)) return;
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/products/${id}`, {
         method: 'DELETE',
@@ -127,7 +127,7 @@ const deleteItem = async id => {
     switch(res.status){
         case 204: {
             alert(`${currentProduct.name} deletado`);
-            products.value = products.value.filter(product => (product.id !== id));
+            products.value.splice(products.value.findIndex(({_id}) => (_id === id)), 1);
         }
         break;
         case 401: {
@@ -142,7 +142,7 @@ const deleteItem = async id => {
         break;
         case 404: {
             alert('Produto não encontrado');
-            products.value = products.value.filter(product => (product.id !== id));
+            products.value.splice(products.value.findIndex(({_id}) => (_id === id)), 1);
         }
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');
@@ -217,11 +217,12 @@ const loadImage = event => (newProduct.image = URL.createObjectURL(event.target.
         </div>
         <ul>
             <hr>
-            <template v-for="product in products" :key="product.id">
+            <template v-for="{_id, name} in products" :key="_id">
                 <AdminListItem
                     @updateItem="showUpdateModal"
                     @deleteItem="deleteItem"
-                    v-bind="product"
+                    :id="_id"
+                    :name="name"
                 />
                 <hr>
             </template>
