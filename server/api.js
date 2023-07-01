@@ -109,6 +109,7 @@ router.get('/users', authenticate(true), async (req, res) => {
     res.status(200).json(users);
 });
 router.get('/users/me/purchases/:id', authenticate(), async (req, res) => {
+    if(!req.params.id.match(/^[\da-f]{24}$/)) return res.sendStatus(404);
     await req.user.populate({
         path: 'purchases',
         match: {_id: req.params.id},
