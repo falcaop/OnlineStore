@@ -34,7 +34,7 @@ fetchPurchase().then(async res => {
 
 <template>
     <main>
-        <h2>Relatorio da compra</h2>
+        <h2>Relatório da compra</h2>
         <div class="container">
             <div v-if="totalPriceString"> 
                 <div>
@@ -69,7 +69,7 @@ fetchPurchase().then(async res => {
                     <p class="total">Total: <strong>{{ totalPriceString }}</strong></p>
                 </div>
             </div>
-            <div v-else>Compra nao encontrada</div>
+            <div v-else>Compra não encontrada</div>
         </div>
     </main>
 </template>

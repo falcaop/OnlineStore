@@ -5,6 +5,7 @@ import {toPriceString} from '../assets/utils.js';
 let amount = 1;
 const selectedColor = ref('#FFFFFF');
 const imageLink = ref('');
+const tempImage = ref('');
 let size = 0;
 
 // lista de cores possiveis para camiseta personalizada
@@ -37,6 +38,13 @@ const addToCart = () => {
     });
     localStorage.setItem('customs', JSON.stringify(customs));
     alert('Produto adicionado ao carrinho');
+}
+
+// confirmação do envio e tipo da URL da imagem
+const setImageLink = () => {
+    if (!/\.(jpg|jpeg|png)$/i.test(tempImage.value))
+        return alert('Formato da imagem inválido.')
+    imageLink.value = tempImage.value;
 }
 
 </script>
@@ -86,8 +94,11 @@ const addToCart = () => {
                         </div>
                     </div>
                     <label for="estampa">Escolher estampa</label>
-                    <input name="estampa" required type="url" v-model="imageLink">
-                    <button class="button">Adicionar ao carrinho</button>
+                    <div class="columns">
+                        <input name="estampa" class="left" required type="url" v-model="tempImage">
+                        <button type="button" class="button right" @click="setImageLink">Confirmar</button>
+                    </div>
+                    <button type="submit" class="button">Adicionar ao carrinho</button>
                 </form>
             </div>
         </div>
@@ -161,6 +172,9 @@ input[type="radio"]:focus, input[type="radio"]:checked {
     left: 0;
     right: 0;
     margin: auto;
+}
+.columns > button{
+    margin-top: 0;
 }
 
 @media screen and (max-width: 1330px){

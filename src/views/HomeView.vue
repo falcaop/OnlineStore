@@ -68,4 +68,26 @@ main {
         width: 45%;
     }
 }
+
+@media screen and (max-width: 767px){
+    main{
+        width: 100%;
+    }
+    .products{
+        width: 70%;
+        margin: auto;
+    }
+    .featured{
+        overflow: hidden;
+        min-height: 150px;
+    }
+}
+
+@media screen and (max-width: 400px){
+    .featured{
+        position: relative;
+        left: -7%;
+    }
+}
+
 </style>
