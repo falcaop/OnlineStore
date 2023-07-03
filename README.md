@@ -58,7 +58,7 @@ The diagram shows the pages organized to represent the sequences of pages access
 Furthermore, there were developed medium to high fidelity mockups for all major app screens. These can be found [here](https://www.figma.com/file/iVZQMGcoJsFiGn5aPwzvxx/Prototipos?type=design&node-id=1%3A14&t=P3IddQNjZLe303y2-1).
   
   ## 3. Comments About the Code
-  This project was developed using the JavaScript framework Vue 3 for building the user interface and Vite as a build tool
+  This project was developed using the JavaScript framework Vue 3 together with the build tool Vite to build the user interface, the server engine Node.js along with the Express framework to run the API, and the NoSQL database service MongoDB together with the Mongoose library to store long term data.
   
   The project structure is organized into the following main sections:
   - **/src/assets:** files that can be imported througout the code whenever necessary
@@ -66,11 +66,17 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   - **/src/router/index.js:** The code that dictates which URL path routes to each page
   - **/src/views:** The pages that can be accessed through URL routes
   - **/src/App.vue:** The basic structure of the website with its fixed parts and the space the pages should occupy
-  - **/server:** Basic API functionality that implements a temporary database system with raw JSON
+  - **/server:** General backend functionality
+  - **/server/api.js:** Available API endpoints
+  - **/server/db:** Database connection and configurations
 
   The user interface was designed to be fully responsive to a wide range of screen sizes.
 
-  For the purpose of facilitating the testing and reviewing of this project we have provided a test version of `/server/db/tempdb.json` with sample data about products, users, purchases, and so on, to be cloned together with the rest of the repository. This way the interface will already be populated with dynamic data when you first run it on your machine and you will have a more authentical experience of what the system is actually supposed to look like.
+  For the purpose of facilitating the testing and reviewing of this project we have provided a test MongoDB database dump at `./testdbarchive` with sample data about products, users, purchases, and so on, to be cloned together with the rest of the repository, to import it navigate to this repository on your terminal and run the following command:
+  ```bash
+  mongorestore --archive="testdbarchive" --drop
+  ```
+  This way the interface will already be populated with dynamic data when you first run it on your machine and you will have a more authentical experience of what the system is actually supposed to look like.
 
   Most importantly, this includes an administrator user with login `admin` and password `admin`, and a customer user with login `user@user.com` and password `user!ABC123`. We recommend using these to test the system functionalities more thoroughly.
   
@@ -198,6 +204,8 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   CLIENT_PORT="8080"
   # The port from which the API should listen for requests
   API_PORT="3000"
+  # The connection URI to the MongoDB database created for this project
+  MONGOURL="mongodb://localhost:27017/nova"
   ```
 
   ### 6.2 Execution
@@ -215,3 +223,5 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   
   
   ## 8. Comments
+
+  No comments.
