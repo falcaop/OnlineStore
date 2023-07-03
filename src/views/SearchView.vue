@@ -69,6 +69,7 @@ const prices = [
 watch(
     [() => route.query, sortMethod],
     async () => {
+        if(!route.query.q && !route.query.category) return products.value = [];
         products.value = await fetchProducts({
             queries: {
                 sortField: sortMethods[sortMethod.value].info.field,

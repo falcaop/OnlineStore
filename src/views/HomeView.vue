@@ -11,8 +11,9 @@ fetchProducts({
     queries: {
         sortField: 'sold',
         sortOrder: -1,
+        limit: 4,
     }
-}).then(res => (products.value = res.slice(0, 4)));
+}).then(res => (products.value = res));
 
 </script>
 

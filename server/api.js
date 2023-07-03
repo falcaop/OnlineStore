@@ -83,6 +83,11 @@ router.get('/products', async (req, res) => {
             }
         }
     }
+    let limit = 64;
+    if(req.query.limit){
+        const intLimit = parseInt(req.query.limit, 10);
+        if(!isNaN(intLimit)) limit = intLimit;
+    }
     let sortArg = {sold: 1};
     for(const sortField of ['name', 'price', 'sold']){
         if(req.query.sortField === sortField){
@@ -90,7 +95,7 @@ router.get('/products', async (req, res) => {
             break;
         }
     }
-    const products = await productModel.find(filter).sort(sortArg);
+    const products = await productModel.find(filter).sort(sortArg).limit(limit);
     res.status(200).json(products);
 });
 router.get('/products/:id', fetchDocument(productModel), (req, res) => res.status(200).json(req.document));
