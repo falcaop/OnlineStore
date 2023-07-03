@@ -122,6 +122,12 @@ const updateUser = async event => {
 </template>
 
 <style scoped>
+a{
+    transition: .3s;
+}
+a:hover{
+    color: var(--green);
+}
 .container input[type="button"]{
     width: 50%;
     margin-bottom: 2rem;
