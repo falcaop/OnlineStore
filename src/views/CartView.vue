@@ -55,6 +55,10 @@ const changeAmountCustom = (id, amount) => {
     localStorage.setItem("customs", JSON.stringify(customProducts.value));
     totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 }
+const findProduct = id => {
+    const {_id, name, stock, price} = products.find(product => (product._id === id));
+    return {id: _id, name, stock, price};
+}
 </script>
 
 <template>
@@ -74,7 +78,7 @@ const changeAmountCustom = (id, amount) => {
                 <ItemCart
                     v-for="{id, amount} in cartProducts"
                     :key="id"
-                    v-bind="products.map(({_id, name, stock, price}) => ({id: _id, name, stock, price})).find(product => (product.id === id))"
+                    v-bind="findProduct(id)"
                     :amount="amount"
                     class="cartItem"
                     @removeItem="remove"
@@ -85,7 +89,7 @@ const changeAmountCustom = (id, amount) => {
                     :key="id.toString()"
                     :id="id"
                     name="Camisa customizada"
-                    :stock="Infinity"
+                    :stock="100"
                     :price="50"
                     :amount="amount"
                     :preview="image"

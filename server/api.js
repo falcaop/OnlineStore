@@ -230,7 +230,10 @@ router.post(
         'FFC0CB',
         'FFD700',
     ]).optional(),
-    body('customs.*.amount').isInt({min: 1}).optional(),
+    body('customs.*.amount').isInt({
+        min: 1,
+        max: 128,
+    }).optional(),
     body('customs.*.image').isURL({protocols: ['http', 'https']}),
     body('customs.*.size').isInt({
         min: 0,
@@ -246,7 +249,13 @@ router.post(
                 size: parseInt(size, 10),
                 image,
             }));
-        if(!validationResult(req).isEmpty() || (!cart.length && !customs.length)) return res.sendStatus(400);
+        if(
+            !validationResult(req).isEmpty()
+            ||
+            (!cart.length && !customs.length)
+            ||
+            (customs.reduce((acc, e) => (acc + (e.amount ?? 1)), 0) > 1024)
+        ) return res.sendStatus(400);
         const promises = [];
         for(const i in cart){
             const product = await productModel.findById(cart[i].id);

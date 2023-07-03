@@ -28,6 +28,9 @@ const sizes = ["PP", "P", "M", "G", "GG"];
 // adiciona o produto customizado ao localStorage
 const addToCart = () => {
     const customs = JSON.parse(localStorage.getItem('customs')) ?? [];
+    if((customs.reduce((acc, e) => (acc + e.amount), 0) + amount) > 1000){
+        return alert('Você atingiu o máximo de itens customizados por compra');
+    }
     customs.push({
         // id usado pelo client para diferenciar os produtos customizados em um mesmo carrinho
         id: (customs.at(-1)?.id ?? 0) + 1,
@@ -82,6 +85,7 @@ const setImageLink = () => {
                                 class="amount"
                                 type="number"
                                 min="1"
+                                max="100"
                                 v-model="amount"
                                 name="amount"
                             />
