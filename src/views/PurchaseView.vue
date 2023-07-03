@@ -16,7 +16,7 @@ const totalPriceString = ref('');
 // envia uma requisição dos dados da compra para a API
 const fetchPurchase = async () => {
     const res = await fetch(
-        `${import.meta.env.VITE_API_HOST}/users/me/purchases/${route.params.id}`,
+        `${import.meta.env.VITE_API_HOST}/purchases/${route.params.id}`,
         {headers: {Authorization: `Basic ${localStorage.getItem('credentials')}`},
     });
     return res.ok ? await res.json() : {};
