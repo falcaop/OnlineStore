@@ -11,7 +11,9 @@ const submitPayment = async event => {
     const customs = JSON.parse(localStorage.getItem('customs')) ?? [];
     if (!products.length && !customs.length) return alert('Nenhum produto no carrinho');
     const formData = new FormData(event.target);
-    if(Date.parse(formData.get('cardDate')) < Date.now()) return alert('Data de validade do cartão expirada');
+    const cardDate = Date.parse(formData.get('cardDate'));
+    if(isNaN(cardDate)) return alert('Data de validade do cartão inválida');
+    if(cardDate < Date.now()) return alert('Data de validade do cartão expirada');
     formData.append('cart', JSON.stringify(products));
     formData.append('customs', JSON.stringify(customs));
     const res = await fetch(`${import.meta.env.VITE_API_HOST}/users/me/purchases`, {
@@ -24,7 +26,11 @@ const submitPayment = async event => {
             localStorage.removeItem('cart');
             localStorage.removeItem('customs');
             alert('Compra finalizada');
-            router.push('/');
+            const purchaseDocument = await res.json();
+            router.push({
+                name: 'purchase',
+                params: {id: purchaseDocument._id},
+            });
         }
         break;
         case 401: {

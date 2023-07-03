@@ -142,6 +142,9 @@ svg:hover{
     .right{
         flex-direction: row;
     }
+    .right h3{
+        margin-bottom: 0;
+    }
     img{
         width: 50%
     }

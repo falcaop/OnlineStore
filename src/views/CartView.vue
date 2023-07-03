@@ -97,7 +97,7 @@ const changeAmountCustom = (id, amount) => {
                 />
                 <div class="total">
                     <p>Total: <strong>{{ totalPriceString }}</strong></p>
-                    <RouterLink class="link" to="/payment">Realizar pagamento</RouterLink>
+                    <RouterLink class="button" to="/payment">Realizar pagamento</RouterLink>
                 </div>
             </div>
             <div v-else>Nenhum produto no carrinho</div>
@@ -106,7 +106,7 @@ const changeAmountCustom = (id, amount) => {
 </template>
 
 <style scoped>
-input[type="button"]{
+.button{
     width: 50%;
     margin-top: 0;
 }
@@ -123,9 +123,15 @@ input[type="button"]{
 }
 .total{
     font-size: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
 }
 @media screen and (max-width: 767px) {
-    input[type="button"]{
+    .total{
+        align-items: start;
+    }
+    .button{
         width: 100%;
     }
 }

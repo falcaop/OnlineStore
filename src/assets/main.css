@@ -78,6 +78,9 @@ input[type="button"],
     cursor: pointer;
     width: 100%;
     margin-top: 2rem;
+    display: block;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 input[type="submit"]:hover, 
