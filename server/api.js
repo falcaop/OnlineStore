@@ -6,7 +6,13 @@ import multer from 'multer';
 import { Types } from 'mongoose';
 
 const router = Router();
-const upload = multer();
+const upload = multer({
+    limits: {
+        fields: 20,
+        files: 1,
+        fileSize: 1024 * 1024,
+    },
+});
 
 const authenticate = admin => async (req, res, next) => {
     const authorization = req.header('Authorization');
