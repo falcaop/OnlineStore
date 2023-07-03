@@ -4,6 +4,7 @@ const productSchema = new Schema({
     name: {
         type: String,
         required: true,
+        // cria um indice para facilitar a busca por esse campo
         index: true,
         trim: true,
         minLength: 1,
@@ -38,6 +39,7 @@ const productSchema = new Schema({
     },
     image: {
         type: Buffer,
+        // não retorna a imagem junto com o documento do produto por padrão
         select: false,
     },
 });

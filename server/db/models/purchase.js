@@ -5,11 +5,15 @@ const purchaseSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         immutable: true,
+        // cria um indice para facilitar a busca por esse campo
         index: true,
+        // model do banco de dados referenciado por essa chave estrangeira
         ref: 'user',
     },
 }, {
+    // automaticamente registra o momento de criação da compra no documento
     timestamps: true,
+    // permite que os campos virtuais populados sejam stringified junto com o resto do JSON do documento
     toJSON: {virtuals: true},
 });
 
@@ -21,6 +25,8 @@ const purchaseProductSchema = new Schema({
         index: true,
         ref: 'purchase',
     },
+    // referencia o documento do produto original no banco de dados
+    // usado principalmente para evitar a replicação da imagem do produto em cada produto de cada compra
     product: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -33,6 +39,8 @@ const purchaseProductSchema = new Schema({
         immutable: true,
         min: 1,
     },
+    // como o produto original pode ser removido do banco de dados ou ter seus dados alterados são registrados os dados
+    // de cada produto no momento em que a compra foi finalizada para garantir o funcionamento do histórico de compras
     name: {
         type: String,
         required: true,
@@ -92,6 +100,7 @@ const purchaseCustomSchema = new Schema({
         required: true,
         immutable: true,
         trim: true,
+        // corresponde a um URL
         match: /^https?:\/\/[-\w+\.#?%/=]+\.[a-z]{2,}/,
         maxLength: 1024,
     },
@@ -103,22 +112,28 @@ const purchaseCustomSchema = new Schema({
     },
 });
 
+// campo virtual de uma compra que retorna os produtos referentes a ela
 purchaseSchema.virtual('products', {
+    // model do banco de dados que contém os documentos que devem ser retornados por esse campo virtual
     ref: 'purchaseProduct',
     localField: '_id',
+    // campo do documento que referencia o id da compra a que ele pertence
     foreignField: 'purchase',
 });
+// campo virtual de uma compra que retorna a quantidade de produtos referentes a ela
 purchaseSchema.virtual('numProducts', {
     ref: 'purchaseProduct',
     localField: '_id',
     foreignField: 'purchase',
     count: true,
 });
+// campo virtual de uma compra que retorna as camisetas customizadas referentes a ela
 purchaseSchema.virtual('customs', {
     ref: 'purchaseCustom',
     localField: '_id',
     foreignField: 'purchase',
 });
+// campo virtual de uma compra que retorna a quantidade de camisetas customizadas referentes a ela
 purchaseSchema.virtual('numCustoms', {
     ref: 'purchaseCustom',
     localField: '_id',
@@ -129,6 +144,7 @@ purchaseSchema.virtual('numCustoms', {
 const purchaseProductModel = model('purchaseProduct', purchaseProductSchema);
 const purchaseCustomModel = model('purchaseCustom', purchaseCustomSchema);
 
+// método das instancias de compra que adiciona no banco de dados seus produtos e camisetas customizadas
 purchaseSchema.method('setItems', async function(products, customs){
     await purchaseProductModel.insertMany(products.map(({id, amount, name, description, price}) => ({
         purchase: this._id,
@@ -141,6 +157,7 @@ purchaseSchema.method('setItems', async function(products, customs){
     await purchaseCustomModel.insertMany(customs.map(e => ({purchase: this._id, ...e})));
 });
 
+// middleware que remove todos os produtos e camisetas customizadas pertencentes a compras ao remover essas compras
 purchaseSchema.pre('deleteMany', async function(){
     const purchaseDocuments = await this.model.find(this.getQuery()).select('_id');
     const promises = [];
@@ -150,6 +167,7 @@ purchaseSchema.pre('deleteMany', async function(){
             purchaseCustomModel.deleteMany({purchase: purchaseDocument._id}),
         );
     }
+    // executa a remoção de todos os produtos e camisetas customizadas simultaneamente
     await Promise.all(promises);
 });
 

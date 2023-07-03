@@ -16,6 +16,7 @@ app.on("disconnected", () => process.exit());
 
 await connect();
 
+// cria o super usuário "admin" caso este ainda não esteja registrado no banco de dados
 if(!await userModel.exists({email: 'admin'})){
     const userDocument = new userModel({
         email: 'admin',
