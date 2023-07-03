@@ -58,7 +58,7 @@ The diagram shows the pages organized to represent the sequences of pages access
 Furthermore, there were developed medium to high fidelity mockups for all major app screens. These can be found [here](https://www.figma.com/file/iVZQMGcoJsFiGn5aPwzvxx/Prototipos?type=design&node-id=1%3A14&t=P3IddQNjZLe303y2-1).
   
   ## 3. Comments About the Code
-  This project was developed using the JavaScript framework Vue 3 together with the build tool Vite to build the user interface, the server engine Node.js along with the Express framework to run the API, and the NoSQL database service MongoDB together with the Mongoose library to store long term data.
+  This project was developed using the JavaScript framework [Vue 3](https://vuejs.org/) together with the build tool [Vite](https://vitejs.dev/) to build the user interface, the server engine [Node.js](https://nodejs.org/) along with the [Express](https://expressjs.com/) framework to run the API, and the NoSQL database service [MongoDB](https://www.mongodb.com/) together with the [Mongoose](https://mongoosejs.com/) library to store long term data.
   
   The project structure is organized into the following main sections:
   - **/src/assets:** files that can be imported througout the code whenever necessary
@@ -68,7 +68,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   - **/src/App.vue:** The basic structure of the website with its fixed parts and the space the pages should occupy
   - **/server:** General backend functionality
   - **/server/api.js:** Available API endpoints
-  - **/server/db:** Database connection and configurations
+  - **/server/db:** Database connection and settings
 
   The user interface was designed to be fully responsive to a wide range of screen sizes.
 
