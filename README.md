@@ -193,7 +193,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   npm i
   ```
   5.
-  - Load the database from the file _testdbarchive_ using the command mongorestore
+  - If you wish to use the test database, load it from the file _testdbarchive_ using the command mongorestore
   ```bash
   mongorestore --archive="testdbarchive"
   ```
