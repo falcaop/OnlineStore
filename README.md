@@ -179,7 +179,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
 
   ### 6.1. Installation
 
-  1. Make sure that you have version 18 or superior of [Node.js](https://nodejs.org/) installed in your system
+  1. Make sure that you have version 18 or superior of [Node.js](https://nodejs.org/) and MongoDB installed in your system
   2. Clone the repository to your preferred location with the following command:
   ```bash
   git clone https://github.com/falcaop/OnlineStore.git
@@ -207,6 +207,22 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   # The connection URI to the MongoDB database created for this project
   MONGOURL="mongodb://localhost:27017/nova"
   ```
+  6.
+  - Load the database from the file _testdbarchive_ using the command mongorestore
+  ```bash
+  mongorestore --archive="testdbarchive"
+  ```
+  - You could also create a new database named "nova" accessing MongoDB Shell, creating it and intiializing it:
+  ```bash
+  mongosh
+  ```
+  ```bash
+  use nova
+  ```
+  ```bash
+  db.collections.insert({})
+  ```
+  
 
   ### 6.2 Execution
 
