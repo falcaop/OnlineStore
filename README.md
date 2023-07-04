@@ -197,7 +197,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   ```bash
   mongorestore --archive="testdbarchive"
   ```
-  - You could also access MongoDB Shell, create a new database named "nova" and initialize it, with the following comands:
+  - Otherwise, you could access MongoDB Shell, create a new database named "nova" and initialize it, with the following comands:
   ```bash
   mongosh
   ```
