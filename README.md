@@ -179,7 +179,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
 
   ### 6.1. Installation
 
-  1. Make sure that you have version 18 or superior of [Node.js](https://nodejs.org/) and MongoDB installed in your system
+  1. Make sure that you have version 18 or superior of [Node.js](https://nodejs.org/) and [MongoDB](https://www.mongodb.com/) installed and running in your system
   2. Clone the repository to your preferred location with the following command:
   ```bash
   git clone https://github.com/falcaop/OnlineStore.git
