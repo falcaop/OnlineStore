@@ -19,7 +19,7 @@ const fetchUsers = async () => {
     if(route.query.q) queries.q = route.query.q;
     if(route.query.admin) queries.admin = route.query.admin;
     const res = await fetch(`${url}?${new URLSearchParams(queries)}`, {headers: {Authorization}});
-    return res.ok ? await res.json() : [];
+    return (res.status === 200) ? await res.json() : [];
 }
 // recarrega os usuários quando as query strings são alteradas e no carregamento inicial da página
 watch(() => route.query, async () => (users.value = await fetchUsers()), {immediate: true});

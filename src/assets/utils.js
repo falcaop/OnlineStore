@@ -13,7 +13,7 @@ const fetchProducts = async ({queries, ids = []}) => {
         `${import.meta.env.VITE_API_HOST}/products?` +
         ids.map(id => `id=${id}`).concat(new URLSearchParams(queries)).join('&')
     );
-    return res.ok ? await res.json() : [];
+    return (res.status === 200) ? await res.json() : [];
 }
 
 const closeModal = () => modal.close();

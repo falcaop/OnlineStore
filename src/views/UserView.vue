@@ -27,7 +27,7 @@ fetchUser().then(res => Object.entries(res).forEach(([key, value]) => (user[key]
 fetch(
     `${import.meta.env.VITE_API_HOST}/users/me/purchases`,
     {headers: {Authorization: `Basic ${credentials}`}},
-).then(async res => res.ok && (purchases.value = await res.json()));
+).then(async res => (res.status === 200) && (purchases.value = await res.json()));
 
 // mostra o modal para editar os dados do usuário
 const showUpdateModal = () => {
