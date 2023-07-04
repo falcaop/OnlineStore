@@ -192,22 +192,7 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   ```bash
   npm i
   ```
-  5. In the root directory, create a file called `.env` and paste the following content into it:
-  ```env
-  # Can be either "development" or "production"
-  # If you use "development" you will need to manually start the client with `npm run dev`
-  # Only use "production" after creating the production build with `npm run build`
-  NODE_ENV="development"
-  # The base URL the client will use to make requests to the API
-  VITE_API_HOST="http://localhost:3000"
-  # Only used for production builds to start the client listener
-  CLIENT_PORT="8080"
-  # The port from which the API should listen for requests
-  API_PORT="3000"
-  # The connection URI to the MongoDB database created for this project
-  MONGOURL="mongodb://localhost:27017/nova"
-  ```
-  6.
+  5.
   - Load the database from the file _testdbarchive_ using the command mongorestore
   ```bash
   mongorestore --archive="testdbarchive"
@@ -222,7 +207,21 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   ```bash
   db.collections.insert({})
   ```
-  
+  6. In the root directory, create a file called `.env` and paste the following content into it:
+  ```env
+  # Can be either "development" or "production"
+  # If you use "development" you will need to manually start the client with `npm run dev`
+  # Only use "production" after creating the production build with `npm run build`
+  NODE_ENV="development"
+  # The base URL the client will use to make requests to the API
+  VITE_API_HOST="http://localhost:3000"
+  # Only used for production builds to start the client listener
+  CLIENT_PORT="8080"
+  # The port from which the API should listen for requests
+  API_PORT="3000"
+  # The connection URI to the MongoDB database created for this project
+  MONGOURL="mongodb://localhost:27017/nova"
+  ```
 
   ### 6.2 Execution
 
