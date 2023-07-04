@@ -159,9 +159,9 @@ router.get('/users', authenticate(true), async (req, res) => {
     }
     // caso a URL contenha uma query de admin checa se é 0 ou 1 e adiciona o filtro correspondente
     switch(req.query.admin){
-        case '0': filter.isAdmin = true;
+        case '0': filter.isAdmin = {$ne: true};
         break;
-        case '1': filter.isAdmin = false;
+        case '1': filter.isAdmin = true;
         break;
     }
     let offset = 0;
