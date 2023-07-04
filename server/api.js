@@ -28,7 +28,7 @@ const authenticate = admin => async (req, res, next) => {
     // caso as hashes sejam diferentes responde com 401 (Unauthorized)
     if(!req.user || (req.user.password !== sha256(password))) return res.sendStatus(401);
     // se o usuário logado precisar ser um administrador e o usuário retornado do banco de dados não for um
-    // administradores responde com 403 (Forbidden)
+    // administrador responde com 403 (Forbidden)
     if(admin && !req.user.isAdmin) return res.sendStatus(403);
     // remove a hash da senha do usuário do documento passado para os próximos middlewares
     req.user.password = null;
@@ -182,7 +182,7 @@ router.get('/users', authenticate(true), async (req, res) => {
 // preferivel usar /purchases/:id em vez do mais especifico /users/me/purchases/:id
 router.get('/purchases/:id', authenticate(), async (req, res) => {
     if(!req.params.id.match(/^[\da-f]{24}$/)) return res.sendStatus(404);
-    // popula o campos virtual de compras do documento do usuário logado filtrando pelo id enviado nos parametros da URL
+    // popula o campo virtual de compras do documento do usuário logado filtrando pelo id enviado nos parametros da URL
     await req.user.populate({
         path: 'purchases',
         match: {_id: req.params.id},
