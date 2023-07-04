@@ -220,7 +220,8 @@ Furthermore, there were developed medium to high fidelity mockups for all major 
   ```
   
   ## 7. Problems
-  
+
+  An efficient solution to save the images of the custom shirts added by the user to the shopping cart has not been found. Since the shopping cart is saved on the client side, it doesn't make much sense to save the images on the server, especially considering that they can be altered or removed from the cart. Additionally, we haven't found a way to save the images on the client side in the long term. Therefore, we have decided to let the user input an image URL, instead of uploading a file.
   
   ## 8. Comments
 
