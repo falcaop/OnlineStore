@@ -25,16 +25,18 @@ fetchProducts({
     ),
 }).then(res => {
     products = res;
+    cartProducts.value = cartProducts.value.filter(({id}) => products.some(({_id}) => (_id === id)));
+    localStorage.setItem('cart', JSON.stringify(cartProducts.value));
     totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 });
 
-const empty = () =>{
+const empty = () => {
     if (confirm("Tem certeza que deseja esvaziar o carrinho?")){
         cartProducts.value = [];
         customProducts.value = [];
         localStorage.removeItem('cart');
         localStorage.removeItem('customs');
-    }   
+    }
 }
 const remove = (id) => {
     cartProducts.value.splice(cartProducts.value.findIndex(product => (product.id === id)));
@@ -65,7 +67,7 @@ const findProduct = id => {
     <main>
         <h2>Meu carrinho</h2>
         <div class="container">
-            <div v-if="(cartProducts.length || customProducts.length) && totalPriceString">
+            <div v-if="cartProducts.length || customProducts.length">
                 <div class="alignRight">
                     <a  
                         class="empty"
@@ -76,6 +78,7 @@ const findProduct = id => {
                 </div>
                 <hr>
                 <ItemCart
+                    v-if="products.length"
                     v-for="{id, amount} in cartProducts"
                     :key="id"
                     v-bind="findProduct(id)"
