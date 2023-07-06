@@ -40,6 +40,7 @@ main {
 .featured {
     background-color: #3A3D41;
     aspect-ratio: 16/5;
+    min-height: 150px;
 }
 
 .featured img{
@@ -78,9 +79,8 @@ main {
         width: 70%;
         margin: auto;
     }
-    .featured{
+    main{
         overflow: hidden;
-        min-height: 150px;
     }
 }
 
@@ -90,5 +90,6 @@ main {
         left: -7%;
     }
 }
+
 
 </style>
