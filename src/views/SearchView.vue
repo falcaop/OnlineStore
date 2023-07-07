@@ -7,7 +7,7 @@ import {toPriceString, fetchProducts} from '../assets/utils.js';
 const route = useRoute();
 const router = useRouter();
 // valores iniciais para popular a UI enquanto os valores reais são carregados do banco
-const products = ref([{ _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }]);
+const products = ref([{}, {}, {}, {}, {}, {}]);
 const categories = ["Camisas", "Calças", "Vestidos", "Casacos", "Acessórios", "Calçados"];
 
 // lista dos possiveis metodos de ordenacao dos produtos

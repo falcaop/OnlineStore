@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router';
 import ProductCard from '../components/ProductCard.vue';
 import { fetchProducts } from '../assets/utils';
 
-const products = ref([{ _id: '0' }, { _id: '0' }, { _id: '0' }, { _id: '0' }]);
+const products = ref([{}, {}, {}, {}]);
 
 // solicitar informacoes dos 4 produtos mais vendidos
 fetchProducts({
