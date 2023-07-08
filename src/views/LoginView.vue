@@ -28,39 +28,51 @@ const signIn = async () => {
     <main>
         <div class="container">
             <h2>Login</h2>
-            <form @submit.prevent.stop="signIn">
-                <label for="email">E-mail</label>
-                <input v-model="email" required id="email" type="text"/>
+            <form @submit.prevent.stop="signIn" class="rows">
                 <div>
-                    <label for="password">Senha</label>
-                    <IconShow
-                        v-if="!isPasswordShown"
-                        tabindex="0"
-                        @click="isPasswordShown = true"
-                        @keyup.space.enter="isPasswordShown = true"
-                    />
-                    <IconHide
-                        v-else
-                        tabindex="0"
-                        @click="isPasswordShown = false"
-                        @keyup.space.enter="isPasswordShown = false"
+                    <label for="email">E-mail</label>
+                    <input v-model="email" required id="email" type="text"/>
+                </div>
+                <div>
+                    <div class="passwordLabel">
+                        <label for="password">Senha</label>
+                        <IconShow
+                            v-if="!isPasswordShown"
+                            tabindex="0"
+                            @click="isPasswordShown = true"
+                            @keyup.space.enter="isPasswordShown = true"
+                        />
+                        <IconHide
+                            v-else
+                            tabindex="0"
+                            @click="isPasswordShown = false"
+                            @keyup.space.enter="isPasswordShown = false"
+                        />
+                    </div>
+                    <input
+                        v-model="passwd"
+                        required
+                        id="password"
+                        :type="isPasswordShown ? 'text' : 'password'"
+                        current-password
                     />
                 </div>
-                <input
-                    v-model="passwd"
-                    required
-                    id="password"
-                    :type="isPasswordShown ? 'text' : 'password'"
-                    current-password
-                />
-                <input type="submit" value="Entrar">
-                <RouterLink class="link" to="/signup">Não tem conta? Registre-se</RouterLink>
+                <div>
+                    <input type="submit" value="Entrar">
+                    <RouterLink class="link" to="/signup">Não tem conta? Registre-se</RouterLink>
+                </div>
             </form>
         </div>
     </main>
 </template>
 
 <style scoped>
+form{
+    gap: 1rem;
+}
+label{
+    margin-bottom: 0.5rem;
+}
 .container{
     margin: 4rem auto;
     min-width: 250px;
@@ -69,18 +81,6 @@ const signIn = async () => {
 h2{
     margin: 0;
     text-align: center;
-}
-form div{
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
-    align-items: end;
-    margin-bottom: 1rem;
-}
-form div label{
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 0;
 }
 svg{
     height: 20px;

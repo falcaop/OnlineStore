@@ -136,7 +136,7 @@ const priceDescription = ({minPrice, maxPrice}) => {
         <h2 v-if="$route.query.q">Resultados da pesquisa: "{{ route.query.q }}"</h2>
         <h2 v-else-if="$route.query.category">{{ categories[route.query.category] }}</h2>
 
-        <div class="results">
+        <div class="results columns">
             <section class="filters">
                 <h3>
                     <label for="order">Ordenar por</label>
@@ -154,50 +154,55 @@ const priceDescription = ({minPrice, maxPrice}) => {
                 <h3>Filtrar por</h3>
                 <div>
                     <h4>Preço</h4>
-                    <a
-                        :href="searchURL({
-                            minPrice: null,
-                            maxPrice: null,
-                        })"
-                        @click.prevent.stop="filterProducts({
-                            minPrice: null,
-                            maxPrice: null,
-                        })"
-                        :class="{
-                            active: isCurrentPrice({
+                    <div class="rows filterOptions">
+                        <a
+                            :href="searchURL({
                                 minPrice: null,
                                 maxPrice: null,
-                            }),
-                        }"
-                    >Todos</a>
-                    <a
-                        v-for="price in prices"
-                        :href="searchURL(price)"
-                        @click.prevent.stop="filterProducts(price)"
-                        :class="{active: isCurrentPrice(price)}"
-                    >{{ priceDescription(price) }}</a>
+                            })"
+                            @click.prevent.stop="filterProducts({
+                                minPrice: null,
+                                maxPrice: null,
+                            })"
+                            :class="{
+                                active: isCurrentPrice({
+                                    minPrice: null,
+                                    maxPrice: null,
+                                }),
+                            }"
+                        >Todos</a>
+                        <a
+                            v-for="price in prices"
+                            :href="searchURL(price)"
+                            @click.prevent.stop="filterProducts(price)"
+                            :class="{active: isCurrentPrice(price)}"
+                        >{{ priceDescription(price) }}</a>
+                    </div>
                 </div>
                 <div v-if="$route.query.q">
                     <h4>Categoria</h4>
-                    <a
-                        :class="{active: !$route.query.category}"
-                        :href="searchURL({category: null})"
-                        @click.prevent.stop="filterProducts({category: null})"
-                    >Todas</a>
-                    <a
-                        v-for="(category, i) in categories"
-                        :key="i"
-                        :href="searchURL({category: i})"
-                        @click.prevent.stop="filterProducts({category: i})"
-                        :class="{active: ($route.query.category === i.toString())}"
-                    >{{ category }}</a>
+                    <div class="rows filterOptions">
+                        <a
+                            :class="{active: !$route.query.category}"
+                            :href="searchURL({category: null})"
+                            @click.prevent.stop="filterProducts({category: null})"
+                        >Todas</a>
+                        <a
+                            v-for="(category, i) in categories"
+                            :key="i"
+                            :href="searchURL({category: i})"
+                            @click.prevent.stop="filterProducts({category: i})"
+                            :class="{active: ($route.query.category === i.toString())}"
+                        >{{ category }}</a>
+                    </div>
                 </div>
             </section>
             <hr class="divider">
             <section class="products">
-                <p> {{ products.length }} produto(s) encontrado(s).</p>
-
-                <ProductCard class="card" v-for="product in products" :key="product._id" :id="product._id" :name="product.name" :price="product.price" />
+                <label> {{ products.length }} produto(s) encontrado(s).</label>
+                <div>
+                    <ProductCard class="card" v-for="product in products" :key="product._id" :id="product._id" :name="product.name" :price="product.price" />
+                </div>
             </section>
         </div>
 
@@ -206,19 +211,14 @@ const priceDescription = ({minPrice, maxPrice}) => {
 
 <style scoped>
 .results {
-    display: flex;
     align-items: start;
     gap: 2.5rem;
-}
-a {
-    display: block;
-    margin: 0.75rem 0;
 }
 h3{
     margin: 0;
 }
 label{
-    margin-top: 0;
+    margin: 0 0 0.5rem 0;
 }
 
 hr {
@@ -238,11 +238,14 @@ hr {
 
 .products {
     width: 80%;
+    max-width: calc(100% - 250px);
+    min-width: 220px;
+}
+
+.products > div{
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    max-width: calc(100% - 250px);
-    min-width: 220px;
     gap: 1rem;
 }
 
@@ -250,14 +253,12 @@ hr {
     width: 30%;
     min-width: 125px;
 }
-
-.products > p {
-    width: 100%;
-}
 .divider{
     display: none;
 }
-
+.filterOptions{
+    gap: 0.75rem;
+}
 @media screen and (max-width: 1100px) {
     .products .card{
         width: 40%;
@@ -265,21 +266,26 @@ hr {
 }
 
 @media screen and (max-width: 767px) {
-    .results, .divider{
+    .results{
+        gap: 0;
+    }
+    .divider{
+        width: 100%;
         display: block;
     }
     .filters, .products{
         width: 100%;
         max-width: none;
     }
+    .products label{
+        margin-bottom: 1.5rem;
+    }
 }
 
 @media screen and (max-width: 480px) {
-    .products{
+    .products > div{
         flex-direction: column;
-    }
-    .products .card{
-        margin: 2rem 0;
+        gap: 2rem;
     }
 }
 </style>

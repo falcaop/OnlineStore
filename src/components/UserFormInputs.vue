@@ -34,73 +34,74 @@ const trim = event => (event.target.value = event.target.value.trim());
 </script>
 
 <template>
-    <label for="name">Nome</label>
-    <input v-model="cachedProps.name" required type="text" id="name" name="name" @focusout="trim"/>
-
-    <label for="email">E-mail</label>
-    <input v-model="cachedProps.email" required id="email" type="email" name="email"/>
-
-    <label for="address">Endereço</label>
-    <input v-model="cachedProps.address" required type="text" id="address" name="address" @focusout="trim"/>
-    <label for="phone">Telefone</label>
-    <input
-        v-model="cachedProps.phone"
-        required
-        type="tel"
-        id="phone"
-        name="phone"
-        :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
-    />
     <div>
-        <label for="password">Senha</label>
-        <IconShow
-            v-if="!isPasswordShown"
-            tabindex="0"
-            @click="isPasswordShown = true"
-            @keyup.space.enter="isPasswordShown = true"
-        />
-        <IconHide
-            v-else
-            tabindex="0"
-            @click="isPasswordShown = false"
-            @keyup.space.enter="isPasswordShown = false"
+        <label for="name">Nome</label>
+        <input v-model="cachedProps.name" required type="text" id="name" name="name" @focusout="trim"/>
+    </div>
+    <div>
+        <label for="email">E-mail</label>
+        <input v-model="cachedProps.email" required id="email" type="email" name="email"/>
+    </div>
+    <div>
+        <label for="address">Endereço</label>
+        <input v-model="cachedProps.address" required type="text" id="address" name="address" @focusout="trim"/>
+    </div>
+    <div>
+        <label for="phone">Telefone</label>
+        <input
+            v-model="cachedProps.phone"
+            required
+            type="tel"
+            id="phone"
+            name="phone"
+            :pattern="/(?:\([1-9]{2}\)|[1-9]{2})\s?(?:9[1-9]|\d)\d{3}-?\d{4}/.source"
         />
     </div>
-    <input
-        v-model="cachedProps.password"
-        :required="!email"
-        :type="isPasswordShown ? 'text' : 'password'"
-        id="password"
-        name="password"
-        new-password
-        minlength="8"
-        :pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-#!$@£%^&*\(\)_+\|~=`\{\}\[\]\x22;'<>?,.\/\s])(?!.*:).+/.source"
-        :title="passwordTitle"
-    />
-    <label for="password_confirm">Confirmar Senha</label>
-    <input
-        v-model="cachedProps.passwordC"
-        :required="!email"
-        :type="isPasswordShown ? 'text' : 'password'"
-        id="password_confirm"
-        new-password
-        title="Repita a senha definida no campo acima"
-        :pattern="cachedProps.password.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')"
-    />
+    <div>
+        <div class="passwordLabel">
+            <label for="password">Senha</label>
+            <IconShow
+                v-if="!isPasswordShown"
+                tabindex="0"
+                @click="isPasswordShown = true"
+                @keyup.space.enter="isPasswordShown = true"
+            />
+            <IconHide
+                v-else
+                tabindex="0"
+                @click="isPasswordShown = false"
+                @keyup.space.enter="isPasswordShown = false"
+            />
+        </div>
+        <input
+            v-model="cachedProps.password"
+            :required="!email"
+            :type="isPasswordShown ? 'text' : 'password'"
+            id="password"
+            name="password"
+            new-password
+            minlength="8"
+            :pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-#!$@£%^&*\(\)_+\|~=`\{\}\[\]\x22;'<>?,.\/\s])(?!.*:).+/.source"
+            :title="passwordTitle"
+        />
+    </div>
+    <div>
+        <label for="password_confirm">Confirmar Senha</label>
+        <input
+            v-model="cachedProps.passwordC"
+            :required="!email"
+            :type="isPasswordShown ? 'text' : 'password'"
+            id="password_confirm"
+            new-password
+            title="Repita a senha definida no campo acima"
+            :pattern="cachedProps.password.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')"
+        />
+    </div>
 </template>
 
 <style scoped>
-form div{
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
-    align-items: end;
-    margin-bottom: 1rem;
-}
-form div label{
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 0;
+label{
+    margin-bottom: 0.5rem;
 }
 svg{
     height: 20px;

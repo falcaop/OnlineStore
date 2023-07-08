@@ -76,9 +76,11 @@ const submitPayment = async event => {
     <main>
         <h2>Pagamento</h2>
         <div class="container">
-            <form @submit.prevent.stop="submitPayment">
-                <label for="number">Numero do cartao</label>
-                <input v-model="number" required id="number" type="text" :pattern="/\d+/.source" name="cardNumber"/>
+            <form @submit.prevent.stop="submitPayment" class="rows">
+                <div>
+                    <label for="number">Numero do cartao</label>
+                    <input v-model="number" required id="number" type="text" :pattern="/\d+/.source" name="cardNumber"/>
+                </div>
                 <div class="columns">
                     <div class="left">
                         <label for="date">Data de validade</label>
@@ -89,15 +91,19 @@ const submitPayment = async event => {
                         <input v-model="code" required id="code" type="text" :pattern="/\d{3}/.source" name="cardCode"/>
                     </div> 
                 </div>
-                <div class="alignRight">
-                    <input type="submit" value="Finalizar compra">
-                </div>  
+                <input class="alignRight" type="submit" value="Finalizar compra">
             </form>
         </div>
     </main>
 </template>
 
 <style scoped>
+label{
+    margin-bottom: 0.5rem;
+}
+form{
+    gap: 1rem;
+}
 input[type="submit"]{
     width: 50%;
 }

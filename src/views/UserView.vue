@@ -75,15 +75,17 @@ const updateUser = async event => {
     <main>
         <!-- Modal para editar os dados de um usuario -->
         <dialog @close="unhideScroll" id="modal">
-            <h1>Editar dados</h1>
-            <form @submit="updateUser" method="dialog">
-                <UserFormInputs :address="user.address" :email="user.email" :name="user.name" :phone="user.phone"/>
-                
-                <div class="columns">
-                    <input type="submit" value="Confirmar">
-                    <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
-                </div>
-            </form>
+            <div>
+                <h1>Editar dados</h1>
+                <form @submit="updateUser" method="dialog" class="rows">
+                    <UserFormInputs :address="user.address" :email="user.email" :name="user.name" :phone="user.phone"/>
+                    
+                    <div class="columns">
+                        <input type="submit" value="Confirmar">
+                        <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
+                    </div>
+                </form>
+            </div>
         </dialog>
 
         <!-- Conteudo da pagina -->

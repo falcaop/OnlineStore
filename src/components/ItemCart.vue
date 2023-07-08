@@ -42,19 +42,21 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
                     <div class="purchaseSize">Tamanho: {{ size }} </div>
                     <div class="purchaseSize purchaseColor">Cor: <div :style="{backgroundColor: color}"></div></div>
                 </template>
-                <label :for="`amount-${id}`">Quantidade:</label>
-                <div v-if="purchase" :id="`amount-${id}`" class="purchaseAmount"> {{ amount }} </div>
-                <input
-                    v-else
-                    class="amount"
-                    name="amount"
-                    type="number"
-                    :value="amount"
-                    :max="stock"
-                    min="1"
-                    @change="changeAmount"
-                    :id="`amount-${id}`"
-                />
+                <div class="amountRow">
+                    <label :for="`amount-${id}`">Quantidade:</label>
+                    <div v-if="purchase" :id="`amount-${id}`" class="purchaseAmount"> {{ amount }} </div>
+                    <input
+                        v-else
+                        class="amount"
+                        name="amount"
+                        type="number"
+                        :value="amount"
+                        :max="stock"
+                        min="1"
+                        @change="changeAmount"
+                        :id="`amount-${id}`"
+                    />
+                </div>
             </div>
             <div class="right">
                 <h3>{{ toPriceString(price ?? 0) }}</h3>
@@ -81,7 +83,6 @@ const remove = () => (confirm("Tem certeza que deseja remover o produto do carri
     justify-content: space-between;
 }
 .amount{
-    margin-left: 1rem;
     max-width: 100px;
 }
 .purchaseAmount{
@@ -96,9 +97,6 @@ img {
     object-fit: cover;
     margin-right: 1.5rem;
     border-radius: 5px;
-}
-label{
-    margin-top: 0;
 }
 svg{
     width: 30px;
@@ -127,17 +125,16 @@ svg:hover{
     height: 1rem;
     width: 1rem;
 }
-
-@media screen and (max-width: 1200px){
-    input[type="number"]{
-        display: block;
-        margin-left: 0;
-    }
+.amountRow{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: start;
+    flex-wrap: wrap;
 }
-
 @media screen and (max-width: 768px) {
     .item{
-        display: block;
+        flex-direction: column;
     }
     .right{
         flex-direction: row;

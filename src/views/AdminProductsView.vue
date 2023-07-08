@@ -155,54 +155,68 @@ const loadImage = event => (newProduct.image = URL.createObjectURL(event.target.
 <template>
     <section>
         <dialog @close="unhideScroll" id="modal">
-            <h1 v-if="currentProduct">{{ `Editar ${currentProduct.name}` }}</h1>
-            <h1 v-else>Adicionar produto</h1>
-            <form @submit="event => currentProduct ? updateItem(event.target) : addItem(event.target)" method="dialog">
-                <label for="name">Nome</label>
-                <input v-model="newProduct.name" required type="text" id="name" name="name"/>
-                <label for="desc">Descrição</label>
-                <input v-model="newProduct.description" id="desc" type="text" name="description"/>
-                <label for="price">Preço</label>
-                <input
-                    v-model.number="newProduct.price"
-                    min="0"
-                    required
-                    step="0.01"
-                    type="number"
-                    id="price"
-                    name="price"
-                />
-                <div class="columns">
-                    <div class="left">
-                        <label for="category">Categoria</label>
-                        <select v-model.number="newProduct.category" required id="category" name="category">
-                            <option
-                                v-for="(categoryName, i) in categories"
-                                :key="i"
-                                :value="i"
-                            >{{ categoryName }}</option>
-                        </select>
+            <div>
+                <h1 v-if="currentProduct">{{ `Editar ${currentProduct.name}` }}</h1>
+                <h1 v-else>Adicionar produto</h1>
+                <form
+                    @submit="event => currentProduct ? updateItem(event.target) : addItem(event.target)"
+                    method="dialog"
+                    class="rows"
+                >
+                    <div>
+                        <label for="name">Nome</label>
+                        <input v-model="newProduct.name" required type="text" id="name" name="name"/>
                     </div>
-                    <div class="right">
-                        <label for="stock">Quantidade em estoque</label>
+                    <div>
+                        <label for="desc">Descrição</label>
+                        <input v-model="newProduct.description" id="desc" type="text" name="description"/>
+                    </div>
+                    <div>
+                        <label for="price">Preço</label>
                         <input
-                            v-model.number="newProduct.stock"
-                            required
+                            v-model.number="newProduct.price"
                             min="0"
+                            required
+                            step="0.01"
                             type="number"
-                            id="stock"
-                            name="stock"
+                            id="price"
+                            name="price"
                         />
                     </div>
-                </div>
-                <label for="image">Imagem</label>
-                <input @change="loadImage" type="file" accept="image/png, image/jpeg" id="image" name="image"/>
-                <img v-if="newProduct.image" :src="newProduct.image" @error="newProduct.image = null"/>
-                <div class="columns">
-                    <input type="submit" value="Confirmar">
-                    <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
-                </div>
-            </form>
+                    <div class="columns">
+                        <div class="left">
+                            <label for="category">Categoria</label>
+                            <select v-model.number="newProduct.category" required id="category" name="category">
+                                <option
+                                    v-for="(categoryName, i) in categories"
+                                    :key="i"
+                                    :value="i"
+                                >{{ categoryName }}</option>
+                            </select>
+                        </div>
+                        <div class="right">
+                            <label for="stock">Quantidade em estoque</label>
+                            <input
+                                v-model.number="newProduct.stock"
+                                required
+                                min="0"
+                                type="number"
+                                id="stock"
+                                name="stock"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label for="image">Imagem</label>
+                        <input @change="loadImage" type="file" accept="image/png, image/jpeg" id="image" name="image"/>
+                        <img v-if="newProduct.image" :src="newProduct.image" @error="newProduct.image = null"/>
+                    </div>
+                    <div class="columns">
+                        <input type="submit" value="Confirmar">
+                        <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
+                    </div>
+                </form>
+            </div>
         </dialog>
         <h1>Produtos</h1>
         <AdminSearch queryName="category" :options="categories"/>
@@ -237,5 +251,8 @@ dialog form img{
     border-radius: 10px;
     aspect-ratio: 5/6;
     object-fit: cover;
+}
+label{
+    margin-bottom: 0.5rem;
 }
 </style>

@@ -147,22 +147,30 @@ const deleteItem = async id => {
 <template>
     <section>
         <dialog @close="unhideScroll" id="modal">
-            <h1 v-if="currentUser">{{ `Editar ${currentUser.name}` }}</h1>
-            <h1 v-else>Adicionar usuario</h1>
-            <form @submit="event => currentUser ? updateItem(event.target) : addItem(event.target)" method="dialog">
-                <UserFormInputs
-                    :email="newUser.email"
-                    :name="newUser.name"
-                    :address="newUser.address"
-                    :phone="newUser.phone"
-                />
-                <input type="checkbox" id="admin" name="admin" :checked="newUser.isAdmin"/>
-                <label for="admin">Administrator</label>
-                <div class="columns">
-                    <input type="submit" value="Confirmar">
-                    <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
-                </div>
-            </form>
+            <div>
+                <h1 v-if="currentUser">{{ `Editar ${currentUser.name}` }}</h1>
+                <h1 v-else>Adicionar usuario</h1>
+                <form
+                    @submit="event => currentUser ? updateItem(event.target) : addItem(event.target)"
+                    method="dialog"
+                    class="rows"
+                >
+                    <UserFormInputs
+                        :email="newUser.email"
+                        :name="newUser.name"
+                        :address="newUser.address"
+                        :phone="newUser.phone"
+                    />
+                    <div>
+                        <input type="checkbox" id="admin" name="admin" :checked="newUser.isAdmin"/>
+                        <label for="admin">Administrator</label>
+                    </div>
+                    <div class="columns">
+                        <input type="submit" value="Confirmar">
+                        <input type="button" value="Cancelar" @click.prevent.stop="closeModal"/>
+                    </div>
+                </form>
+            </div>
         </dialog>
         
         <h1>Usuários</h1>

@@ -33,16 +33,21 @@ const signUp = async event => {
     <main>
         <div class="container">
             <h2>Cadastro</h2>
-            <form @submit.prevent.stop="signUp">
+            <form @submit.prevent.stop="signUp" class="rows">
                 <UserFormInputs/>
-                <input type="submit" value="Registrar">
-                <RouterLink to="/signin" class="link">Já tem conta? Entre</RouterLink>
+                <div>
+                    <input type="submit" value="Registrar">
+                    <RouterLink to="/signin" class="link">Já tem conta? Entre</RouterLink>
+                </div>
             </form>
         </div>
     </main>
 </template>
 
 <style scoped>
+form{
+    gap: 1rem;
+}
 .container {
     margin: 4rem auto;
     min-width: 250px;

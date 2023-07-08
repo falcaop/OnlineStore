@@ -63,23 +63,25 @@ const setImageLink = () => {
             </div>
             <div class="rows">
                 <p class="price">{{ toPriceString(50) }}</p>
-                <form @submit.prevent.stop="addToCart">
-                    <label for="colors">Cor</label>
-                    <div class="colors">
-                        <input
-                            type="radio"
-                            name="colors"
-                            v-for="color in colors"
-                            :key="color" :id="color"
-                            :style="{backgroundColor: color}"
-                            :value="color"
-                            v-model="selectedColor"
-                        />
+                <form @submit.prevent.stop="addToCart" class="rows">
+                    <div>
+                        <label for="colors" class="title">Cor</label>
+                        <div class="colors">
+                            <input
+                                type="radio"
+                                name="colors"
+                                v-for="color in colors"
+                                :key="color" :id="color"
+                                :style="{backgroundColor: color}"
+                                :value="color"
+                                v-model="selectedColor"
+                            />
+                        </div>
                     </div>
 
                     <div class="columns">
-                        <div class="left">
-                            <label for="amount">Quantidade</label>
+                        <div class="left field">
+                            <label for="amount">Quantidade:</label>
                             <input
                                 required
                                 class="amount"
@@ -90,17 +92,19 @@ const setImageLink = () => {
                                 name="amount"
                             />
                         </div>
-                        <div class="right">
-                            <label for="size">Tamanho</label>
+                        <div class="right field">
+                            <label for="size">Tamanho:</label>
                             <select name="size" class="amount" v-model="size">
                                 <option v-for="(size, i) in sizes" :value="i"> {{ size }} </option>
                             </select>
                         </div>
                     </div>
-                    <label for="estampa">Escolher estampa</label>
-                    <div class="columns">
-                        <input name="estampa" class="left" required type="url" v-model="tempImage">
-                        <button type="button" class="button right" @click="setImageLink">Confirmar</button>
+                    <div>
+                        <label for="estampa" class="title">Escolher estampa</label>
+                        <div class="columns">
+                            <input name="estampa" class="left" required type="url" v-model="tempImage">
+                            <button type="button" class="button right" @click="setImageLink">Confirmar</button>
+                        </div>
                     </div>
                     <button type="submit" class="button">Adicionar ao carrinho</button>
                 </form>
@@ -116,8 +120,9 @@ const setImageLink = () => {
     margin-top: 0;
 }
 .amount{
-    margin-left: 1rem;
-    max-width: 100px;
+    height: auto;
+    width: auto;
+    flex-grow: 1;
 }
 select{
     display: inline;
@@ -177,20 +182,24 @@ input[type="radio"]:focus, input[type="radio"]:checked {
     right: 0;
     margin: auto;
 }
-.columns > button{
-    margin-top: 0;
+.field{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
-
+form{
+    gap: 1rem;
+}
+.title{
+    margin-bottom: 0.5rem;
+}
 @media screen and (max-width: 1330px){
     .imagePreview{
         width: 100%;
         min-width: 0;
         max-width: 273px;
-    }
-}
-@media screen and (max-width: 1215px) {
-    .columns{
-        display: block;
     }
 }
 

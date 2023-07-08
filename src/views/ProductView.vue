@@ -95,6 +95,10 @@ const addToCart = () => {
     object-fit: cover;
     background-color: #ccc;
 }
+
+.button{
+    margin-top: 1rem;
+}
 @media screen and (max-width: 767px){
     .price{
         margin-top: 2rem;
