@@ -79,9 +79,9 @@ const setImageLink = () => {
                         </div>
                     </div>
 
-                    <div class="columns">
+                    <div class="fields">
                         <div class="left field">
-                            <label for="amount">Quantidade:</label>
+                            <label for="amount">Quantidade</label>
                             <input
                                 required
                                 class="amount"
@@ -93,7 +93,7 @@ const setImageLink = () => {
                             />
                         </div>
                         <div class="right field">
-                            <label for="size">Tamanho:</label>
+                            <label for="size">Tamanho</label>
                             <select name="size" class="amount" v-model="size">
                                 <option v-for="(size, i) in sizes" :value="i"> {{ size }} </option>
                             </select>
@@ -121,8 +121,7 @@ const setImageLink = () => {
 }
 .amount{
     height: auto;
-    width: auto;
-    flex-grow: 1;
+    width: 100%;
 }
 select{
     display: inline;
@@ -184,16 +183,22 @@ input[type="radio"]:focus, input[type="radio"]:checked {
 }
 .field{
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 0.5rem;
+    align-items: start;
     flex-wrap: wrap;
     justify-content: space-between;
+    flex-direction: column;
 }
 form{
     gap: 1rem;
 }
 .title{
     margin-bottom: 0.5rem;
+}
+.fields{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
 }
 @media screen and (max-width: 1330px){
     .imagePreview{
