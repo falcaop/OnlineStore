@@ -102,7 +102,7 @@ const updateItem = async target => {
         case 404: {
             alert('Usuário não encontrado');
             // remove o usuário do cache da página
-            users.value.splice(users.value.findIndex(({_id}) => (_id === currentUser._id)));
+            users.value.splice(users.value.findIndex(({_id}) => (_id === currentUser._id)), 1);
         }
         break;
         case 409: alert('Já existe um usuário cadastrado com esse email');
@@ -121,7 +121,7 @@ const deleteItem = async id => {
     switch(res.status){
         case 204: {
             alert(`${currentUser.name} deletado`);
-            users.value.splice(users.value.findIndex(({_id}) => (_id === id)));
+            users.value.splice(users.value.findIndex(({_id}) => (_id === id)), 1);
         }
         break;
         case 401: {
@@ -136,7 +136,7 @@ const deleteItem = async id => {
         break;
         case 404: {
             alert('Usuário não encontrado');
-            users.value.splice(users.value.findIndex(({_id}) => (_id === id)));
+            users.value.splice(users.value.findIndex(({_id}) => (_id === id)), 1);
         }
         break;
         default: alert('Um erro inesperado ocorreu, tente novamente mais tarde');

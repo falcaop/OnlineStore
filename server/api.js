@@ -460,10 +460,10 @@ router.put(
     '/users/:id',
     upload.none(),
     authenticate(true),
+    fetchDocument(userModel, 'email'),
     // caso seja requisitada uma atualização do super usuário "admin" responde com 403 (Forbidden) pois este não pode
     // ter seus dados alterados por outros administradores
-    (req, res, next) => (req.user.email === 'admin') ? res.sendStatus(403) : next(),
-    fetchDocument(userModel, 'email'),
+    (req, res, next) => (req.document.email === 'admin') ? res.sendStatus(403) : next(),
     body('name').trim().isLength({
         min: 1,
         max: 1024,

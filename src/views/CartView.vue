@@ -39,12 +39,14 @@ const empty = () => {
     }
 }
 const remove = (id) => {
-    cartProducts.value.splice(cartProducts.value.findIndex(product => (product.id === id)));
+    cartProducts.value.splice(cartProducts.value.findIndex(product => (product.id === id)), 1);
     localStorage.setItem("cart", JSON.stringify(cartProducts.value));
+    totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 }
 const removeCustom = (id) => {
-    customProducts.value.splice(customProducts.value.findIndex(product => (product.id === id)));
+    customProducts.value.splice(customProducts.value.findIndex(product => (product.id === id)), 1);
     localStorage.setItem("customs", JSON.stringify(customProducts.value));
+    totalPriceString.value = calcTotalPriceString(cartProducts.value, products, customProducts.value);
 }
 
 const changeAmount = (id, amount) => {
